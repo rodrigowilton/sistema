@@ -1,0 +1,17 @@
+<!-- templates/home.html-->
+{% extends "base_login.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+Ola {{ user.username }}!
+<form action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Sair</button>
+</form>
+{% else %}
+<p>Voce não esta Logado!</p>
+<a href="{% url 'login' %}">Faça seu Login</a>
+{% endif %}
+{% endblock %}
