@@ -11,6 +11,15 @@ body {
     margin-top: 56px; /* Espaçamento para compensar a altura da navbar fixa */
 }
 
+.nav-item {
+    margin-right: 40px; /* Adiciona 30px de espaço à direita dos itens */
+}
+
+.nav-item:last-child {
+    margin-right: 0; /* Remove a margem do último item */
+}
+
+
 .navbar {
     position: fixed; /* Fixa a navbar no topo */
     top: 0; /* Alinha a navbar no topo */
