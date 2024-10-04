@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Condominios
+from django.contrib import messages
 
 def home(request):
     # Tente obter todos os condomínios do banco de dados
@@ -24,3 +25,13 @@ def consultar_condominio(request, id):
     condominio = get_object_or_404(Condominios, id=id)
     # Lógica para consultar o condomínio aqui
     return render(request, 'consultar_condominio.html', {'condominio': condominio})
+
+def excluir_condominio(request, id):
+    condominio = get_object_or_404(Condominios, id=id)
+
+    if request.method == 'POST':
+        condominio.delete()
+        messages.success(request, 'Condomínio excluído com sucesso!')
+        return redirect('home')  # Redireciona para a página inicial após a exclusão
+
+    return render(request, 'confirmar_exclusao.html', {'condominio': condominio})

@@ -9,8 +9,8 @@
 {% block content %}
 <br>
 <div class="container-fluid">  <!-- Mudou de container para container-fluid -->
-    <div class="form-group">
-        <br><br>
+    <div class="form-group custom-form-group">
+        <br>
         <label for="searchbar"><b>Buscar condomínio:</b></label>
         <input type="text" class="form-control" placeholder="Buscar condomínio..." id="searchbar" onkeyup="search()" name="searchbar">
     </div>
@@ -40,15 +40,14 @@
                         <td>{{ condominio.unidade.nome_unidade }}</td>
                         <td>{{ condominio.bairro }}</td>
                         <td class="acoes-column">
-                            <a href="{% url 'editar_condominio' condominio.id %}" class="btn btn-primary">
-                                <i class="fas fa-edit"></i>
+                            <a href="{% url 'editar_condominio' condominio.id %}">
+                                <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
                             </a>
-                            <a href="{% url 'consultar_condominio' condominio.id %}" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
+                            <a href="{% url 'consultar_condominio' condominio.id %}">
+                                <img src="{% static 'img/pesquisar.png' %}" alt="Pesquisar" style="width: 20px; height: 20px; margin-right: 5px;">
                             </a>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ condominio.id }}">
-                                <i class="fas fa-trash fa-sm"></i>
-                            </button>
+                            <!-- Somente o ícone de excluir, sem o link -->
+                            <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
                         </td>
                     </tr>
                     {% endfor %}
@@ -65,7 +64,7 @@
     <script>
         function search() {
             let input = document.getElementById('searchbar').value.toLowerCase();
-            let rows = document.querySelectorAll('.table-responsive tbody tr');  // Corrigido para '.table-responsive'
+            let rows = document.querySelectorAll('.table-responsive tbody tr');
 
             rows.forEach(row => {
                 let condominioNome = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
