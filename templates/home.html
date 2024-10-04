@@ -10,11 +10,10 @@
 <br>
 <div class="container-fluid">  <!-- Mudou de container para container-fluid -->
     <div class="form-group">
+        <br><br>
         <label for="searchbar"><b>Buscar condomínio:</b></label>
         <input type="text" class="form-control" placeholder="Buscar condomínio..." id="searchbar" onkeyup="search()" name="searchbar">
     </div>
-
-    <p>Usuário: {{ request.user.username }}</p>
     <br>
 
     <div class="table-responsive">  <!-- Adicionei table-responsive para melhor visualização em dispositivos móveis -->

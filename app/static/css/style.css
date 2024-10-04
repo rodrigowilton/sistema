@@ -1,6 +1,32 @@
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o rodapé fique na parte inferior */
     background-color: #fff;
+
 }
+        .content {
+            flex: 1; /* Permite que o conteúdo expanda para preencher o espaço */
+            margin-top: 56px; /* Espaçamento para compensar a altura da navbar fixa */
+        }
+        .navbar {
+            position: fixed; /* Fixa a navbar no topo */
+            top: 0; /* Alinha a navbar no topo */
+            left: 0; /* Alinha a navbar à esquerda */
+            right: 0; /* Alinha a navbar à direita */
+            background-color: #6c757d; /* Cor da navbar */
+            z-index: 1000; /* Garante que a navbar fique acima de outros elementos */
+        }
+        footer {
+            position: fixed; /* Fixa o rodapé na parte inferior */
+            bottom: 0; /* Alinha o rodapé na parte inferior */
+            left: 0; /* Alinha o rodapé à esquerda */
+            right: 0; /* Alinha o rodapé à direita */
+            background-color: #6c757d; /* Cor do rodapé igual à da navbar */
+            text-align: center; /* Centraliza o texto no footer */
+            padding: 10px 0; /* Espaçamento no footer */
+            color: white; /* Cor do texto no footer */
+        }
 
 .custom-bg {
     background-color: #fff;
@@ -45,3 +71,4 @@ body {
 .logout-link:hover {
     color: darkred; /* Cor ao passar o mouse */
 }
+
