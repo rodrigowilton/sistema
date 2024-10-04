@@ -10,14 +10,84 @@
 </head>
 
 <body>
-    {% block content %}{% endblock %}
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+    <div class="container-fluid">
+        <a class="navbar-brand custom-navbar-brand" href="#">𝐬𝐞𝐯𝐞𝐫𝐮𝐬</a>
+        <div class="spacer"></div> <!-- Espaço adicionado -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto w-100 d-flex justify-content-between">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/apartamentos.png' %}" alt="Apartamentos" style="width: 20px; height: 20px; margin-right: 5px;">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/configuracao.png' %}" alt="Configuração" style="width: 20px; height: 20px; margin-right: 5px;">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/pessoa.png' %}" alt="Pessoa" style="width: 20px; height: 20px; margin-right: 5px;">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/app.png' %}" alt="App" style="width: 20px; height: 20px; margin-right: 5px;">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/os.png' %}" alt="O.S" style="width: 20px; height: 20px; margin-right: 5px;">
+                        𝐎.𝐒
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/v2.png' %}" alt="V.2" style="width: 20px; height: 20px; margin-right: 5px;">
+                        𝐕.𝟐
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">𝐂.𝐴</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">𝐒.𝐑𝐂</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">𝐒.𝐒𝐓</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">𝐒.𝐓𝐈</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">𝐂.𝐎𝐈</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">𝐒.𝐎𝐏</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="#">𝐂.𝐎𝐌</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link logout-link" href="{% url 'logout' %}">𝐒𝐚𝐢𝐫</a> <!-- Classe adicionada para o link Sair -->
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <footer>
-        {% block footer %}{% endblock %}
-    </footer>
+{% block content %}{% endblock %}
 
-    <!-- Scripts do Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<footer>
+    {% block footer %}{% endblock %}
+</footer>
+
+<!-- Scripts do Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

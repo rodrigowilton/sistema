@@ -1,7 +1,42 @@
 body {
-    background-color: #fff; /* Azul claro */
+    background-color: #fff;
 }
 
 .custom-bg {
-    background-color: #fff; /* Um cinza claro */
+    background-color: #fff;
+}
+
+.custom-navbar-brand:hover {
+    color: #ddd; /* Muda a cor ao passar o mouse */
+}
+
+.custom-nav-link {
+    color: white; /* Cor do texto dos links */
+    font-size: 22px; /* Aumenta o tamanho da fonte dos links */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Estilo da fonte */
+}
+
+.custom-nav-link:hover {
+     color: #ddd; /* Cor ao passar o mouse */
+}
+
+.navbar-brand {
+     font-size: 40px; /* Aumenta o tamanho da fonte do Severus */
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Estilo da fonte */
+}
+
+.navbar img {
+     filter: brightness(0) invert(1); /* Torna os ícones brancos */
+}
+
+.spacer {
+    margin-right: 40px; /* Ajuste o valor para o espaçamento desejado */
+}
+
+.logout-link {
+    color: #800000; /* Cor do link Sair */
+}
+
+.logout-link:hover {
+    color: darkred; /* Cor ao passar o mouse */
 }
