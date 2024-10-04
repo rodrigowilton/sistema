@@ -10,6 +10,7 @@
 </head>
 
 <body>
+{%  block menu %}
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
     <div class="container-fluid">
     <a class="navbar-brand custom-navbar-brand" href="#" style="margin-right: 120px;">𝐬𝐞𝐯𝐞𝐫𝐮𝐬</a>
@@ -93,7 +94,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link logout-link" href="{% url 'logout' %}">
+                    <a class="nav-link custom-nav-link logout-link" href="{% url 'login' %}">
                         <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;">
                         𝐒𝐚𝐢𝐫
                     </a> <!-- Classe adicionada para o link Sair -->
@@ -102,15 +103,16 @@
         </div>
     </div>
 </nav>
-
+{% endblock %}
 <div class="content">
     {% block content %}{% endblock %}
 </div>
-
+{% block footer %}
 <footer>
     <strong>Severus Tecnologia Segurança © - 2024<br>
     (27) 3026-2196</strong>
 </footer>
+{% endblock %}
 
 <!-- Scripts do Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
