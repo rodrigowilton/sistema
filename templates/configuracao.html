@@ -1,0 +1,33 @@
+{% extends 'base_login.html' %}
+{% load static %}  <!-- Carregando a tag static -->
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+    <div class="container-fluid">
+        <a class="navbar-brand custom-navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">𝐬𝐞𝐯𝐞𝐫𝐮𝐬</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto w-100 d-flex">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'lista_autenticacao' %}">
+                        <img src="{% static 'img/configuracao.png' %}" alt="Configuração" style="width: 30px; height: 30px; margin-right: 5px;">
+                     Permissoes </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'register' %}">
+                        <img src="{% static 'img/pessoa.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-right: 5px;">
+                    Usuáarios</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Bem-vindo à página de configuração</h1>
+</div>
+{% endblock %}

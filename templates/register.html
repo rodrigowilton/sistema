@@ -1,0 +1,66 @@
+{% extends "base_login.html" %}
+{% load static %}
+
+{% block menu %}
+{% endblock %}
+
+{% block title %}Cadastro{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center vh-100 custom-bg">
+  <div class="w-100" style="max-width: 320px; border-radius: 5px; padding: 24px; transform: scale(1.2); transform-origin: center;">
+    <!-- Imagem do ícone -->
+    <div class="text-center mb-4">
+      <img src="{% static 'img/icon.png' %}" alt="Logo" class="img-fluid">
+    </div>
+
+    <!-- Mensagem de boas-vindas -->
+    <h5 class="text-center mb-3">Cadastro de Novo Usuário</h5>
+    <p class="text-center mb-4">Preencha os dados abaixo para criar uma nova conta</p>
+
+    {% if form.errors %}
+      <div class="alert alert-danger" role="alert">
+        {% for error in form.non_field_errors %}
+          <strong>Erro:</strong> {{ error }}<br>
+        {% endfor %}
+        {% if form.username.errors %}
+          <strong>Erro:</strong> {{ form.username.errors.0 }}<br>
+        {% endif %}
+        {% if form.password.errors %}
+          <strong>Erro:</strong> {{ form.password.errors.0 }}<br>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'register' %}" class="needs-validation" novalidate>
+      {% csrf_token %}
+      <div class="mb-4">
+        <label for="username" class="form-label"><strong>Usuário</strong></label>
+        <input type="text" name="username" class="form-control w-100" id="username" placeholder="Usuário" required>
+      </div>
+      <div class="mb-4">
+        <label for="email" class="form-label"><strong>Email</strong></label>
+        <input type="email" name="email" class="form-control w-100" id="email" placeholder="Email" required>
+      </div>
+      <div class="mb-4">
+        <label for="password" class="form-label"><strong>Senha</strong></label>
+        <input type="password" name="password" class="form-control w-100" id="password" placeholder="Senha" required>
+      </div>
+      <div class="mb-4">
+        <label for="confirm_password" class="form-label"><strong>Confirme a Senha</strong></label>
+        <input type="password" name="confirm_password" class="form-control w-100" id="confirm_password" placeholder="Confirme a Senha" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+    </form>
+
+    <!-- Copyright -->
+    <p class="text-center mt-3">
+      <strong>Severus Tecnologia Segurança © - 2024<br>
+      (27) 3026-2196</strong>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
