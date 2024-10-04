@@ -23,10 +23,13 @@ body {
 .navbar-brand {
      font-size: 40px; /* Aumenta o tamanho da fonte do Severus */
      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Estilo da fonte */
+     margin-left: 20px; /* Margem esquerda no Severus */
+
 }
 
 .navbar img {
      filter: brightness(0) invert(1); /* Torna os ícones brancos */
+
 }
 
 .spacer {
@@ -35,6 +38,8 @@ body {
 
 .logout-link {
     color: #800000; /* Cor do link Sair */
+    margin-right: 20px; /* Margem direita no Sair */
+
 }
 
 .logout-link:hover {
