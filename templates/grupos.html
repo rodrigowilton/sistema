@@ -25,7 +25,6 @@
                         <img src="{% static 'img/permissao.png' %}" alt="permissao" style="width: 30px; height: 30px; margin-right: 5px;">
                      Permissões </a>
                 </li>
-
             </ul>
         </div>
     </div>
@@ -49,11 +48,11 @@
                 <div class="form-group mt-3">
                     <label for="permissions">Selecionar Permissões</label>
                     <select name="permissions" class="form-select" multiple required>
-                        <option value="all">Todas as Permissões</option>
                         {% for permission in permissions %}
-                        <option value="{{ permission.id }}">{{ permission.name }}</option>
+                            <option value="{{ permission.id }}">{{ permission.name }}</option>
                         {% endfor %}
                     </select>
+                    <small class="form-text text-muted">Segure Ctrl (ou Cmd) para selecionar várias permissões.</small>
                 </div>
                 <button type="submit" class="btn btn-primary mt-2">Adicionar Grupo</button>
             </form>

@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from django.contrib.auth.models import Group as AuthGroup, Permission
+
 
 
 def register(request):
@@ -50,18 +52,24 @@ def register(request):
 
 
 def manage_groups(request):
-    # Verifica se o método é POST para adicionar ou remover grupo
     if request.method == 'POST':
         if 'group_name' in request.POST:
-            # Adiciona novo grupo
             group_name = request.POST.get('group_name').strip()
             if AuthGroup.objects.filter(name=group_name).exists():
                 messages.error(request, f"Grupo '{group_name}' já existe.")
             else:
-                AuthGroup.objects.create(name=group_name)
+                # Cria o novo grupo
+                group = AuthGroup.objects.create(name=group_name)
+
+                # Associa permissões selecionadas ao grupo
+                permissions_ids = request.POST.getlist('permissions')  # Obtém uma lista de IDs de permissões
+                permissions = Permission.objects.filter(id__in=permissions_ids)  # Filtra as permissões
+                group.permissions.set(permissions)  # Associa as permissões ao grupo
+
                 messages.success(request, f"Grupo '{group_name}' foi criado com sucesso.")
+            return redirect('manage_groups')
+
         elif 'group_id' in request.POST and request.POST.get('action') == 'delete':
-            # Remove grupo
             group_id = request.POST.get('group_id')
             try:
                 group = AuthGroup.objects.get(id=group_id)
@@ -72,22 +80,13 @@ def manage_groups(request):
 
         return redirect('manage_groups')
 
-    # Obter todos os grupos existentes
     groups = AuthGroup.objects.all()
+    permissions = Permission.objects.all()  # Carregar todas as permissões
 
     return render(request, 'grupos.html', {
         'groups': groups,
+        'permissions': permissions,
     })
-
-
-# Mapeamento de permissões para Português
-PERMISSION_TRANSLATIONS = {
-    'can_add_user': 'Pode adicionar utilizador',
-    'can_delete_user': 'Pode remover utilizador',
-    'can_change_user': 'Pode modificar utilizador',
-    'can_view_user': 'Pode ver utilizador',
-    # Adiciona outras permissões conforme necessário
-}
 
 def manage_users_groups_permissions(request):
     users = AuthUser.objects.all()
