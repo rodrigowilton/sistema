@@ -3,7 +3,6 @@ body {
     flex-direction: column;
     min-height: 100vh; /* Garante que o rodapé fique na parte inferior */
     background-color: #fff;
-
 }
 
 .content {
@@ -12,35 +11,34 @@ body {
 }
 
 .nav-item {
-    margin-right: 40px; /* Adiciona 30px de espaço à direita dos itens */
+    margin-right: 70px; /* Adiciona 40px de espaço à direita dos itens */
 }
 
 .nav-item:last-child {
     margin-right: 0; /* Remove a margem do último item */
 }
 
-
 .navbar {
     position: fixed; /* Fixa a navbar no topo */
     top: 0; /* Alinha a navbar no topo */
-    left: 0; /* Alinha a navbar à esquerda */
+    left:0; /* Alinha a navbar à esquerda */
     right: 0; /* Alinha a navbar à direita */
     background-color: #6c757d; /* Cor da navbar */
     z-index: 1000; /* Garante que a navbar fique acima de outros elementos */
 }
 
 footer {
-     position: fixed; /* Fixa o rodapé na parte inferior */
-     bottom: 0; /* Alinha o rodapé na parte inferior */
-     left: 0; /* Alinha o rodapé à esquerda */
-     right: 0; /* Alinha o rodapé à direita */
-     background-color: #6c757d; /* Cor do rodapé igual à da navbar */
-     text-align: center; /* Centraliza o texto no footer */
-     padding: 10px 0; /* Espaçamento no footer */
-     color: white; /* Cor do texto no footer */
+    position: fixed; /* Fixa o rodapé na parte inferior */
+    bottom: 0; /* Alinha o rodapé na parte inferior */
+    left: 0; /* Alinha o rodapé à esquerda */
+    right: 0; /* Alinha o rodapé à direita */
+    background-color: #6c757d; /* Cor do rodapé igual à da navbar */
+    text-align: center; /* Centraliza o texto no footer */
+    padding: 10px 0; /* Espaçamento no footer */
+    color: white; /* Cor do texto no footer */
 }
 
-.form-group{
+.form-group {
     font-size: 22px; /* Aumenta o tamanho da fonte dos links */
 }
 
@@ -59,20 +57,21 @@ footer {
 }
 
 .custom-nav-link:hover {
-     color: #ddd; /* Cor ao passar o mouse */
+    color: #ddd; /* Cor ao passar o mouse */
 }
 
 .navbar-brand {
-     font-size: 40px; /* Aumenta o tamanho da fonte do Severus */
-     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Estilo da fonte */
-     margin-left: 20px; /* Margem esquerda no Severus */
-
+    font-size: 40px; /* Aumenta o tamanho da fonte do Severus */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Estilo da fonte */
+    margin-left: 20px; /* Margem esquerda no Severus */
 }
 
-.navbar img {
-     filter: brightness(0) invert(1); /* Torna os ícones brancos */
 
+
+.custom-nav {
+    margin: 0 50px;
 }
+
 
 .spacer {
     margin-right: 40px; /* Ajuste o valor para o espaçamento desejado */
@@ -81,10 +80,8 @@ footer {
 .logout-link {
     color: #800000; /* Cor do link Sair */
     margin-right: 20px; /* Margem direita no Sair */
-
 }
 
 .logout-link:hover {
     color: darkred; /* Cor ao passar o mouse */
 }
-

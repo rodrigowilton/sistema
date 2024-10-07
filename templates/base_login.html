@@ -10,13 +10,19 @@
 </head>
 
 <body>
-{%  block menu %}
+{% block menu %}
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
     <div class="container-fluid">
-    <a class="navbar-brand custom-navbar-brand" href="#" style="margin-right: 120px;"> 𝐬𝐞𝐯𝐞𝐫𝐮𝐬</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="#" style="margin-right: 120px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px;">
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto w-100 d-flex">
                 <li class="nav-item">
@@ -104,12 +110,17 @@
     </div>
 </nav>
 {% endblock %}
+
 <div class="content">
     {% block content %}{% endblock %}
 </div>
+
 {% block footer %}
-<footer>
-    <strong>Severus Tecnologia Segurança © - 2024 - (27) 3026-2196</strong>
+<footer class="text-center mt-5">
+    <strong>
+        <h2 class="d-inline">SEVERUS </h2>
+        Tecnologia Segurança © - 2024 - (27) 3026-2196
+    </strong>
 </footer>
 {% endblock %}
 

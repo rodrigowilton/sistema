@@ -1,15 +1,31 @@
 {% extends 'base_login.html' %}
+{% load static %}  <!-- Carregando a tag static -->
 
 {% block menu %}
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
     <div class="container-fluid">
-        <a class="navbar-brand custom-navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">𝐬𝐞𝐯𝐞𝐫𝐮𝐬</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px;">
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto w-100 d-flex">
-                <!-- Outros itens podem ser removidos se não forem necessários -->
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'manage_groups' %}">
+                        <img src="{% static 'img/pessoa.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-right: 5px;">
+                    Grupo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'manage_users_groups_permissions' %}">
+                        <img src="{% static 'img/permissao.png' %}" alt="permissao" style="width: 30px; height: 30px; margin-right: 5px;">
+                     Item </a>
+                </li>
+
             </ul>
         </div>
     </div>
@@ -76,27 +92,31 @@
         <thead class="thead-dark">
             <tr>
                 <th>Nome de Utilizador</th>
-                <th>Grupo</th>
-                <th>Permissão</th>
+                <th>Grupos</th>
+                <th>Permissões</th>
             </tr>
         </thead>
         <tbody>
-            {% for user_permission in user_permissions %}
+            {% for user in users %}
             <tr>
-                <td>{{ user_permission.user.username }}</td>
+                <td>{{ user.username }}</td>
                 <td>
-                    {% for group in user_permission.user.groups.all %}
-                        {{ group.name }}<br>
-                    {% empty %}
+                    {% if user.groups.count > 0 %}
+                        {% for group in user.groups.all %}
+                            {{ group.name }}<br>
+                        {% endfor %}
+                    {% else %}
                         Sem grupo
-                    {% endfor %}
+                    {% endif %}
                 </td>
                 <td>
-                    {% for permission in user_permission.user.user_permissions.all %}
-                        {{ permission.name }}<br>
-                    {% empty %}
+                    {% if user.user_permissions.count > 0 %}
+                        {% for permission in user.user_permissions.all %}
+                            {{ permission.name }}<br>
+                        {% endfor %}
+                    {% else %}
                         Sem permissões
-                    {% endfor %}
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
