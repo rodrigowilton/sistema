@@ -1,30 +1,18 @@
 {% extends 'base_login.html' %}
-{% load static %}  <!-- Carregando a tag static -->
+{% load static %}
 
 {% block menu %}
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">
-            <div class="icon-container">
-                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px;">
-            </div>
+        <a class="navbar-brand custom-navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">
+            <img src="{% static 'img/icon.png' %}" alt="Logo" style="max-width: 65%; height: auto;">
         </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto w-100 d-flex">
-                <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'register' %}">
-                        <img src="{% static 'img/pessoa.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-right: 5px;">
-                    Usuários</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'manage_users_groups_permissions' %}">
-                        <img src="{% static 'img/permissao.png' %}" alt="permissao" style="width: 30px; height: 30px; margin-right: 5px;">
-                     Permissões </a>
-                </li>
+                <!-- Outros itens podem ser removidos se não forem necessários -->
             </ul>
         </div>
     </div>
@@ -75,9 +63,11 @@
                 <td>{{ group.name }}</td>
                 <td>
                     {% if group.permissions.count > 0 %}
-                        {% for permission in group.permissions.all %}
-                            {{ permission.name }}<br>
-                        {% endfor %}
+                        <ul>
+                            {% for permission in group.permissions.all %}
+                                <li>{{ permission.name }}</li>
+                            {% endfor %}
+                        </ul>
                     {% else %}
                         Sem permissões
                     {% endif %}
@@ -86,11 +76,41 @@
                     <form method="post" style="display:inline-block;">
                         {% csrf_token %}
                         <input type="hidden" name="group_id" value="{{ group.id }}">
-                        <button type="submit" name="action" value="edit" class="btn btn-warning btn-sm">Editar</button>
                         <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Remover</button>
                     </form>
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ group.id }}">Editar</button>
                 </td>
             </tr>
+
+            <!-- Modal para editar permissões -->
+            <div class="modal fade" id="editModal{{ group.id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Editar Permissões do Grupo {{ group.name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="permissions_group_id" value="{{ group.id }}">
+                                <label for="edit_permissions">Selecionar Permissões</label>
+                                <select name="permissions" id="edit_permissions" class="form-select" multiple required>
+                                    {% for permission in permissions %}
+                                        <option value="{{ permission.id }}" {% if permission in group.permissions.all %}selected{% endif %}>{{ permission.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">Segure Ctrl (ou Cmd) para selecionar várias permissões.</small>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                        </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </tbody>
     </table>

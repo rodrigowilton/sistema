@@ -54,22 +54,16 @@ def register(request):
 def manage_groups(request):
     if request.method == 'POST':
         if 'group_name' in request.POST:
+            # Adiciona novo grupo
             group_name = request.POST.get('group_name').strip()
             if AuthGroup.objects.filter(name=group_name).exists():
                 messages.error(request, f"Grupo '{group_name}' já existe.")
             else:
-                # Cria o novo grupo
-                group = AuthGroup.objects.create(name=group_name)
-
-                # Associa permissões selecionadas ao grupo
-                permissions_ids = request.POST.getlist('permissions')  # Obtém uma lista de IDs de permissões
-                permissions = Permission.objects.filter(id__in=permissions_ids)  # Filtra as permissões
-                group.permissions.set(permissions)  # Associa as permissões ao grupo
-
+                AuthGroup.objects.create(name=group_name)
                 messages.success(request, f"Grupo '{group_name}' foi criado com sucesso.")
-            return redirect('manage_groups')
 
         elif 'group_id' in request.POST and request.POST.get('action') == 'delete':
+            # Remove grupo
             group_id = request.POST.get('group_id')
             try:
                 group = AuthGroup.objects.get(id=group_id)
@@ -78,16 +72,42 @@ def manage_groups(request):
             except AuthGroup.DoesNotExist:
                 messages.error(request, "Grupo não encontrado.")
 
-        return redirect('manage_groups')
+        elif 'edit_group_id' in request.POST:
+            # Edita grupo
+            group_id = request.POST.get('edit_group_id')
+            group_name = request.POST.get('edit_group_name').strip()
+            try:
+                group = AuthGroup.objects.get(id=group_id)
+                group.name = group_name
+                group.save()
+                messages.success(request, f"Grupo '{group_name}' foi atualizado com sucesso.")
+            except AuthGroup.DoesNotExist:
+                messages.error(request, "Grupo não encontrado.")
 
+        elif 'permissions' in request.POST:
+            # Adiciona ou remove permissões do grupo
+            group_id = request.POST.get('permissions_group_id')
+            permissions = request.POST.getlist('permissions')
+            group = get_object_or_404(AuthGroup, id=group_id)
+
+            # Limpar permissões existentes
+            group.permissions.clear()
+            # Adicionar as permissões selecionadas
+            for permission_id in permissions:
+                permission = get_object_or_404(Permission, id=permission_id)
+                group.permissions.add(permission)
+
+            messages.success(request, f"Permissões do grupo '{group.name}' foram atualizadas.")
+            return redirect('manage_groups')
+
+    # Obter todos os grupos existentes
     groups = AuthGroup.objects.all()
-    permissions = Permission.objects.all()  # Carregar todas as permissões
+    permissions = Permission.objects.all()
 
     return render(request, 'grupos.html', {
         'groups': groups,
         'permissions': permissions,
     })
-
 def manage_users_groups_permissions(request):
     users = AuthUser.objects.all()
     groups = AuthGroup.objects.all()
