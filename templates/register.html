@@ -32,15 +32,15 @@
 
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center vh-100 custom-bg">
-  <div class="w-100" style="max-width: 320px; border-radius: 5px; padding: 24px; transform: scale(1.2); transform-origin: center;">
+  <div class="w-100" style="max-width: 331px; width: 105%; border-radius: 5px; padding: 16px;">
     <!-- Imagem do ícone -->
     <div class="text-center mb-4">
       <img src="{% static 'img/icon.png' %}" alt="Logo" class="img-fluid">
     </div>
 
     <!-- Mensagem de boas-vindas -->
-    <h5 class="text-center mb-3">Cadastro de Novo Usuário</h5>
-    <p class="text-center mb-4">Preencha os dados abaixo para criar uma nova conta</p>
+    <h5 class="text-center mb-3">Cadastro de Usuário</h5>
+    <p class="text-center mb-4">Preencha os dados para criar uma conta</p>
 
     {% if form.errors %}
       <div class="alert alert-danger" role="alert">
@@ -58,36 +58,35 @@
 
     <form method="post" action="{% url 'register' %}" class="needs-validation" novalidate>
       {% csrf_token %}
-      <div class="mb-4">
+      <div class="mb-3">
         <label for="username" class="form-label"><strong>Usuário</strong></label>
-        <input type="text" name="username" class="form-control w-100" id="username" placeholder="Usuário" required>
+        <input type="text" name="username" class="form-control w-100" id="username" placeholder="Usuário" required value="" autocomplete="off">  <!-- Adicionado: autocomplete="off" -->
       </div>
-      <div class="mb-4">
+      <div class="mb-3">
         <label for="email" class="form-label"><strong>Email</strong></label>
-        <input type="email" name="email" class="form-control w-100" id="email" placeholder="Email" required>
+        <input type="email" name="email" class="form-control w-100" id="email" placeholder="Email" required value="" autocomplete="off">  <!-- Adicionado: autocomplete="off" -->
       </div>
-      <div class="mb-4">
+      <div class="mb-3">
         <label for="password" class="form-label"><strong>Senha</strong></label>
-        <input type="password" name="password" class="form-control w-100" id="password" placeholder="Senha" required>
+        <input type="password" name="password" class="form-control w-100" id="password" placeholder="Senha" required value="" autocomplete="off">  <!-- Adicionado: autocomplete="off" -->
       </div>
-      <div class="mb-4">
+      <div class="mb-3">
         <label for="confirm_password" class="form-label"><strong>Confirme a Senha</strong></label>
-        <input type="password" name="confirm_password" class="form-control w-100" id="confirm_password" placeholder="Confirme a Senha" required>
+        <input type="password" name="confirm_password" class="form-control w-100" id="confirm_password" placeholder="Confirme a Senha" required value="" autocomplete="off">  <!-- Adicionado: autocomplete="off" -->
       </div>
       <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
     </form>
 
     <!-- Botão para voltar ao gerenciamento de permissões -->
     <div class="mt-3">
-      <a href="{% url 'manage_users_groups_permissions' %}" class="btn btn-secondary w-100">Voltar ao Gerenciamento de Permissões</a>
+      <a href="{% url 'manage_users_groups_permissions' %}" class="btn btn-secondary w-100">Voltar ao Gerenciamento</a>
     </div>
 
     <!-- Copyright -->
     <p class="text-center mt-3">
-      <strong>Severus Tecnologia Segurança © - 2024<br>
+      <strong>Severus Tecnologia © - 2024<br>
       (27) 3026-2196</strong>
     </p>
   </div>
 </div>
 {% endblock %}
-
