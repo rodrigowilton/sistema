@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group as AuthGroup, Permission
 
 
 
+@login_required
 def register(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -51,6 +52,7 @@ def register(request):
     return render(request, 'register.html')
 
 
+@login_required
 def add_group(request):
     if request.method == 'POST':
         group_name = request.POST.get('group_name')
@@ -66,6 +68,7 @@ def add_group(request):
 
     return redirect('manage_groups')
 
+@login_required
 def edit_group_permissions(request, group_id):
     group = Group.objects.get(id=group_id)
     if request.method == 'POST':
@@ -75,6 +78,7 @@ def edit_group_permissions(request, group_id):
 
     return redirect('manage_groups')
 
+@login_required
 def delete_group(request, group_id):
     group = Group.objects.get(id=group_id)
     if request.method == 'POST':
@@ -83,6 +87,7 @@ def delete_group(request, group_id):
 
     return redirect('manage_groups')
 
+@login_required
 def manage_groups(request):
     if request.method == 'POST':
         # Verificar se é uma ação de adicionar ou editar grupo
@@ -126,6 +131,7 @@ def manage_groups(request):
     })
 
 
+@login_required
 def manage_users_groups_permissions(request):
     users = User.objects.all()
     groups = Group.objects.all()
@@ -158,6 +164,7 @@ def manage_users_groups_permissions(request):
     })
 
 
+@login_required
 def lista_autenticacao(request):
     users = AuthUser.objects.all()
     permissions = AuthPermission.objects.all()
@@ -240,19 +247,23 @@ def home(request):
         return render(request, 'sem_permissao.html')  # Renderiza uma página de erro de permissão
 
 
+@login_required
 def configuracao(request):
     return render(request, 'configuracao.html')
 
+@login_required
 def editar_condominio(request, id):
     condominio = get_object_or_404(Condominios, id=id)
     # Lógica para editar o condomínio aqui
     return render(request, 'editar_condominio.html', {'condominio': condominio})
 
+@login_required
 def consultar_condominio(request, id):
     condominio = get_object_or_404(Condominios, id=id)
     # Lógica para consultar o condomínio aqui
     return render(request, 'consultar_condominio.html', {'condominio': condominio})
 
+@login_required
 def excluir_condominio(request, id):
     condominio = get_object_or_404(Condominios, id=id)
 
