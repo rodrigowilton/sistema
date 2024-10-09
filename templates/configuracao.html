@@ -21,6 +21,11 @@
                     Usuários</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'manage_groups' %}">
+                        <img src="{% static 'img/pessoa.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-right: 5px;">
+                    Grupos</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="{% url 'manage_users_groups_permissions' %}">
                         <img src="{% static 'img/permissao.png' %}" alt="permissao" style="width: 30px; height: 30px; margin-right: 5px;">
                      Permissões </a>
