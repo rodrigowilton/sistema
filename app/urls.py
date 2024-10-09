@@ -4,7 +4,7 @@ from .views import (home, editar_condominio, consultar_condominio, excluir_condo
 
 urlpatterns = [
 
-    path('/app/', home, name='home'),
+    path('', home, name='home'),
     path('configuracao/', configuracao, name='configuracao'),
     path('register/', register, name='register'),
     path('accounts/login/', CustomLoginView.as_view(), name='login'),
