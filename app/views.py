@@ -12,8 +12,9 @@ from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
 
+
 class CustomLoginView(LoginView):
-    template_name = 'app/login.html'  # Atualize o caminho conforme necessário
+    template_name = 'login.html'  # Atualize o caminho conforme necessário
 
     def form_valid(self, form):
         user = form.get_user()
@@ -22,10 +23,12 @@ class CustomLoginView(LoginView):
         # Verifica se o usuário pertence ao grupo "Administrativo"
         if user.groups.filter(name='Administrativo').exists():
             return redirect('menu_adm')  # Redireciona para o menu de administração
-        else:
-            # Adiciona uma mensagem de erro se o usuário não pertencer ao grupo
-            messages.error(self.request, "Você não tem acesso à área administrativa.")
-            return redirect('/accounts/login/')  # Redireciona para a página de login
+        elif user.groups.filter(name='Supervisor T.I').exists():
+            return redirect('home')  # Redireciona para a página inicial ou outra página desejada
+
+        # Adiciona uma mensagem de erro se o usuário não pertencer a nenhum dos grupos
+        messages.error(self.request, "Você não tem acesso à área administrativa.")
+        return redirect('/accounts/login/')  # Redireciona para a página de login
 
 
 @login_required
