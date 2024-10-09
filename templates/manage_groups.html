@@ -27,7 +27,7 @@
     <div class="row mb-4">
         <div class="col-md-6 offset-md-3">
             <h3>Adicionar Novo Grupo</h3>
-            <form method="post">
+            <form method="post" action="{% url 'add_group' %}">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="group_name">Nome do Grupo</label>
@@ -63,7 +63,7 @@
                 <div class="accordion-body">
                     <strong>Permissões:</strong>
                     <ul>
-                        {% if group.permissions.exists %}
+                        {% if group.permissions.count > 0 %}
                             {% for permission in group.permissions.all %}
                                 <li>{{ permission.name }}</li>
                             {% endfor %}
@@ -73,9 +73,8 @@
                     </ul>
 
                     <div class="mt-3">
-                        <form method="post" style="display:inline-block;">
+                        <form method="post" action="{% url 'delete_group' group.id %}" style="display:inline-block;">
                             {% csrf_token %}
-                            <input type="hidden" name="group_id" value="{{ group.id }}">
                             <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Remover Grupo</button>
                         </form>
                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ group.id }}">Editar Grupo</button>
@@ -93,9 +92,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="post">
+                        <form method="post" action="{% url 'edit_group_permissions' group.id %}">
                             {% csrf_token %}
-                            <input type="hidden" name="permissions_group_id" value="{{ group.id }}">
                             <label for="edit_permissions">Selecionar Permissões</label>
                             <select name="permissions" id="edit_permissions" class="form-select" multiple required>
                                 {% for permission in permissions %}
