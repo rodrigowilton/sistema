@@ -1,0 +1,80 @@
+{% extends 'base_login.html' %}
+
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 20px;">
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav d-flex">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'register' %}">
+                        <img src="{% static 'img/add.png' %}" alt="add" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                        ADD
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'manage_groups' %}">
+                        <img src="{% static 'img/ctr.png' %}" alt="ctr" style="width: 30px; height: 30px; margin-right: 5px;"><br>
+                        CTR
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'manage_users_groups_permissions' %}">
+                        <img src="{% static 'img/agd.png' %}" alt="agd" style="width: 30px; height: 30px; margin-right: 5px;"><br>
+                        AGD
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'manage_users_groups_permissions' %}">
+                        <img src="{% static 'img/srv.png' %}" alt="srv" style="width: 30px; height: 30px; margin-right: 5px;"><br>
+                        SRV
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'manage_users_groups_permissions' %}">
+                        <img src="{% static 'img/slc.png' %}" alt="slc" style="width: 30px; height: 30px; margin-right: 5px;"><br>
+                        SLC
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'manage_users_groups_permissions' %}">
+                        <img src="{% static 'img/ocr.png' %}" alt="ocr" style="width: 30px; height: 30px; margin-right: 5px;"><br>
+                        OCR
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'manage_users_groups_permissions' %}">
+                        <img src="{% static 'img/tel.png' %}" alt="tel" style="width: 30px; height: 30px; margin-right: 5px;"><br>
+                        TEL
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'manage_users_groups_permissions' %}">
+                        <img src="{% static 'img/inf.png' %}" alt="inf" style="width: 30px; height: 30px; margin-right: 5px;"><br>
+                        INF
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto"> <!-- Adiciona a classe ms-auto para alinhar à direita -->
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu logout-link" href="{% url 'login' %}" style="margin-right: 40px;">
+                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;">
+                        𝐒𝐚𝐢𝐫
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}

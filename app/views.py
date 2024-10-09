@@ -1,13 +1,31 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Condominios
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from .models import AuthUser, AuthGroup, AuthPermission, AuthUserGroups, AuthUserUserPermissions, AuthGroupPermissions
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.translation import gettext as _
-from django.contrib.auth.models import Group as AuthGroup, Permission
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+from django.shortcuts import redirect
 
+class CustomLoginView(LoginView):
+    template_name = 'app/login.html'  # Atualize o caminho conforme necessário
+
+    def form_valid(self, form):
+        user = form.get_user()
+        login(self.request, user)
+
+        # Verifica se o usuário pertence ao grupo "Administrativo"
+        if user.groups.filter(name='Administrativo').exists():
+            return redirect('menu_adm')  # Redireciona para o menu de administração
+        else:
+            # Adiciona uma mensagem de erro se o usuário não pertencer ao grupo
+            messages.error(self.request, "Você não tem acesso à área administrativa.")
+            return redirect('/accounts/login/')  # Redireciona para a página de login
 
 
 @login_required
@@ -53,68 +71,20 @@ def register(request):
 
 
 @login_required
-def add_group(request):
-    if request.method == 'POST':
-        group_name = request.POST.get('group_name')
-        permission_ids = request.POST.getlist('permissions')
-
-        # Criação do novo grupo
-        if group_name:
-            new_group = Group.objects.create(name=group_name)
-            new_group.permissions.set(permission_ids)  # Define as permissões selecionadas
-            messages.success(request, 'Grupo adicionado com sucesso!')
-        else:
-            messages.error(request, 'O nome do grupo não pode estar vazio.')
-
-    return redirect('manage_groups')
-
-@login_required
-def edit_group_permissions(request, group_id):
-    group = Group.objects.get(id=group_id)
-    if request.method == 'POST':
-        permission_ids = request.POST.getlist('permissions')
-        group.permissions.set(permission_ids)
-        messages.success(request, 'Permissões atualizadas com sucesso!')
-
-    return redirect('manage_groups')
-
-@login_required
-def delete_group(request, group_id):
-    group = Group.objects.get(id=group_id)
-    if request.method == 'POST':
-        group.delete()
-        messages.success(request, 'Grupo removido com sucesso!')
-
-    return redirect('manage_groups')
-
-@login_required
 def manage_groups(request):
     if request.method == 'POST':
-        # Verificar se é uma ação de adicionar ou editar grupo
+        # Ações para adicionar ou editar grupo
         if 'group_name' in request.POST:
-            # Adicionar novo grupo
             group_name = request.POST['group_name']
             permissions_ids = request.POST.getlist('permissions')
 
+            # Adicionar ou atualizar o grupo
             group, created = AuthGroup.objects.get_or_create(name=group_name)
-            group.permissions.set(permissions_ids)  # Associar permissões ao grupo
             group.save()
-
-            messages.success(request, f'Grupo "{group_name}" criado com sucesso!')
-
-        elif 'permissions_group_id' in request.POST:
-            # Editar grupo existente
-            group_id = request.POST['permissions_group_id']
-            group = get_object_or_404(AuthGroup, id=group_id)
-            permissions_ids = request.POST.getlist('permissions')
-
-            group.permissions.set(permissions_ids)  # Atualizar permissões do grupo
-            group.save()
-
-            messages.success(request, f'Permissões do grupo "{group.name}" atualizadas com sucesso!')
+            group.authgrouppermissions_set.set(permissions_ids)  # Associar permissões ao grupo
+            messages.success(request, f'Grupo "{group_name}" {"criado" if created else "atualizado"} com sucesso!')
 
         elif 'action' in request.POST and request.POST['action'] == 'delete':
-            # Remover grupo
             group_id = request.POST['group_id']
             group = get_object_or_404(AuthGroup, id=group_id)
             group.delete()
@@ -123,12 +93,33 @@ def manage_groups(request):
         return redirect('manage_groups')
 
     # Exibir grupos e permissões
-    groups = AuthGroup.objects.all().prefetch_related('permissions')
+    groups = AuthGroup.objects.all().prefetch_related('authgrouppermissions_set')
     permissions = AuthPermission.objects.all()
     return render(request, 'manage_groups.html', {
         'groups': groups,
         'permissions': permissions,
     })
+
+
+@login_required
+def edit_group_permissions(request, group_id):
+    group = get_object_or_404(AuthGroup, id=group_id)
+    if request.method == 'POST':
+        permission_ids = request.POST.getlist('permissions')
+        group.authgrouppermissions_set.set(permission_ids)  # Atualizar permissões do grupo
+        messages.success(request, 'Permissões atualizadas com sucesso!')
+
+    return redirect('manage_groups')
+
+
+@login_required
+def delete_group(request, group_id):
+    group = get_object_or_404(AuthGroup, id=group_id)
+    if request.method == 'POST':
+        group.delete()
+        messages.success(request, 'Grupo removido com sucesso!')
+
+    return redirect('manage_groups')
 
 
 @login_required
@@ -214,9 +205,11 @@ def lista_autenticacao(request):
         'permissions': permissions_traduzidas,
         'user_permissions': user_permissions,
     })
+
+
 @login_required
 def home(request):
-    # Verifica se o usuário tem a permissão 'severus.can_change_condominios'
+    # Verifica se o usuário tem a permissão 'app.change_condominios'
     if request.user.has_perm('app.change_condominios'):
         try:
             condominios = Condominios.objects.all()
@@ -244,12 +237,14 @@ def home(request):
         }
         return render(request, 'home.html', context)
     else:
-        return render(request, 'sem_permissao.html')  # Renderiza uma página de erro de permissão
+        messages.error(request, 'Você não tem permissão para acessar esta página.')
+        return redirect('configuracao')
 
 
 @login_required
 def configuracao(request):
     return render(request, 'configuracao.html')
+
 
 @login_required
 def editar_condominio(request, id):
@@ -257,11 +252,13 @@ def editar_condominio(request, id):
     # Lógica para editar o condomínio aqui
     return render(request, 'editar_condominio.html', {'condominio': condominio})
 
+
 @login_required
 def consultar_condominio(request, id):
     condominio = get_object_or_404(Condominios, id=id)
     # Lógica para consultar o condomínio aqui
     return render(request, 'consultar_condominio.html', {'condominio': condominio})
+
 
 @login_required
 def excluir_condominio(request, id):

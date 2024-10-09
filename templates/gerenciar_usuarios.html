@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">
             <div class="icon-container">
-                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px;">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 20px;">
             </div>
         </a>
 
@@ -14,12 +14,12 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto w-100 d-flex">
-                <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'configuracao' %}">
-                        <img src="{% static 'img/voltar.png' %}" alt="Configuração" style="width: 30px; height: 30px; margin-right: 5px;">
-                        Retornar
+        <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav d-flex ">
+                <li class="nav-item ">
+                    <a class="nav-link custom-nav-link-menu" href="{% url 'configuracao' %}">
+                        <img src="{% static 'img/voltar.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                        <span>Retornar</span>
                     </a>
                 </li>
             </ul>

@@ -9,10 +9,12 @@
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center vh-100 custom-bg">
   <div class="w-100" style="max-width: 320px; border-radius: 5px; padding: 24px; transform: scale(1.2); transform-origin: center;">
+    <!-- Imagem do ícone -->
     <div class="text-center mb-4">
       <img src="{% static 'img/icon.png' %}" alt="Logo" class="img-fluid">
     </div>
 
+    <!-- Mensagem de boas-vindas -->
     <h5 class="text-center mb-3">Bem-vindo ao Severus</h5>
     <p class="text-center mb-4">Faça o login para entrar no sistema</p>
 
@@ -52,6 +54,7 @@
       <input type="hidden" name="next" value="{{ next }}">
     </form>
 
+    <!-- Copyright -->
     <p class="text-center mt-3">
       <strong>Severus Tecnologia Segurança © - 2024<br>
       (27) 3026-2196</strong>

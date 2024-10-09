@@ -52,8 +52,20 @@ footer {
 
 .custom-nav-link {
     color: white; /* Cor do texto dos links */
-    font-size: 22px; /* Aumenta o tamanho da fonte dos links */
+    font-size: 17px; /* Aumenta o tamanho da fonte dos links */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Estilo da fonte */
+}
+
+.custom-nav-link-menu {
+    color: white; /* Cor do texto dos links */
+    font-size: 14px; /* Aumenta o tamanho da fonte dos links */
+    font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
+    font-weight: bold; /* Adiciona negrito ao texto */
+}
+
+
+.custom-margin-left {
+    margin-left: 80px; /* Margem de 80px à esquerda */
 }
 
 .custom-nav-link:hover {
