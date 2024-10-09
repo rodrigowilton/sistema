@@ -127,62 +127,37 @@ def manage_groups(request):
 
 
 def manage_users_groups_permissions(request):
-    users = AuthUser.objects.all()
-    groups = AuthGroup.objects.all()
-    permissions = AuthPermission.objects.all()
+    users = User.objects.all()
+    groups = Group.objects.all()
 
     if request.method == 'POST':
         user_id = request.POST.get('user_id')
         group_id = request.POST.get('group_id')
-        permission_id = request.POST.get('permission_id')
         action = request.POST.get('action')
 
         try:
-            user = AuthUser.objects.get(id=user_id)
+            user = User.objects.get(id=user_id)
+            group = Group.objects.get(id=group_id)
 
-            if action == 'add_permission':
-                permission = AuthPermission.objects.get(id=permission_id)
-                # Usa o modelo intermediário para adicionar a permissão
-                user_perm, created = AuthUserUserPermissions.objects.get_or_create(user=user, permission=permission)
-                if created:
-                    messages.success(request, f"Permissão '{permission.name}' adicionada ao utilizador '{user.username}'.")
-                else:
-                    messages.warning(request, f"O utilizador '{user.username}' já possui a permissão '{permission.name}'.")
+            if action == 'add_group':
+                user.groups.add(group)
+                messages.success(request, f'{user.username} foi adicionado ao grupo {group.name}.')
 
-            elif action == 'remove_permission':
-                permission = AuthPermission.objects.get(id=permission_id)
-                # Remove a permissão através do modelo intermediário
-                deleted, _ = AuthUserUserPermissions.objects.filter(user=user, permission=permission).delete()
-                if deleted:
-                    messages.success(request, f"Permissão '{permission.name}' removida do utilizador '{user.username}'.")
-                else:
-                    messages.warning(request, f"O utilizador '{user.username}' não possui a permissão '{permission.name}'.")
+            elif action == 'remove_group':
+                user.groups.remove(group)
+                messages.success(request, f'{user.username} foi removido do grupo {group.name}.')
 
-            elif action == 'add_group':
-                group = AuthGroup.objects.get(id=group_id)
-                # Usa o modelo intermediário para associar o utilizador ao grupo
-                user_group, created = AuthUserGroups.objects.get_or_create(user=user, group=group)
-                if created:
-                    messages.success(request, f"Utilizador '{user.username}' foi adicionado ao grupo '{group.name}'.")
-                else:
-                    messages.warning(request, f"O utilizador '{user.username}' já está no grupo '{group.name}'.")
-
-        except (AuthUser.DoesNotExist, AuthGroup.DoesNotExist, AuthPermission.DoesNotExist):
-            messages.error(request, "Erro ao processar o pedido. Verifique se o utilizador, grupo ou permissão existe.")
-
-        return redirect('manage_users_groups_permissions')
-
-    # Obter permissões e grupos associados aos utilizadores de maneira segura
-    user_permissions = AuthUserUserPermissions.objects.select_related('user', 'permission').all()
-    user_groups = AuthUserGroups.objects.select_related('user', 'group').all()
+        except User.DoesNotExist:
+            messages.error(request, 'Usuário não encontrado.')
+        except Group.DoesNotExist:
+            messages.error(request, 'Grupo não encontrado.')
 
     return render(request, 'gerenciar_usuarios.html', {
         'users': users,
         'groups': groups,
-        'permissions': permissions,
-        'user_permissions': user_permissions,
-        'user_groups': user_groups,
     })
+
+
 def lista_autenticacao(request):
     users = AuthUser.objects.all()
     permissions = AuthPermission.objects.all()
