@@ -70,6 +70,10 @@ h2 {
 }
 
 /* Se precisar de um padding diferente para apenas alguns campos, você pode usar classes específicas */
-.form-group input.cnpj {
-    padding-right: 20px; /* Exemplo de padding específico para o campo CNPJ */
-}
+.form-group {
+    width: 400px;}
+
+    /* Definindo um tamanho apropriado para o campo de CNPJ */
+    #id_cnpj {
+        width: 200px; /* Ou outro valor que você achar adequado */
+    }
