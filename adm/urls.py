@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import  menu_adm, menu_add, menu_ctr, menu_agd, menu_srv, menu_slc, menu_ocr
+from .views import  menu_adm, menu_add, menu_ctr, menu_agd, menu_srv, menu_slc, menu_ocr, menu_tel, menu_inf
 
 urlpatterns = [
     path('menu_adm/', menu_adm, name='menu_adm'),
@@ -9,5 +9,7 @@ urlpatterns = [
     path('menu_srv/', menu_srv, name='menu_srv'),
     path('menu_slc/', menu_slc, name='menu_slc'),
     path('menu_ocr/', menu_ocr, name='menu_ocr'),
+    path('menu_tel/', menu_tel, name='menu_tel'),
+    path('menu_inf/', menu_inf, name='menu_inf'),
 
 ]

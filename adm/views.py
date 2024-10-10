@@ -73,3 +73,11 @@ def menu_slc(request):
 @login_required
 def menu_ocr(request):
     return render(request, 'menu_ocr.html')
+
+@login_required
+def menu_tel(request):
+    return render(request, 'menu_tel.html')
+
+@login_required
+def menu_inf(request):
+    return render(request, 'menu_inf.html')
