@@ -38,4 +38,6 @@ def menu_adm(request):
 
 
 
-    return render(request, 'menu_adm.html')
+@login_required
+def menu_add(request):
+    return render(request, 'menu_add.html')
