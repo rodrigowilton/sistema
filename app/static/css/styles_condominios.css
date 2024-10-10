@@ -102,6 +102,19 @@ h2 {
     width: 30px;
 }
 
+#id_ramal_condominio {
+    width: 60px;
+}
+
+#id_ramal_interno {
+    width: 60px;
+}
+
+#id_telefone {
+    width: 120px;
+}
+
+
     /* Definindo um tamanho apropriado para o campo de CNPJ */
     #id_cnpj {
         width: 200px; /* Ou outro valor que você achar adequado */

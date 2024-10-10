@@ -21,6 +21,12 @@ def criar_condominio(request):
     else:
         form = CondominiosForm()
 
+    form.fields['logradouro'].widget.attrs['disabled'] = 'disabled'
+    form.fields['bairro'].widget.attrs['disabled'] = 'disabled'
+    form.fields['cidade'].widget.attrs['disabled'] = 'disabled'
+    form.fields['uf'].widget.attrs['disabled'] = 'disabled'
+
+
     return render(request, 'create_condominio.html', {'form': form})
 
 
