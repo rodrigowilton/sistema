@@ -122,13 +122,15 @@ def edit_group_permissions(request, group_id):
         return redirect('manage_groups')
 
 
+
 @login_required
 def delete_group(request, group_id):
     group = get_object_or_404(AuthGroup, id=group_id)
     if request.method == 'POST':
-        group.delete()
+        # Remove as permissões associadas ao grupo
+        group.authgrouppermissions_set.all().delete()  # Exclui todas as permissões associadas
+        group.delete()  # Exclui o grupo
         messages.success(request, 'Grupo removido com sucesso!')
-
     return redirect('manage_groups')
 
 
