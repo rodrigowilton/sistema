@@ -1,10 +1,13 @@
 from django.urls import path
 from .views import (home, editar_condominio, consultar_condominio, excluir_condominio, register, lista_autenticacao,
                     configuracao, manage_groups, manage_users_groups_permissions, edit_group_permissions, delete_group,CustomLoginView  )
+from adm.views import redirect_based_on_group  # Certifique-se de importar a nova view
+
 
 urlpatterns = [
 
     path('', home, name='home'),
+    path('redirect/', redirect_based_on_group, name='redirect_based_on_group'),
     path('configuracao/', configuracao, name='configuracao'),
     path('register/', register, name='register'),
     path('accounts/login/', CustomLoginView.as_view(), name='login'),

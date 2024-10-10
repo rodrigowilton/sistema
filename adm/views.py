@@ -5,6 +5,15 @@ from django.contrib.auth.decorators import login_required
 from app.models import *
 
 @login_required
+def redirect_based_on_group(request):
+    # Verifica se o usuário pertence ao grupo "Diretoria"
+    if request.user.groups.filter(name='Diretoria').exists():
+        return redirect('home')  # Redireciona para home
+    else:
+        return redirect('menu_adm')  # Redireciona para menu_adm
+
+
+@login_required
 def menu_adm(request):
     if request.user.has_perm('app.change_condominios'):
         try:
