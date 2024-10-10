@@ -70,8 +70,37 @@ h2 {
 }
 
 /* Se precisar de um padding diferente para apenas alguns campos, você pode usar classes específicas */
-.form-group {
-    width: 400px;}
+#id_nome_condominio {
+    width: 400px;
+}
+
+#id_data_condominio {
+    width: 100px;
+}
+
+#id_cep {
+    width: 100px;
+}
+
+#id_logradouro {
+    width: 400px;
+}
+
+#id_numero {
+    width: 100px;
+}
+
+#id_bairro {
+    width: 200px;
+}
+
+#id_cidade {
+    width: 200px;
+}
+
+#id_uf {
+    width: 30px;
+}
 
     /* Definindo um tamanho apropriado para o campo de CNPJ */
     #id_cnpj {

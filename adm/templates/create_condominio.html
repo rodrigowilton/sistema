@@ -15,17 +15,16 @@
         <h2>Criar Condomínio</h2>
         <div class="row">
             <div class="col-md-6">
-                <!-- Campo Nome do Condomínio -->
+                <!-- Nome do Condomínio e CNPJ na mesma linha -->
                 <div class="form-group">
                     <label for="id_nome_condominio">Nome do Condomínio:</label>
                     {{ form.nome_condominio }}
-                    <div class="error-message">{{ form.nome_condominio.errors }}</div>
-                </div>
 
-                <!-- Campo CNPJ -->
-                <div class="form-group">
-                    <label for="id_cnpj">CNPJ:</label>
+                    <!-- Espaço entre os campos Nome e CNPJ -->
+                    <label for="id_cnpj" style="display: inline-block; margin-left: 20px;">CNPJ:</label>
                     {{ form.cnpj }}
+
+                    <div class="error-message">{{ form.nome_condominio.errors }}</div>
                     <div class="error-message">{{ form.cnpj.errors }}</div>
                 </div>
 
@@ -33,13 +32,12 @@
                 <div class="form-group">
                     <label for="id_data_condominio">Data do Condomínio:</label>
                     {{ form.data_condominio }}
-                    <div class="error-message">{{ form.data_condominio.errors }}</div>
-                </div>
 
                 <!-- Campo CEP -->
-                <div class="form-group">
-                    <label for="id_cep">CEP:</label>
+                    <label for="id_cep" style="display: inline-block; margin-left: 20px;">CEP:</label>
                     {{ form.cep }}
+
+                    <div class="error-message">{{ form.data_condominio.errors }}</div>
                     <div class="error-message">{{ form.cep.errors }}</div>
                 </div>
 
@@ -47,13 +45,11 @@
                 <div class="form-group">
                     <label for="id_logradouro">Logradouro:</label>
                     {{ form.logradouro }}
-                    <div class="error-message">{{ form.logradouro.errors }}</div>
-                </div>
 
                 <!-- Campo Número -->
-                <div class="form-group">
-                    <label for="id_numero">Número:</label>
+                    <label for="id_numero" style="display: inline-block; margin-left: 20px;">Número:</label>
                     {{ form.numero }}
+                    <div class="error-message">{{ form.logradouro.errors }}</div>
                     <div class="error-message">{{ form.numero.errors }}</div>
                 </div>
 
@@ -68,20 +64,16 @@
                 <div class="form-group">
                     <label for="id_bairro">Bairro:</label>
                     {{ form.bairro }}
-                    <div class="error-message">{{ form.bairro.errors }}</div>
-                </div>
 
                 <!-- Campo Cidade -->
-                <div class="form-group">
-                    <label for="id_cidade">Cidade:</label>
+                    <label for="id_cidade" style="display: inline-block; margin-left: 20px;">Cidade:</label>
                     {{ form.cidade }}
-                    <div class="error-message">{{ form.cidade.errors }}</div>
-                </div>
 
                 <!-- Campo UF -->
-                <div class="form-group">
-                    <label for="id_uf">UF:</label>
+                    <label for="id_uf" style="display: inline-block; margin-left: 20px;">UF:</label>
                     {{ form.uf }}
+                    <div class="error-message">{{ form.bairro.errors }}</div>
+                    <div class="error-message">{{ form.cidade.errors }}</div>
                     <div class="error-message">{{ form.uf.errors }}</div>
                 </div>
 
@@ -212,6 +204,9 @@
     $(document).ready(function(){
         // Máscara para o CNPJ
         $('#id_cnpj').mask('00.000.000/0000-00');
+
+        // Máscara para o CEP
+        $('#id_cep').mask('00000-000');
 
         // Função para preencher o endereço a partir do CEP
         $('#id_cep').blur(function() {
