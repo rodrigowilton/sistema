@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .forms import CondominiumForm
+from .forms import CondominiosForm
 from app.models import *
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
@@ -14,12 +14,12 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def criar_condominio(request):
     if request.method == 'POST':
-        form = CondominiumForm(request.POST)
+        form = CondominiosForm(request.POST)
         if form.is_valid():
             # Aqui você pode salvar os dados ou fazer algo com eles
             return redirect('create_condominio')  # Redirecione para a página desejada após o salvamento
     else:
-        form = CondominiumForm()
+        form = CondominiosForm()
 
     return render(request, 'create_condominio.html', {'form': form})
 

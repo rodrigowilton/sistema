@@ -1,0 +1,75 @@
+/* Estilo do Formulário de Condomínios */
+body {
+    font-family: Arial, sans-serif; /* Define a fonte Arial como padrão */
+    font-size: 10px; /* Tamanho da fonte para todo o corpo */
+}
+
+.form-group {
+    margin-bottom: 15px; /* Espaço entre os grupos de formulário */
+}
+
+.form-control {
+    width: 100%; /* Largura total */
+    padding: 10px; /* Espaçamento interno */
+    margin: 5px 0; /* Espaçamento entre campos */
+    border: 1px solid #ccc; /* Borda */
+    border-radius: 4px; /* Cantos arredondados */
+    font-size: 14px; /* Tamanho da fonte dos campos */
+}
+
+/* Especifica o tamanho do campo Nome do Condomínio */
+.form-group input[name="nome_condominio"] {
+    width: 80%; /* Largura do campo de entrada */
+}
+
+label {
+    font-size: 14px; /* Tamanho da fonte dos rótulos */
+    font-weight: bold; /* Deixa os rótulos em negrito */
+}
+
+.error-message {
+    color: red; /* Cor da mensagem de erro */
+    font-size: 14px; /* Tamanho da fonte da mensagem de erro */
+}
+
+/* Estilo do contêiner */
+.container {
+    max-width: 900px; /* Largura máxima do contêiner */
+    margin: 0 auto; /* Centraliza o contêiner */
+    padding: 20px; /* Espaçamento interno */
+    border: 1px solid #ccc; /* Borda do contêiner */
+    border-radius: 8px; /* Bordas arredondadas */
+    background-color: #f9f9f9; /* Cor de fundo do contêiner */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve */
+}
+
+h2 {
+    text-align: center; /* Centraliza o título */
+}
+
+.row {
+    display: flex; /* Usar flexbox */
+    justify-content: space-between; /* Espaçamento entre os campos */
+    margin: -5px; /* Remove o espaço extra causado pelo padding nos elementos filhos */
+}
+
+.col {
+    flex: 1; /* Cada coluna ocupa igual espaço */
+    margin: 5px; /* Espaço entre as colunas */
+}
+
+.col:last-child {
+    margin-right: 0; /* Remove margem do último item */
+}
+
+/* Adiciona padding à direita nos campos do formulário */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding-right: 20px; /* Adiciona 20px de padding à direita */
+}
+
+/* Se precisar de um padding diferente para apenas alguns campos, você pode usar classes específicas */
+.form-group input.cnpj {
+    padding-right: 20px; /* Exemplo de padding específico para o campo CNPJ */
+}
