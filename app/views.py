@@ -25,6 +25,8 @@ class CustomLoginView(LoginView):
             return redirect('menu_adm')  # Redireciona para o menu de administração
         elif user.groups.filter(name='Supervisor T.I').exists():
             return redirect('home')  # Redireciona para a página inicial ou outra página desejada
+        elif user.groups.filter(name='Diretoria').exists():
+            return redirect('home')  # Redireciona para a página inicial ou outra página desejada
 
         # Adiciona uma mensagem de erro se o usuário não pertencer a nenhum dos grupos
         messages.error(self.request, "Você não tem acesso à área administrativa.")
@@ -109,10 +111,15 @@ def edit_group_permissions(request, group_id):
     group = get_object_or_404(AuthGroup, id=group_id)
     if request.method == 'POST':
         permission_ids = request.POST.getlist('permissions')
-        group.authgrouppermissions_set.set(permission_ids)  # Atualizar permissões do grupo
-        messages.success(request, 'Permissões atualizadas com sucesso!')
 
-    return redirect('manage_groups')
+        # Converter os IDs para instâncias de AuthGroupPermissions
+        permissions = AuthGroupPermissions.objects.filter(id__in=permission_ids)
+
+        # Atualizar permissões do grupo
+        group.authgrouppermissions_set.set(permissions)
+
+        messages.success(request, 'Permissões atualizadas com sucesso!')
+        return redirect('manage_groups')
 
 
 @login_required
