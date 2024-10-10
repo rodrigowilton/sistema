@@ -1,3 +1,5 @@
+from http.client import HTTPResponse
+
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Condominios
 from django.contrib.auth import authenticate, login
@@ -218,6 +220,13 @@ def lista_autenticacao(request):
         'user_permissions': user_permissions,
     })
 
+@login_required
+def redirect_based_on_group(request):
+    # Verifica se o usuário pertence ao grupo "Diretoria"
+    if request.user.groups.filter(name='Diretoria').exists():
+        return redirect('home')  # Redireciona para home
+    else:
+        return redirect('login')  # Redireciona para menu_adm
 
 @login_required
 def home(request):
@@ -235,11 +244,11 @@ def home(request):
 
         # Captura as permissões atribuídas aos usuários
         user_permissions = []
-
         for user in users:
             user_perms = user.authuseruserpermissions_set.all()
             for user_perm in user_perms:
                 user_permissions.append(user_perm)
+
 
         context = {
             'condominios': condominios,
@@ -249,8 +258,7 @@ def home(request):
         }
         return render(request, 'home.html', context)
     else:
-        messages.error(request, 'Você não tem permissão para acessar esta página.')
-        return redirect('configuracao')
+        return HTTPResponse('Você não tem permissão para acessar esta página.')
 
 
 @login_required

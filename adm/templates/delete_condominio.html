@@ -1,0 +1,7 @@
+l><h2>Remover Condomínio</h2>
+<p>Tem certeza que deseja remover o condomínio "{{ condominio.nome_condominio }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Remover</button>
+    <a href="{% url 'list_condominios' %}">Cancelar</a>
+</form>

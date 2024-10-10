@@ -2,7 +2,67 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import CondominiumForm
 from app.models import *
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+
+# CREATE
+@login_required
+def criar_condominio(request):
+    if request.method == 'POST':
+        form = CondominiumForm(request.POST)
+        if form.is_valid():
+            # Aqui você pode salvar os dados ou fazer algo com eles
+            return redirect('create_condominio')  # Redirecione para a página desejada após o salvamento
+    else:
+        form = CondominiumForm()
+
+    return render(request, 'create_condominio.html', {'form': form})
+
+
+# READ (List and Detail)
+@login_required
+def list_condominios(request):
+    condominios = Condominios.objects.all()
+    return render(request, 'list_condominios.html', {'condominios': condominios})
+
+
+@login_required
+def detail_condominio(request, id):
+    condominio = get_object_or_404(Condominios, id=id)
+    return render(request, 'detail_condominio.html', {'condominio': condominio})
+
+
+# UPDATE
+@login_required
+def update_condominio(request, id):
+    condominio = get_object_or_404(Condominios, id=id)
+    if request.method == 'POST':
+        form = CondominioForm(request.POST, instance=condominio)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Condomínio atualizado com sucesso!')
+            return redirect('list_condominios')
+    else:
+        form = CondominioForm(instance=condominio)
+
+    return render(request, 'update_condominio.html', {'form': form})
+
+
+# DELETE
+@login_required
+def delete_condominio(request, id):
+    condominio = get_object_or_404(Condominios, id=id)
+    if request.method == 'POST':
+        condominio.delete()
+        messages.success(request, 'Condomínio excluído com sucesso!')
+        return redirect('list_condominios')
+    return render(request, 'delete_condominio.html', {'condominio': condominio})
+
 
 @login_required
 def redirect_based_on_group(request):

@@ -1,0 +1,223 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+<h2>Criar Condomínio</h2>
+<form method="post" id="condominium-form">
+    {% csrf_token %}
+
+    <!-- Campo Nome do Condomínio -->
+    <div class="form-group">
+        <label for="id_nome_condominio">Nome do Condomínio:</label>
+        {{ form.nome_condominio }}
+        {{ form.nome_condominio.errors }}
+    </div>
+
+    <!-- Campo Data do Condomínio -->
+    <div class="form-group">
+        <label for="id_data_condominio">Data do Condomínio:</label>
+        {{ form.data_condominio }}
+        {{ form.data_condominio.errors }}
+    </div>
+
+    <!-- Campo CNPJ -->
+    <div class="form-group">
+        <label for="id_cnpj">CNPJ:</label>
+        {{ form.cnpj }}
+        {{ form.cnpj.errors }}
+    </div>
+
+    <!-- Campo Logradouro -->
+    <div class="form-group">
+        <label for="id_logradouro">Logradouro:</label>
+        {{ form.logradouro }}
+        {{ form.logradouro.errors }}
+    </div>
+
+    <!-- Campo Número -->
+    <div class="form-group">
+        <label for="id_numero">Número:</label>
+        {{ form.numero }}
+        {{ form.numero.errors }}
+    </div>
+
+    <!-- Campo Complemento -->
+    <div class="form-group">
+        <label for="id_complemento">Complemento:</label>
+        {{ form.complemento }}
+        {{ form.complemento.errors }}
+    </div>
+
+    <!-- Campo Bairro -->
+    <div class="form-group">
+        <label for="id_bairro">Bairro:</label>
+        {{ form.bairro }}
+        {{ form.bairro.errors }}
+    </div>
+
+    <!-- Campo Cidade -->
+    <div class="form-group">
+        <label for="id_cidade">Cidade:</label>
+        {{ form.cidade }}
+        {{ form.cidade.errors }}
+    </div>
+
+    <!-- Campo UF -->
+    <div class="form-group">
+        <label for="id_uf">UF:</label>
+        {{ form.uf }}
+        {{ form.uf.errors }}
+    </div>
+
+    <!-- Campo CEP -->
+    <div class="form-group">
+        <label for="id_cep">CEP:</label>
+        {{ form.cep }}
+        {{ form.cep.errors }}
+    </div>
+
+    <!-- Campo Ramal do Condomínio -->
+    <div class="form-group">
+        <label for="id_ramal_condominio">Ramal do Condomínio:</label>
+        {{ form.ramal_condominio }}
+        {{ form.ramal_condominio.errors }}
+    </div>
+
+    <!-- Campo Ramal Interno -->
+    <div class="form-group">
+        <label for="id_ramal_interno">Ramal Interno:</label>
+        {{ form.ramal_interno }}
+        {{ form.ramal_interno.errors }}
+    </div>
+
+    <!-- Campo Telefone -->
+    <div class="form-group">
+        <label for="id_telefone">Telefone:</label>
+        {{ form.telefone }}
+        {{ form.telefone.errors }}
+    </div>
+
+    <!-- Campo Internet -->
+    <div class="form-group">
+        <label for="id_internet">Internet:</label>
+        {{ form.internet }}
+        {{ form.internet.errors }}
+    </div>
+
+    <!-- Campo Unidade -->
+    <div class="form-group">
+        <label for="id_unidade">Unidade:</label>
+        {{ form.unidade }}
+        {{ form.unidade.errors }}
+    </div>
+
+    <!-- Campo Suporte Unidade -->
+    <div class="form-group">
+        <label for="id_suporteunidade">Suporte Unidade:</label>
+        {{ form.suporteunidade }}
+        {{ form.suporteunidade.errors }}
+    </div>
+
+    <!-- Campo Entregadores Norma -->
+    <div class="form-group">
+        <label for="id_entregadores_norma">Entregadores Norma:</label>
+        {{ form.entregadores_norma }}
+        {{ form.entregadores_norma.errors }}
+    </div>
+
+    <!-- Campo Prestadores Norma -->
+    <div class="form-group">
+        <label for="id_prestadores_norma">Prestadores Norma:</label>
+        {{ form.prestadores_norma }}
+        {{ form.prestadores_norma.errors }}
+    </div>
+
+    <!-- Campo Reservas Norma -->
+    <div class="form-group">
+        <label for="id_reservas_norma">Reservas Norma:</label>
+        {{ form.reservas_norma }}
+        {{ form.reservas_norma.errors }}
+    </div>
+
+    <!-- Campo Mudanças Norma -->
+    <div class="form-group">
+        <label for="id_mudancas_norma">Mudanças Norma:</label>
+        {{ form.mudancas_norma }}
+        {{ form.mudancas_norma.errors }}
+    </div>
+
+    <!-- Campo Responsável Tattica -->
+    <div class="form-group">
+        <label for="id_responsavel_tattica">Responsável Tattica:</label>
+        {{ form.responsavel_tattica }}
+        {{ form.responsavel_tattica.errors }}
+    </div>
+
+    <!-- Campo Norma Observação -->
+    <div class="form-group">
+        <label for="id_norma_observacao">Norma Observação:</label>
+        {{ form.norma_observacao }}
+        {{ form.norma_observacao.errors }}
+    </div>
+
+    <!-- Campo Website -->
+    <div class="form-group">
+        <label for="id_website">Website:</label>
+        {{ form.website }}
+        {{ form.website.errors }}
+    </div>
+
+    <!-- Campo Website Agendamento -->
+    <div class="form-group">
+        <label for="id_website_agendamento">Website Agendamento:</label>
+        {{ form.website_agendamento }}
+        {{ form.website_agendamento.errors }}
+    </div>
+
+    <!-- Campo Financeiro Responsável -->
+    <div class="form-group">
+        <label for="id_financeiro_responsavel">Financeiro Responsável:</label>
+        {{ form.financeiro_responsavel }}
+        {{ form.financeiro_responsavel.errors }}
+    </div>
+
+    <!-- Campo Financeiro Email -->
+    <div class="form-group">
+        <label for="id_financeiro_email">Financeiro Email:</label>
+        {{ form.financeiro_email }}
+        {{ form.financeiro_email.errors }}
+    </div>
+
+    <button type="submit">Salvar</button>
+
+    <br><br><br><br>
+</form>
+
+<script>
+document.getElementById('id_cep').addEventListener('blur', function() {
+    const cep = this.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    if (cep.length === 8) {
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.erro) {
+                    document.getElementById('id_logradouro').value = data.logradouro;
+                    document.getElementById('id_bairro').value = data.bairro;
+                    document.getElementById('id_cidade').value = data.localidade;
+                    document.getElementById('id_uf').value = data.uf;
+                } else {
+                    alert('CEP não encontrado.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar dados:', error);
+                alert('Erro ao buscar dados do CEP.');
+            });
+    }
+});
+</script>
+
+{% endblock %}
