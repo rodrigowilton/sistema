@@ -1,0 +1,64 @@
+{% extends 'base_login.html' %}
+
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'menu_adm' %}" style="margin-right: 120px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 20px;">
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav d-flex">
+                <!-- Seus itens de menu aqui -->
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="#">
+                        <img src="{% static 'img/sindicos.png' %}" alt="sindicos" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                        Síndicos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="#">
+                        <img src="{% static 'img/funccondominio.png' %}" alt="funccondominio" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                        Func. Condomínio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="#">
+                        <img src="{% static 'img/empresas.png' %}" alt="empresas" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                        Empresas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="#">
+                        <img src="{% static 'img/prestadores.png' %}" alt="prestadores" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                        Prestadores
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu" href="#">
+                        <img src="{% static 'img/servicosempresas.png' %}" alt="servicosempresas" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                        Serviços Empresas
+                    </a>
+                </li>
+            </ul>
+            <!-- Adicione o logout aqui, dentro de um novo <ul> com a classe ms-auto -->
+            <ul class="navbar-nav ms-auto"> <!-- Isso vai empurrar o conteúdo para a direita -->
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu logout-link" href="{% url 'login' %}" style="margin-right: 40px;">
+                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;">
+                        𝐒𝐚𝐢𝐫
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}

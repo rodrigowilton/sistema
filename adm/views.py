@@ -50,3 +50,26 @@ def menu_adm(request):
 @login_required
 def menu_add(request):
     return render(request, 'menu_add.html')
+
+@login_required
+def menu_ctr(request):
+    return render(request, 'menu_ctr.html')
+
+
+@login_required
+def menu_agd(request):
+    return render(request, 'menu_agd.html')
+
+
+@login_required
+def menu_srv(request):
+    return render(request, 'menu_srv.html')
+
+@login_required
+def menu_slc(request):
+    return render(request, 'menu_slc.html')
+
+
+@login_required
+def menu_ocr(request):
+    return render(request, 'menu_ocr.html')
