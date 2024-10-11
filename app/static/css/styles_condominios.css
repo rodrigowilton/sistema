@@ -4,6 +4,7 @@ body {
     flex-direction: column;
     min-height: 100vh; /* Garante que o rodapé fique na parte inferior */
     background-color: #fff;
+    justify-content: center;
 }
 
 .content {
@@ -127,14 +128,18 @@ label {
 
 /* Estilo do contêiner */
 .container {
-    max-width: auto; /* Largura máxima do contêiner */
-    margin: 0 auto; /* Centraliza o contêiner */
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: column; /* Organiza o conteúdo em coluna */
+    align-items: center; /* Centraliza horizontalmente */
+    max-width: 1600px; /* Define a largura máxima do contêiner */
+    margin: 0 auto; /* Centraliza o contêiner na tela */
     padding: 20px; /* Espaçamento interno */
     border: 1px solid #ccc; /* Borda do contêiner */
     border-radius: 8px; /* Bordas arredondadas */
     background-color: #f9f9f9; /* Cor de fundo do contêiner */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve */
 }
+
 
 h2 {
     text-align: center; /* Centraliza o título */
@@ -182,6 +187,27 @@ h2 {
     background-color: #000080; /* Cor do botão ao passar o mouse */
 }
 
+/* Estilos customizados para o botão cancelar */
+.custom-cancel-btn {
+    background-color: #8B0000; /* Botão vermelho */
+    border: none; /* Sem borda */
+    color: white; /* Texto branco */
+    padding: 10px 20px; /* Espaçamento interno */
+    text-align: center; /* Centralizar texto */
+    text-decoration: none; /* Sem sublinhado */
+    display: inline-block; /* Exibição inline */
+    font-size: 16px; /* Tamanho da fonte */
+    margin: 4px 2px; /* Margem */
+    cursor: pointer; /* Cursor de pointer */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+.custom-cancel-btn:hover {
+    background-color: darkred; /* Cor ao passar o mouse */
+}
+
+
 /* Se precisar de um padding diferente para apenas alguns campos, você pode usar classes específicas */
 #id_nome_condominio {
     width: 400px;
@@ -204,11 +230,15 @@ h2 {
 }
 
 #id_bairro {
-    width: 200px;
+    width: 400px;
 }
 
 #id_cidade {
-    width: 200px;
+    width: 400px;
+}
+
+#id_complemento {
+    width: 1200px;
 }
 
 #id_uf {
@@ -227,14 +257,17 @@ h2 {
     width: 120px;
 }
 
-    #id_cnpj {
+#id_cnpj {
         width: 200px; /* Ou outro valor que você achar adequado */
-    }
+}
 
  #id_internet {
     width: 300px;
 }
 
+ #id_norma_observacao {
+    width: 1600px;
+}
  #id_unidade {
     width: 300px;
 }
@@ -252,7 +285,7 @@ h2 {
 }
 
  #id_reservas_norma {
-    width: 400px;
+    width: 300px;
 }
 
  #id_mudancas_norma {

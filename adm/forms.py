@@ -32,5 +32,10 @@ class CondominiosForm(forms.ModelForm):
             'website_agendamento': forms.TextInput(attrs={'class': 'form-control'}),
             'financeiro_responsavel': forms.TextInput(attrs={'class': 'form-control'}),
             'financeiro_email': forms.EmailInput(attrs={'class': 'form-control'}),
-            # Adicione mais campos conforme necessário
+            # Oculte o campo status
+            'status': forms.HiddenInput(),  # Oculte o campo status
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['status'].initial = '1'  # Define o valor inicial como "ativo"

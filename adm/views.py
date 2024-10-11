@@ -16,16 +16,13 @@ def criar_condominio(request):
     if request.method == 'POST':
         form = CondominiosForm(request.POST)
         if form.is_valid():
-            # Aqui você pode salvar os dados ou fazer algo com eles
-            return redirect('create_condominio')  # Redirecione para a página desejada após o salvamento
+            print("Formulário válido!")
+            condominio = form.save()  # Salva imediatamente, pois o status já é definido no formulário
+            return redirect('menu_adm')  # Redireciona para a página desejada após o salvamento
+        else:
+            print("Erros no formulário:", form.errors)
     else:
         form = CondominiosForm()
-
-    form.fields['logradouro'].widget.attrs['disabled'] = 'disabled'
-    form.fields['bairro'].widget.attrs['disabled'] = 'disabled'
-    form.fields['cidade'].widget.attrs['disabled'] = 'disabled'
-    form.fields['uf'].widget.attrs['disabled'] = 'disabled'
-
 
     return render(request, 'create_condominio.html', {'form': form})
 
@@ -38,26 +35,20 @@ def list_condominios(request):
 
 
 @login_required
-def detail_condominio(request, id):
-    condominio = get_object_or_404(Condominios, id=id)
-    return render(request, 'detail_condominio.html', {'condominio': condominio})
+def editar_condominio(request, id):
+    condominio = get_object_or_404(Condominios, pk=id)  # Obtém o condomínio pelo ID
 
+    if request.method == 'POST':
+        form = CondominiosForm(request.POST, instance=condominio)  # Passa a instância existente
+        if form.is_valid():
+            form.save()  # Salva as alterações
+            return redirect('menu_adm')  # Redireciona após o salvamento
+    else:
+        form = CondominiosForm(instance=condominio)  # Carrega o formulário com os dados existentes
+
+    return render(request, 'editar_condominio.html', {'form': form})  # Verifique o caminho aqui
 
 # UPDATE
-@login_required
-def update_condominio(request, id):
-    condominio = get_object_or_404(Condominios, id=id)
-    if request.method == 'POST':
-        form = CondominioForm(request.POST, instance=condominio)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Condomínio atualizado com sucesso!')
-            return redirect('list_condominios')
-    else:
-        form = CondominioForm(instance=condominio)
-
-    return render(request, 'update_condominio.html', {'form': form})
-
 
 # DELETE
 @login_required
@@ -112,10 +103,37 @@ def menu_adm(request):
         return redirect('configuracao')
 
 
-
 @login_required
 def menu_add(request):
-    return render(request, 'menu_add.html')
+    if request.user.has_perm('app.change_condominios'):
+        try:
+            condominios = Condominios.objects.all()  # Captura todos os condomínios
+        except Exception as e:
+            print(f"Erro ao buscar condomínios: {e}")
+            condominios = []  # Em caso de erro, define condomínios como uma lista vazia
+
+        # Captura os usuários e permissões para o template
+        users = AuthUser.objects.all()
+        permissions = AuthPermission.objects.all()
+
+        # Captura as permissões atribuídas aos usuários
+        user_permissions = []
+        for user in users:
+            user_perms = user.authuseruserpermissions_set.all()
+            user_permissions.extend(user_perms)  # Usando extend para simplificar
+
+        # Define o contexto a ser passado para o template
+        context = {
+            'condominios': condominios,
+            'users': users,
+            'permissions': permissions,
+            'user_permissions': user_permissions,
+        }
+        return render(request, 'menu_add.html', context)  # Passando o contexto
+    else:
+        messages.error(request, 'Você não tem permissão para acessar esta página.')
+        return redirect('menu_adm')
+
 
 @login_required
 def menu_ctr(request):

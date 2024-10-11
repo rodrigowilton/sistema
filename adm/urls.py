@@ -19,8 +19,7 @@ urlpatterns = [
 
     path('condominios/', list_condominios, name='list_condominios'),
     path('condominios/criar/', criar_condominio, name='create_condominio'),
-    path('condominios/<int:id>/', detail_condominio, name='detail_condominio'),
-    path('condominios/<int:id>/editar/', update_condominio, name='update_condominio'),
+    path('condominios/<int:id>/', editar_condominio, name='editar_condominio'),
     path('condominios/<int:id>/remover/', delete_condominio, name='delete_condominio'),
 
 
