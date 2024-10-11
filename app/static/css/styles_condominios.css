@@ -1,12 +1,105 @@
 /* Estilo do Formulário de Condomínios */
 body {
-    font-family: Arial, sans-serif; /* Define a fonte Arial como padrão */
-    font-size: 10px; /* Tamanho da fonte para todo o corpo */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o rodapé fique na parte inferior */
+    background-color: #fff;
+}
+
+.content {
+    flex: 1; /* Permite que o conteúdo expanda para preencher o espaço */
+    margin-top: 56px; /* Espaçamento para compensar a altura da navbar fixa */
+}
+
+.nav-item {
+    margin-right: 70px; /* Adiciona 40px de espaço à direita dos itens */
+}
+
+.nav-item:last-child {
+    margin-right: 0; /* Remove a margem do último item */
+}
+
+.navbar {
+    position: fixed; /* Fixa a navbar no topo */
+    top: 0; /* Alinha a navbar no topo */
+    left:0; /* Alinha a navbar à esquerda */
+    right: 0; /* Alinha a navbar à direita */
+    background-color: #778898; /* Cor da navbar */
+    z-index: 1000; /* Garante que a navbar fique acima de outros elementos */
+}
+
+footer {
+    position: fixed; /* Fixa o rodapé na parte inferior */
+    bottom: 0; /* Alinha o rodapé na parte inferior */
+    left: 0; /* Alinha o rodapé à esquerda */
+    right: 0; /* Alinha o rodapé à direita */
+    background-color: #778898; /* Cor do rodapé igual à da navbar */
+    text-align: center; /* Centraliza o texto no footer */
+    padding: 10px 0; /* Espaçamento no footer */
+    color: black; /* Cor do texto no footer */
 }
 
 .form-group {
-    margin-bottom: 15px; /* Espaço entre os grupos de formulário */
+    font-size: 22px; /* Aumenta o tamanho da fonte dos links */
 }
+
+.custom-bg {
+    background-color: #fff;
+}
+
+.custom-navbar-brand:hover {
+    color: #ddd; /* Muda a cor ao passar o mouse */
+}
+
+.custom-nav-link {
+    color: black; /* Cor do texto dos links */
+    font-size: 14px; /* Aumenta o tamanho da fonte dos links */
+    font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
+    font-weight: bold; /* Adiciona negrito ao texto */
+}
+
+.custom-nav-link-menu {
+    color: black; /* Cor do texto dos links */
+    font-size: 14px; /* Aumenta o tamanho da fonte dos links */
+    font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
+    font-weight: bold; /* Adiciona negrito ao texto */
+}
+
+
+.custom-margin-left {
+    margin-left: 80px; /* Margem de 80px à esquerda */
+}
+
+.custom-nav-link:hover {
+    color: #ddd; /* Cor ao passar o mouse */
+}
+
+.navbar-brand {
+    font-size: 40px; /* Aumenta o tamanho da fonte do Severus */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Estilo da fonte */
+    margin-left: 20px; /* Margem esquerda no Severus */
+}
+
+
+
+.custom-nav {
+    margin: 0 50px;
+}
+
+
+.spacer {
+    margin-right: 40px; /* Ajuste o valor para o espaçamento desejado */
+}
+
+.logout-link {
+    color: #800000; /* Cor do link Sair */
+    margin-right: 20px; /* Margem direita no Sair */
+}
+
+.logout-link:hover {
+    color: darkred; /* Cor ao passar o mouse */
+}
+
 
 .form-control {
     width: 100%; /* Largura total */
@@ -34,7 +127,7 @@ label {
 
 /* Estilo do contêiner */
 .container {
-    max-width: 900px; /* Largura máxima do contêiner */
+    max-width: auto; /* Largura máxima do contêiner */
     margin: 0 auto; /* Centraliza o contêiner */
     padding: 20px; /* Espaçamento interno */
     border: 1px solid #ccc; /* Borda do contêiner */
@@ -67,6 +160,26 @@ h2 {
 .form-group select,
 .form-group textarea {
     padding-right: 20px; /* Adiciona 20px de padding à direita */
+}
+
+/* Estilos customizados para o botão Salvar */
+.custom-save-btn {
+    background-color: #1E90FF;
+    border: none; /* Sem borda */
+    color: white; /* Texto branco */
+    padding: 10px 20px; /* Espaçamento interno */
+    text-align: center; /* Centralizar texto */
+    text-decoration: none; /* Sem sublinhado */
+    display: inline-block; /* Exibição inline */
+    font-size: 16px; /* Tamanho da fonte */
+    margin: 4px 2px; /* Margem */
+    cursor: pointer; /* Cursor de pointer */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+.custom-save-btn:hover {
+    background-color: #000080; /* Cor do botão ao passar o mouse */
 }
 
 /* Se precisar de um padding diferente para apenas alguns campos, você pode usar classes específicas */

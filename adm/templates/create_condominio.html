@@ -6,13 +6,18 @@
 {% endblock %}
 
 {% block menu %}
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
+    <img src="{% static 'img/icon.png' %}" alt="Logo" class="icon-img-add" style="max-width: 65%; height: 65px; margin-right: -20px;"> <!-- Ícone do lado esquerdo -->
+    <h2 style="flex-grow: 1; text-align: center; margin: 0;">Adicionar Condomínio</h2> <!-- Título centralizado -->
+</div>
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <form method="post" id="condominium-form">
         {% csrf_token %}
-        <h2>Adicionar Condomínio</h2>
+
+
         <div class="row">
             <div class="col-md-6">
                 <!-- Nome do Condomínio e CNPJ na mesma linha -->
@@ -187,7 +192,9 @@
                     <div class="error-message">{{ form.financeiro_email.errors }}</div>
                 </div>
 
-                <button type="submit" class="btn btn-success btn-lg">Salvar</button>
+                <button type="submit" class="btn btn-lg custom-save-btn">
+                    Salvar
+                </button>
 
                 <br><br><br><br>
             </div>
