@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block menu %}
-<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'menu_adm' %}" style="margin-right: 120px;">
             <div class="icon-container">
@@ -19,32 +19,32 @@
             <ul class="navbar-nav d-flex">
                 <!-- Seus itens de menu aqui -->
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_add' %}">
-                        <img src="{% static 'img/Agendamento.png' %}" alt="Agendamento" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_add' %}">
+                        <img src="{% static 'img/Agendamento.png' %}" alt="Agendamento" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Agendamento
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_ctr' %}">
-                        <img src="{% static 'img/areasreserva.png' %}" alt="areasreserva" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_ctr' %}">
+                        <img src="{% static 'img/areasreserva.png' %}" alt="areasreserva" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Àreas Reserva
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/areasparalelas.png' %}" alt="areasparalelas" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/areasparalelas.png' %}" alt="areasparalelas" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Àreas Paralelas
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/horarioagendado.png' %}" alt="horarioagendado" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/horarioagendado.png' %}" alt="horarioagendado" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Horários Agendamento
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/Feriados.png' %}" alt="Feriados" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/Feriados.png' %}" alt="Feriados" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Feriados
                     </a>
                 </li>
@@ -52,8 +52,8 @@
             <!-- Adicione o logout aqui, dentro de um novo <ul> com a classe ms-auto -->
             <ul class="navbar-nav ms-auto"> <!-- Isso vai empurrar o conteúdo para a direita -->
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu logout-link" href="{% url 'login' %}" style="margin-right: 40px;">
-                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;">
+                    <a class="nav-link custom-nav-link logout-link" href="{% url 'login' %}" style="margin-right: 40px;">
+                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;"><br>
                         𝐒𝐚𝐢𝐫
                     </a>
                 </li>

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block menu %}
-<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">
             <div class="icon-container">
@@ -17,8 +17,8 @@
         <div class="collapse navbar-collapse " id="navbarNav">
             <ul class="navbar-nav d-flex ">
                 <li class="nav-item ">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'configuracao' %}">
-                        <img src="{% static 'img/voltar.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'configuracao' %}">
+                        <img src="{% static 'img/voltar.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         <span>Retornar</span>
                     </a>
                 </li>

@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block menu %}
-<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'menu_adm' %}" style="margin-right: 120px;">
             <div class="icon-container">
@@ -19,38 +19,38 @@
             <ul class="navbar-nav d-flex">
                 <!-- Seus itens de menu aqui -->
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/buscarpermissoes.png' %}" alt="buscarpermissoes" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/buscarpermissoes.png' %}" alt="buscarpermissoes" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Buscar Permissões
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/Aniversariantes.png' %}" alt="Aniversariantes" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/Aniversariantes.png' %}" alt="Aniversariantes" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Aniversariantes
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/tiposocorrencias.png' %}" alt="tiposocorrencias" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/tiposocorrencias.png' %}" alt="tiposocorrencias" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Tipos Ocorrências
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/tipofuncionanrio.png' %}" alt="tipofuncionanrio" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/tipofuncionanrio.png' %}" alt="tipofuncionanrio" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Tipos Funcionários
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/Departamentos.png' %}" alt="Departamentos" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/Departamentos.png' %}" alt="Departamentos" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Departamentos
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="#">
-                        <img src="{% static 'img/pessoa.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="#">
+                        <img src="{% static 'img/pessoa.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         Colaboradores
                     </a>
                 </li>
@@ -59,8 +59,8 @@
             <!-- Adicione o logout aqui, dentro de um novo <ul> com a classe ms-auto -->
             <ul class="navbar-nav ms-auto"> <!-- Isso vai empurrar o conteúdo para a direita -->
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu logout-link" href="{% url 'login' %}" style="margin-right: 40px;">
-                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;">
+                    <a class="nav-link custom-nav-link logout-link" href="{% url 'login' %}" style="margin-right: 40px;">
+                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;"><br>
                         𝐒𝐚𝐢𝐫
                     </a>
                 </li>

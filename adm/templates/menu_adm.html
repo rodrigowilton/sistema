@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block menu %}
-<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'redirect_based_on_group' %}" style="margin-right: 120px;">
             <div class="icon-container">
@@ -20,50 +20,50 @@
             <ul class="navbar-nav d-flex">
                 <!-- Seus itens de menu aqui -->
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_add' %}">
-                        <img src="{% static 'img/add.png' %}" alt="add" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_add' %}">
+                        <img src="{% static 'img/add.png' %}" alt="add" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         ADD
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_ctr' %}">
-                        <img src="{% static 'img/CTR.png' %}" alt="CTR" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_ctr' %}">
+                        <img src="{% static 'img/CTR.png' %}" alt="CTR" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         CTR
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_agd' %}">
-                        <img src="{% static 'img/AGD.png' %}" alt="AGD" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_agd' %}">
+                        <img src="{% static 'img/AGD.png' %}" alt="AGD" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         AGD
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_srv' %}">
-                        <img src="{% static 'img/SRV.png' %}" alt="SRV" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_srv' %}">
+                        <img src="{% static 'img/SRV.png' %}" alt="SRV" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         SRV
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_slc' %}">
-                        <img src="{% static 'img/SLC.png' %}" alt="SLC" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_slc' %}">
+                        <img src="{% static 'img/SLC.png' %}" alt="SLC" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         SLC
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_ocr' %}">
-                        <img src="{% static 'img/OCR.png' %}" alt="OCR" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_ocr' %}">
+                        <img src="{% static 'img/OCR.png' %}" alt="OCR" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         OCR
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_tel' %}">
-                        <img src="{% static 'img/TEL.png' %}" alt="TEL" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_tel' %}">
+                        <img src="{% static 'img/TEL.png' %}" alt="TEL" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         TEL
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu" href="{% url 'menu_inf' %}">
-                        <img src="{% static 'img/INF.png' %}" alt="INF" style="width: 30px; height: 30px; margin-bottom: 5px;"><br>
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_inf' %}">
+                        <img src="{% static 'img/INF.png' %}" alt="INF" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
                         INF
                     </a>
                 </li>
@@ -71,8 +71,8 @@
             <!-- Adicione o logout aqui, dentro de um novo <ul> com a classe ms-auto -->
             <ul class="navbar-nav ms-auto"> <!-- Isso vai empurrar o conteúdo para a direita -->
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu logout-link" href="{% url 'login' %}" style="margin-right: 40px;">
-                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;">
+                    <a class="nav-link custom-nav-link logout-link" href="{% url 'login' %}" style="margin-right: 40px;">
+                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;"><br>
                         𝐒𝐚𝐢𝐫
                     </a>
                 </li>
@@ -129,6 +129,9 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <br>
+                <br>
+                <br>
             </div>
             <br>
         {% else %}

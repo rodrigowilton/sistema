@@ -13,7 +13,7 @@
 
 <body>
 {% block menu %}
-<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+<nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
         <a class="navbar-brand" href="#" style="margin-right: 120px;">
             <div class="icon-container">
@@ -28,70 +28,72 @@
         <div class="collapse navbar-collapse " id="navbarNav">
             <ul class="navbar-nav d-flex ">
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'configuracao' %}">
-                        <img src="{% static 'img/configuracao.png' %}" alt="Configuração" style="width: 30px; height: 30px; margin-right: 5px;">
-                    </a>
+                <a class="nav-link custom-nav-link" href="{% url 'configuracao' %}">
+                    <img src="{% static 'img/configuracao.png' %}" alt="Configuração"
+                         style="width: 30px; height: 30px; margin-right: 5px; filter: invert(1);">
+                    CFG</a>
+
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/apartamentos.png' %}" alt="Apartamentos" style="width: 30px; height: 30px; margin-right: 5px;">
-                    </a>
+                        <img src="{% static 'img/apartamentos.png' %}" alt="Apartamentos" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">
+                    CDM</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/pessoa.png' %}" alt="Pessoa" style="width: 30px; height: 30px; margin-right: 5px;">
-                    </a>
+                        <img src="{% static 'img/pessoa.png' %}" alt="Pessoa" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">
+                    PS</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/app.png' %}" alt="App" style="width: 30px; height: 30px; margin-right: 5px;">
-                    </a>
+                        <img src="{% static 'img/app.png' %}" alt="App" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">
+                    APP</a>
                 </li>
                 <!-- Ajuste específico para O.S com font-size 15px -->
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link os-link" href="#">
-                        <img src="{% static 'img/os.png' %}" alt="O.S" style="width: 30px; height: 30px; margin-right: 5px;">
+                        <img src="{% static 'img/os.png' %}" alt="O.S" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">
                         <span>𝐎.𝐒</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/v2.png' %}" alt="V.2" style="width: 30px; height: 30px; margin-right: 5px;">𝐕.𝟐
+                        <img src="{% static 'img/v2.png' %}" alt="V.2" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">𝐕.𝟐
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/alarme.png' %}" alt="C.A" style="width: 30px; height: 30px; margin-right: 5px;">𝐂.𝐀
+                        <img src="{% static 'img/alarme.png' %}" alt="C.A" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">𝐂.𝐀
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="{% url 'menu_adm' %}">
-                        <img src="{% static 'img/casa.png' %}" alt="SCR" style="width: 30px; height: 30px; margin-right: 5px;">𝐒𝐑𝐂
+                        <img src="{% static 'img/casa.png' %}" alt="SCR" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">𝐒𝐑𝐂
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/suporte.png' %}" alt="suporte" style="width: 30px; height: 30px; margin-right: 5px;">𝐒𝐒𝐓
+                        <img src="{% static 'img/suporte.png' %}" alt="suporte" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">𝐒𝐒𝐓
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/ti.png' %}" alt="ti" style="width: 30px; height: 30px; margin-right: 5px;">𝐒𝐓𝐈
+                        <img src="{% static 'img/ti.png' %}" alt="ti" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">𝐒𝐓𝐈
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/operacional.png' %}" alt="operacional" style="width: 30px; height: 30px; margin-right: 5px;">𝐂𝐎𝐈
+                        <img src="{% static 'img/operacional.png' %}" alt="operacional" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">𝐂𝐎𝐈
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/suporte.png' %}" alt="suporte" style="width: 30px; height: 30px; margin-right: 5px;">𝐒𝐎𝐏
+                        <img src="{% static 'img/suporte.png' %}" alt="suporte" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">𝐒𝐎𝐏
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link custom-nav-link" href="#">
-                        <img src="{% static 'img/comercial.png' %}" alt="comercial" style="width: 30px; height: 30px; margin-right: 5px;">𝐂𝐎𝐌
+                        <img src="{% static 'img/comercial.png' %}" alt="comercial" style="width: 30px; height: 30px; margin-right: 5px;filter: invert(1);">𝐂𝐎𝐌
                     </a>
                 </li>
                 <li class="nav-item">
