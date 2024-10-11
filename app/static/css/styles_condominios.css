@@ -227,8 +227,53 @@ h2 {
     width: 120px;
 }
 
-
-    /* Definindo um tamanho apropriado para o campo de CNPJ */
     #id_cnpj {
         width: 200px; /* Ou outro valor que você achar adequado */
     }
+
+ #id_internet {
+    width: 300px;
+}
+
+ #id_unidade {
+    width: 300px;
+}
+
+ #id_suporteunidade {
+    width: 300px;
+}
+
+ #id_entregadores_norma {
+    width: 400px;
+}
+
+ #id_prestadores_norma {
+    width: 400px;
+}
+
+ #id_reservas_norma {
+    width: 400px;
+}
+
+ #id_mudancas_norma {
+    width: 400px;
+}
+ #id_responsavel_tattica {
+    width:300px;
+}
+
+ #id_website {
+    width:500px;
+}
+
+ #id_website_agendamento {
+    width:500px;
+}
+
+ #id_financeiro_responsavel {
+    width:300px;
+}
+
+ #id_financeiro_email {
+    width:500px;
+}

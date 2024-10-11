@@ -28,34 +28,24 @@
                     <!-- Espaço entre os campos Nome e CNPJ -->
                     <label for="id_cnpj" style="display: inline-block; margin-left: 20px;">CNPJ:</label>
                     {{ form.cnpj }}
+                    <label for="id_data_condominio">Data do Condomínio:</label>
+                    {{ form.data_condominio }}
 
                     <div class="error-message">{{ form.nome_condominio.errors }}</div>
                     <div class="error-message">{{ form.cnpj.errors }}</div>
-                </div>
+                    <div class="error-message">{{ form.data_condominio.errors }}</div>
 
-                <!-- Campo Data do Condomínio -->
-                <div class="form-group">
-                    <label for="id_data_condominio">Data do Condomínio:</label>
-                    {{ form.data_condominio }}
 
                 <!-- Campo CEP -->
                     <label for="id_cep" style="display: inline-block; margin-left: 20px;">CEP:</label>
                     {{ form.cep }}
-
-                    <div class="error-message">{{ form.data_condominio.errors }}</div>
-                    <div class="error-message">{{ form.cep.errors }}</div>
-                </div>
-
-                <!-- Campo Logradouro -->
-                <div class="form-group">
                     <label for="id_logradouro">Logradouro:</label>
                     {{ form.logradouro }}
-
-                <!-- Campo Número -->
                     <label for="id_numero" style="display: inline-block; margin-left: 20px;">Número:</label>
                     {{ form.numero }}
                     <div class="error-message">{{ form.logradouro.errors }}</div>
                     <div class="error-message">{{ form.numero.errors }}</div>
+                    <div class="error-message">{{ form.cep.errors }}</div>
                 </div>
 
                 <!-- Campo Complemento -->
@@ -105,20 +95,15 @@
                 <div class="form-group">
                     <label for="id_internet">Internet:</label>
                     {{ form.internet }}
-                    <div class="error-message">{{ form.internet.errors }}</div>
-                </div>
 
-                <!-- Campo Unidade -->
-                <div class="form-group">
                     <label for="id_unidade">Unidade:</label>
                     {{ form.unidade }}
-                    <div class="error-message">{{ form.unidade.errors }}</div>
-                </div>
 
-                <!-- Campo Suporte Unidade -->
-                <div class="form-group">
                     <label for="id_suporteunidade">Suporte Unidade:</label>
                     {{ form.suporteunidade }}
+
+                    <div class="error-message">{{ form.internet.errors }}</div>
+                    <div class="error-message">{{ form.unidade.errors }}</div>
                     <div class="error-message">{{ form.suporteunidade.errors }}</div>
                 </div>
 
@@ -126,41 +111,36 @@
                 <div class="form-group">
                     <label for="id_entregadores_norma">Entregadores Norma:</label>
                     {{ form.entregadores_norma }}
-                    <div class="error-message">{{ form.entregadores_norma.errors }}</div>
-                </div>
 
-                <!-- Campo Prestadores Norma -->
-                <div class="form-group">
                     <label for="id_prestadores_norma">Prestadores Norma:</label>
                     {{ form.prestadores_norma }}
-                    <div class="error-message">{{ form.prestadores_norma.errors }}</div>
-                </div>
 
-                <!-- Campo Reservas Norma -->
-                <div class="form-group">
                     <label for="id_reservas_norma">Reservas Norma:</label>
                     {{ form.reservas_norma }}
                     <div class="error-message">{{ form.reservas_norma.errors }}</div>
+                    <div class="error-message">{{ form.prestadores_norma.errors }}</div>
+                    <div class="error-message">{{ form.entregadores_norma.errors }}</div>
+
+
                 </div>
 
                 <!-- Campo Mudanças Norma -->
                 <div class="form-group">
                     <label for="id_mudancas_norma">Mudanças Norma:</label>
                     {{ form.mudancas_norma }}
-                    <div class="error-message">{{ form.mudancas_norma.errors }}</div>
-                </div>
 
-                <!-- Campo Responsável Tattica -->
-                <div class="form-group">
                     <label for="id_responsavel_tattica">Responsável Tattica:</label>
                     {{ form.responsavel_tattica }}
+
                     <div class="error-message">{{ form.responsavel_tattica.errors }}</div>
+                    <div class="error-message">{{ form.mudancas_norma.errors }}</div>
                 </div>
 
                 <!-- Campo Norma Observação -->
                 <div class="form-group">
                     <label for="id_norma_observacao">Norma Observação:</label>
                     {{ form.norma_observacao }}
+
                     <div class="error-message">{{ form.norma_observacao.errors }}</div>
                 </div>
 
@@ -168,28 +148,24 @@
                 <div class="form-group">
                     <label for="id_website">Website:</label>
                     {{ form.website }}
-                    <div class="error-message">{{ form.website.errors }}</div>
-                </div>
 
-                <!-- Campo Website Agendamento -->
-                <div class="form-group">
                     <label for="id_website_agendamento">Website Agendamento:</label>
                     {{ form.website_agendamento }}
+
                     <div class="error-message">{{ form.website_agendamento.errors }}</div>
+                    <div class="error-message">{{ form.website.errors }}</div>
                 </div>
 
                 <!-- Campo Financeiro Responsável -->
                 <div class="form-group">
                     <label for="id_financeiro_responsavel">Financeiro Responsável:</label>
                     {{ form.financeiro_responsavel }}
-                    <div class="error-message">{{ form.financeiro_responsavel.errors }}</div>
-                </div>
 
-                <!-- Campo Financeiro Email -->
-                <div class="form-group">
                     <label for="id_financeiro_email">Financeiro Email:</label>
                     {{ form.financeiro_email }}
+
                     <div class="error-message">{{ form.financeiro_email.errors }}</div>
+                    <div class="error-message">{{ form.financeiro_responsavel.errors }}</div>
                 </div>
 
                 <button type="submit" class="btn btn-lg custom-save-btn">
