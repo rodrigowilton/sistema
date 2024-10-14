@@ -3,8 +3,7 @@
 <ul>
     {% for condominio in condominios %}
     <li>
-        <a href="{% url 'detail_condominio' condominio.id %}">{{ condominio.nome_condominio }}</a>
-        <a href="{% url 'update_condominio' condominio.id %}">Editar</a>
+        <a href="{% url 'editar_condominio' condominio.id %}">Editar</a>
         <a href="{% url 'delete_condominio' condominio.id %}">Remover</a>
     </li>
     {% endfor %}

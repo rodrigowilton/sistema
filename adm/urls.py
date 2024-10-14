@@ -17,7 +17,6 @@ urlpatterns = [
     # crud condominios
 
 
-    path('condominios/', list_condominios, name='list_condominios'),
     path('condominios/criar/', criar_condominio, name='create_condominio'),
     path('condominios/<int:id>/', editar_condominio, name='editar_condominio'),
     path('condominios/<int:id>/remover/', delete_condominio, name='delete_condominio'),

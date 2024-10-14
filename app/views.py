@@ -233,7 +233,9 @@ def home(request):
     # Verifica se o usuário tem a permissão 'app.change_condominios'
     if request.user.has_perm('app.change_condominios'):
         try:
-            condominios = Condominios.objects.all()
+            condominios = Condominios.objects.filter(status=1)  # Filtra apenas os condomínios com status=1
+
+            #condominios = Condominios.objects.all()
         except Exception as e:
             print(f"Erro ao buscar condomínios: {e}")
             condominios = []

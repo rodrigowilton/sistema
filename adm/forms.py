@@ -39,3 +39,4 @@ class CondominiosForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['status'].initial = '1'  # Define o valor inicial como "ativo"
+        self.fields['data_condominio'].input_formats = ['%Y-%m-%d']

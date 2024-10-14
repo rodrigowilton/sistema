@@ -30,7 +30,8 @@ def criar_condominio(request):
 # READ (List and Detail)
 @login_required
 def list_condominios(request):
-    condominios = Condominios.objects.all()
+    condominios = Condominios.objects.filter(status=1)  # Filtra apenas os condomínios com status=1
+    #condominios = Condominios.objects.all()
     return render(request, 'list_condominios.html', {'condominios': condominios})
 
 
@@ -50,14 +51,16 @@ def editar_condominio(request, id):
 
 # UPDATE
 
-# DELETE
 @login_required
 def delete_condominio(request, id):
     condominio = get_object_or_404(Condominios, id=id)
+
     if request.method == 'POST':
-        condominio.delete()
-        messages.success(request, 'Condomínio excluído com sucesso!')
-        return redirect('list_condominios')
+        condominio.status = 0  # Alterar o status para 0 (inativo)
+        condominio.save()  # Salvar as alterações no banco de dados
+        messages.success(request, 'Condomínio desativado com sucesso!')
+        return redirect('home')  # Redireciona para a lista de condomínios
+
     return render(request, 'delete_condominio.html', {'condominio': condominio})
 
 
@@ -74,7 +77,8 @@ def redirect_based_on_group(request):
 def menu_adm(request):
     if request.user.has_perm('app.change_condominios'):
         try:
-            condominios = Condominios.objects.all()
+            condominios = Condominios.objects.filter(status=1)  # Filtra apenas os condomínios com status=1
+            #condominios = Condominios.objects.all()
         except Exception as e:
             print(f"Erro ao buscar condomínios: {e}")
             condominios = []
@@ -107,7 +111,8 @@ def menu_adm(request):
 def menu_add(request):
     if request.user.has_perm('app.change_condominios'):
         try:
-            condominios = Condominios.objects.all()  # Captura todos os condomínios
+            condominios = Condominios.objects.filter(status=1)  # Filtra apenas os condomínios com status=1
+            #condominios = Condominios.objects.all()  # Captura todos os condomínios
         except Exception as e:
             print(f"Erro ao buscar condomínios: {e}")
             condominios = []  # Em caso de erro, define condomínios como uma lista vazia
