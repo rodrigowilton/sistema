@@ -1,0 +1,29 @@
+{% extends 'base_login.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Lista de Apartamentos</h2>
+    <a href="{% url 'add_apartamento' %}" class="btn btn-primary">Adicionar Apartamento</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Condomínio</th>
+                <th>Apartamento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for apartamento in apartamentos %}
+            <tr>
+                <td>{{ apartamento.condominio }}</td>
+                <td>{{ apartamento.nome_apartamento }}</td>
+                <td>
+                    <a href="{% url 'edit_apartamento' apartamento.id %}" class="btn btn-warning">Editar</a>
+                    <a href="{% url 'delete_apartamento' apartamento.id %}" class="btn btn-danger">Deletar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
