@@ -1,0 +1,312 @@
+/* Estilo do Formulário de Condomínios */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o rodapé fique na parte inferior */
+    background-color: #fff;
+    justify-content: center;
+}
+
+.content {
+    flex: 1; /* Permite que o conteúdo expanda para preencher o espaço */
+    margin-top: 56px; /* Espaçamento para compensar a altura da navbar fixa */
+}
+
+.nav-item {
+    margin-right: 70px; /* Adiciona 40px de espaço à direita dos itens */
+}
+
+.nav-item:last-child {
+    margin-right: 0; /* Remove a margem do último item */
+}
+
+.navbar {
+    position: fixed; /* Fixa a navbar no topo */
+    top: 0; /* Alinha a navbar no topo */
+    left:0; /* Alinha a navbar à esquerda */
+    right: 0; /* Alinha a navbar à direita */
+    background-color: #778898; /* Cor da navbar */
+    z-index: 1000; /* Garante que a navbar fique acima de outros elementos */
+}
+
+footer {
+    position: fixed; /* Fixa o rodapé na parte inferior */
+    bottom: 0; /* Alinha o rodapé na parte inferior */
+    left: 0; /* Alinha o rodapé à esquerda */
+    right: 0; /* Alinha o rodapé à direita */
+    background-color: #778898; /* Cor do rodapé igual à da navbar */
+    text-align: center; /* Centraliza o texto no footer */
+    padding: 10px 0; /* Espaçamento no footer */
+    color: black; /* Cor do texto no footer */
+}
+
+.form-group {
+    font-size: 22px; /* Aumenta o tamanho da fonte dos links */
+}
+
+.custom-bg {
+    background-color: #fff;
+}
+
+.custom-navbar-brand:hover {
+    color: #ddd; /* Muda a cor ao passar o mouse */
+}
+
+.custom-nav-link {
+    color: black; /* Cor do texto dos links */
+    font-size: 14px; /* Aumenta o tamanho da fonte dos links */
+    font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
+    font-weight: bold; /* Adiciona negrito ao texto */
+}
+
+.custom-nav-link-menu {
+    color: black; /* Cor do texto dos links */
+    font-size: 14px; /* Aumenta o tamanho da fonte dos links */
+    font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
+    font-weight: bold; /* Adiciona negrito ao texto */
+}
+
+
+.custom-margin-left {
+    margin-left: 80px; /* Margem de 80px à esquerda */
+}
+
+.custom-nav-link:hover {
+    color: #ddd; /* Cor ao passar o mouse */
+}
+
+.navbar-brand {
+    font-size: 40px; /* Aumenta o tamanho da fonte do Severus */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Estilo da fonte */
+    margin-left: 20px; /* Margem esquerda no Severus */
+}
+
+
+
+.custom-nav {
+    margin: 0 50px;
+}
+
+
+.spacer {
+    margin-right: 40px; /* Ajuste o valor para o espaçamento desejado */
+}
+
+.logout-link {
+    color: #800000; /* Cor do link Sair */
+    margin-right: 20px; /* Margem direita no Sair */
+}
+
+.logout-link:hover {
+    color: darkred; /* Cor ao passar o mouse */
+}
+
+
+.form-control {
+    width: 100%; /* Largura total */
+    padding: 10px; /* Espaçamento interno */
+    margin: 5px 0; /* Espaçamento entre campos */
+    border: 1px solid #ccc; /* Borda */
+    border-radius: 4px; /* Cantos arredondados */
+    font-size: 14px; /* Tamanho da fonte dos campos */
+}
+
+/* Especifica o tamanho do campo Nome do Condomínio */
+.form-group input[name="nome_condominio"] {
+    width: 80%; /* Largura do campo de entrada */
+}
+
+label {
+    font-size: 14px; /* Tamanho da fonte dos rótulos */
+    font-weight: bold; /* Deixa os rótulos em negrito */
+}
+
+.error-message {
+    color: red; /* Cor da mensagem de erro */
+    font-size: 14px; /* Tamanho da fonte da mensagem de erro */
+}
+
+/* Estilo do contêiner */
+.container {
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: column; /* Organiza o conteúdo em coluna */
+    align-items: center; /* Centraliza horizontalmente */
+    max-width: 1600px; /* Define a largura máxima do contêiner */
+    margin: 0 auto; /* Centraliza o contêiner na tela */
+    padding: 20px; /* Espaçamento interno */
+    border: 1px solid #ccc; /* Borda do contêiner */
+    border-radius: 8px; /* Bordas arredondadas */
+    background-color: #f9f9f9; /* Cor de fundo do contêiner */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve */
+}
+
+
+h2 {
+    text-align: center; /* Centraliza o título */
+}
+
+.row {
+    display: flex; /* Usar flexbox */
+    justify-content: space-between; /* Espaçamento entre os campos */
+    margin: -5px; /* Remove o espaço extra causado pelo padding nos elementos filhos */
+}
+
+.col {
+    flex: 1; /* Cada coluna ocupa igual espaço */
+    margin: 5px; /* Espaço entre as colunas */
+}
+
+.col:last-child {
+    margin-right: 0; /* Remove margem do último item */
+}
+
+/* Adiciona padding à direita nos campos do formulário */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding-right: 20px; /* Adiciona 20px de padding à direita */
+}
+
+/* Estilos customizados para o botão Salvar */
+.custom-save-btn {
+    background-color: #1E90FF;
+    border: none; /* Sem borda */
+    color: white; /* Texto branco */
+    padding: 10px 20px; /* Espaçamento interno */
+    text-align: center; /* Centralizar texto */
+    text-decoration: none; /* Sem sublinhado */
+    display: inline-block; /* Exibição inline */
+    font-size: 16px; /* Tamanho da fonte */
+    margin: 4px 2px; /* Margem */
+    cursor: pointer; /* Cursor de pointer */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+.custom-save-btn:hover {
+    background-color: #000080; /* Cor do botão ao passar o mouse */
+}
+
+/* Estilos customizados para o botão cancelar */
+.custom-cancel-btn {
+    background-color: #8B0000; /* Botão vermelho */
+    border: none; /* Sem borda */
+    color: white; /* Texto branco */
+    padding: 10px 20px; /* Espaçamento interno */
+    text-align: center; /* Centralizar texto */
+    text-decoration: none; /* Sem sublinhado */
+    display: inline-block; /* Exibição inline */
+    font-size: 16px; /* Tamanho da fonte */
+    margin: 4px 2px; /* Margem */
+    cursor: pointer; /* Cursor de pointer */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+.custom-cancel-btn:hover {
+    background-color: darkred; /* Cor ao passar o mouse */
+}
+
+
+/* Se precisar de um padding diferente para apenas alguns campos, você pode usar classes específicas */
+#id_nome_condominio {
+    width: 400px;
+}
+
+#id_data_condominio {
+    width: 100px;
+}
+
+#id_cep {
+    width: 100px;
+}
+
+#id_logradouro {
+    width: 400px;
+}
+
+#id_numero {
+    width: 100px;
+}
+
+#id_bairro {
+    width: 400px;
+}
+
+#id_cidade {
+    width: 400px;
+}
+
+#id_complemento {
+    width: 1200px;
+}
+
+#id_uf {
+    width: 30px;
+}
+
+#id_ramal_condominio {
+    width: 60px;
+}
+
+#id_ramal_interno {
+    width: 60px;
+}
+
+#id_telefone {
+    width: 120px;
+}
+
+#id_cnpj {
+        width: 200px; /* Ou outro valor que você achar adequado */
+}
+
+ #id_internet {
+    width: 300px;
+}
+
+ #id_norma_observacao {
+    width: 1600px;
+}
+ #id_unidade {
+    width: 300px;
+}
+
+ #id_suporteunidade {
+    width: 300px;
+}
+
+ #id_entregadores_norma {
+    width: 400px;
+}
+
+ #id_prestadores_norma {
+    width: 400px;
+}
+
+ #id_reservas_norma {
+    width: 300px;
+}
+
+ #id_mudancas_norma {
+    width: 400px;
+}
+ #id_responsavel_tattica {
+    width:300px;
+}
+
+ #id_website {
+    width:500px;
+}
+
+ #id_website_agendamento {
+    width:500px;
+}
+
+ #id_financeiro_responsavel {
+    width:300px;
+}
+
+ #id_financeiro_email {
+    width:500px;
+}

@@ -3,19 +3,101 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/styles_condominios.css' %}">
+    <style>
+        /* Remove os marcadores da lista */
+        .navbar-nav {
+            list-style-type: none; /* Remove os marcadores */
+        }
+
+        /* Alinha a imagem e o texto no centro */
+        .custom-nav-link {
+            color: black; /* Cor do texto dos links */
+            font-size: 14px; /* Aumenta o tamanho da fonte dos links */
+            font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
+            font-weight: bold; /* Adiciona negrito ao texto */
+            display: flex; /* Alinha ícone e texto em linha */
+            align-items: flex-start; /* Alinha à esquerda */
+            margin-left: 120px; /* Adiciona margem à esquerda */
+            flex-direction: column; /* Coloca a imagem acima do texto */
+
+        }
+
+        /* Ajusta o espaço entre a imagem e o texto */
+        .custom-nav-link img {
+            margin-right: 5px; /* Espaço entre a imagem e o texto */
+        }
+
+        /* Ajusta o espaçamento do texto para iniciar na linha 2 */
+        .nav-item {
+            margin-top: -50px; /* Adiciona espaço acima do item */
+        }
+
+        footer {
+            position: fixed; /* Fixa o rodapé na parte inferior */
+            bottom: 0; /* Alinha o rodapé na parte inferior */
+            left: 0; /* Alinha o rodapé à esquerda */
+            right: 0; /* Alinha o rodapé à direita */
+            background-color: #778898; /* Cor do rodapé igual à da navbar */
+            text-align: center; /* Centraliza o texto no footer */
+            padding: 10px 0; /* Espaçamento no footer */
+            color: black; /* Cor do texto no footer */
+            display: flex; /* Usar flexbox para alinhar os itens */
+            justify-content: center; /* Centraliza os itens horizontalmente */
+            align-items: center; /* Centraliza os itens verticalmente */
+        }
+
+        footer h2 {
+            margin: 0; /* Remove a margem do h2 */
+            display: inline; /* Mantém o h2 em linha com outros elementos */
+        }
+
+        footer strong {
+            display: inline; /* Mantém o texto em linha */
+        }
+
+    </style>
 {% endblock %}
 
 {% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 50%; height: 50px; margin-left: 20px; margin-top: 20px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_add' %}">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; filter: invert(1);">
+                        <span style="margin-top: 5px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 <div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
-    <h2 style="flex-grow: 1; text-align: center; margin: 0;">Adicionar Condomínio</h2> <!-- Título centralizado -->
 </div>
+<br>
+<br>
+<br>
 {% endblock %}
 
 {% block content %}
+<br>
+<br>
+<br>
+<br>
+<h2 style="flex-grow: 1; text-align: center; margin: 0;">Adicionar Condomínio</h2> <!-- Título centralizado -->
+
+
 <div class="container">
     <form method="post" id="condominium-form">
         {% csrf_token %}
         <div class="row">
+
             <div class="col-md-6">
                 <!-- Nome do Condomínio e CNPJ na mesma linha -->
                 <div class="form-group">
@@ -146,81 +228,24 @@
                     <label for="id_website" style="display: inline-block; margin-left: 40px;">Website:</label>
                     {{ form.website }}
 
-                    <label for="id_website_agendamento" style="display: inline-block; margin-left: 40px;">Website Agendamento:</label>
-                    {{ form.website_agendamento }}
-
-                    <div class="error-message">{{ form.website_agendamento.errors }}</div>
                     <div class="error-message">{{ form.website.errors }}</div>
                 </div>
 
-                <!-- Campo Financeiro Responsável -->
-                <div class="form-group">
-                    <label for="id_financeiro_responsavel" style="display: inline-block; margin-left: 40px;">Financeiro Responsável:</label>
-                    {{ form.financeiro_responsavel }}
-
-                    <label for="id_financeiro_email" style="display: inline-block; margin-left: 40px;">Financeiro Email:</label>
-                    {{ form.financeiro_email }}
-
-                    <div class="error-message">{{ form.financeiro_email.errors }}</div>
-                    <div class="error-message">{{ form.financeiro_responsavel.errors }}</div>
+                <!-- Botão de Enviar -->
+                <div class="form-group" style="text-align: center;">
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
                 </div>
-
-                <button type="submit" class="btn btn-lg custom-save-btn" style="display: inline-block; margin-left: 40px;">
-                    Salvar
-                </button>
-
-                <!-- Botão Cancelar -->
-                <button type="button" class="btn btn-lg custom-cancel-btn" style="display: inline-block; margin-left: 40px;" onclick="window.history.back();">
-                    Cancelar
-                </button>
-
-
-                <input type="hidden" name="status" value="1">
-
             </div>
         </div>
     </form>
-
-    <!-- Incluindo o jQuery e jQuery Mask Plugin -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
-    <script>
-    $(document).ready(function(){
-        // Máscara para o CNPJ
-        $('#id_cnpj').mask('00.000.000/0000-00');
-
-        // Máscara para o CEP
-        $('#id_cep').mask('00000-000');
-
-        // Máscara para o TEL
-        $('#id_telefone').mask('(00) 0 0000-00000');
-
-        // Função para preencher o endereço a partir do CEP
-        $('#id_cep').blur(function() {
-            const cep = this.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-            if (cep.length === 8) {
-                fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.erro) {
-                            $('#id_logradouro').val(data.logradouro);
-                            $('#id_bairro').val(data.bairro);
-                            $('#id_cidade').val(data.localidade);
-                            $('#id_uf').val(data.uf);
-                        } else {
-                            alert('CEP não encontrado.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erro ao buscar dados:', error);
-                        alert('Erro ao buscar dados do CEP.');
-                    });
-            }
-        });
-    });
-    </script>
+</div>
+{% endblock %}
 
 {% block footer %}
-{% endblock %}
+<footer class="text-center mt-5">
+    <strong>
+        <h2 class="d-inline">SEVERUS </h2>
+        Tecnologia Segurança © - 2024 - (27) 3026-2196
+    </strong>
+</footer>
 {% endblock %}
