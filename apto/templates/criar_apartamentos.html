@@ -1,16 +1,43 @@
 {% extends 'base_login.html' %}
 {% load static %}
 
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}" style="margin-right: 120px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 20px;">
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav d-flex ">
+                <li class="nav-item ">
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_add' %}">
+                        <img src="{% static 'img/voltar.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
+                        <span>Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center">Criar Apartamentos</h2>
 
     <!-- Formulário para criação de apartamentos -->
-    <form method="post">
+    <form method="post" id="apartamento-form">
         {% csrf_token %}
         <div class="form-group">
             <label for="condominio">Condomínio:</label>
-            <select name="condominio" class="form-control" required>
+            <select name="condominio" class="form-control" id="condominio-select" required>
                 <option value="">Selecione um condomínio</option>
                 {% for condominio in condominios %}
                 <option value="{{ condominio.id }}" {% if condominio_selecionado and condominio_selecionado.id == condominio.id %}selected{% endif %}>
@@ -27,6 +54,14 @@
             <label for="apartamentos_por_andar">Quantidade de Apartamentos por Andar:</label>
             <input type="number" name="apartamentos_por_andar" class="form-control" required>
         </div>
+        <div class="form-group">
+            <label for="prefixo_apartamento">Prefixo do Apartamento:</label>
+            <input type="text" name="prefixo_apartamento" class="form-control" placeholder="Ex: A, B, 1A, ou espaço." required>
+        </div>
+        <div class="form-group">
+            <label for="numero_inicial">Número Inicial do Apartamento:</label>
+            <input type="number" name="numero_inicial" class="form-control" placeholder="Ex: 100, 200, etc." required>
+        </div>
         <button type="submit" class="btn btn-primary">Criar Apartamentos</button>
     </form>
 
@@ -42,16 +77,12 @@
                         <th scope="col">Ações</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="apartamentos-table-body">
                     {% if apartamentos %}
                         {% for apartamento in apartamentos %}
                         <tr>
                             <td>{{ apartamento.condominio.nome_condominio }}</td>
                             <td>{{ apartamento.nome_apartamento }}</td>
-                            <td>
-                                <a href="{% url 'editar_apartamento' apartamento.id %}" class="btn btn-sm btn-warning">Editar</a>
-                                <a href="#" class="btn btn-sm btn-danger">Deletar</a>
-                            </td>
                         </tr>
                         {% endfor %}
                     {% else %}
@@ -64,4 +95,41 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#condominio-select').change(function() {
+            var condominioId = $(this).val();
+            if (condominioId) {
+                $.ajax({
+                    url: '{% url "criar_apartamentos" %}',
+                    data: {
+                        'condominio_id': condominioId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var apartamentosBody = $('#apartamentos-table-body');
+                        apartamentosBody.empty(); // Limpa a tabela antes de adicionar novos apartamentos
+
+                        if (data.apartamentos.length > 0) {
+                            $.each(data.apartamentos, function(index, apartamento) {
+                                apartamentosBody.append(
+                                    '<tr><td>' + apartamento.condominio_nome + '</td>' +
+                                    '<td>' + apartamento.nome + '</td>' +
+                                    '<td><a href="editar_apartamento/' + apartamento.id + '" class="btn btn-sm "><img src="{% static "img/editar.png" %}" alt="Editar" style="width: 20px; height: 20px;"></a>' +
+                                    '<a href="deletar_apartamento/' + apartamento.id + '" class="btn btn-sm "><img src="{% static "img/excluir.png" %}" alt="Excluir" style="width: 20px; height: 20px;"></a></td></tr>'
+                                );
+                            });
+                        } else {
+                            apartamentosBody.append('<tr><td colspan="3" class="text-center">Nenhum apartamento encontrado.</td></tr>');
+                        }
+                    }
+                });
+            } else {
+                $('#apartamentos-table-body').empty(); // Limpa a tabela se nenhum condomínio for selecionado
+            }
+        });
+    });
+</script>
 {% endblock %}

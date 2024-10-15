@@ -1,15 +1,14 @@
 {% extends 'base_login.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center">Editar Apartamento</h2>
+    <h2 class="text-center">Editar Apartamento: {{ apartamento.nome_apartamento }}</h2>
+
     <form method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="nome_apartamento">Nome do Apartamento:</label>
-            <input type="text" name="nome_apartamento" class="form-control" value="{{ apartamento.nome_apartamento }}" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Salvar</button>
+        {{ form.as_p }}  <!-- Exibe o formulário automaticamente -->
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
     </form>
 </div>
 {% endblock %}
