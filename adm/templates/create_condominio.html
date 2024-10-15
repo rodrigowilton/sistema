@@ -96,6 +96,8 @@
 
 <div class="container">
     <form method="post" id="condominium-form">
+       <input type="hidden" name="status" value="1">  <!-- Campo oculto para status -->
+
         {% csrf_token %}
         <div class="row">
 
@@ -248,7 +250,7 @@
                     <!-- Botão de Enviar -->
                     <div class="form-group">
                         <br>
-                        <button type="submit" class="btn btn-primary custom-save-btn">Adicionar</button>
+                        <button type="submit" class="btn btn-primary custom-save-btn">Salvar</button>
                         <br>
                         <br>
                     </div>
@@ -257,8 +259,16 @@
         </div>
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
+    $(document).ready(function(){
+      // Aplica a máscara de CEP ao campo com id "id_cep"
+      $('#id_cep').mask('00000-000');
+        $('#id_cnpj').mask('00.000.000/0000-00');
+        $('#id_telefone').mask('(00) 0 0000-0000');
 
+    });
     document.addEventListener('DOMContentLoaded', function() {
     const cepField = document.getElementById('id_cep');
 
@@ -287,6 +297,7 @@
     });
 });
 </script>
+
 {% endblock %}
 
 {% block footer %}
