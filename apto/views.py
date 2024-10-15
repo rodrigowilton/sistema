@@ -76,8 +76,10 @@ def criar_apartamentos(request):
 # View para deletar apartamento
 def deletar_apartamento(request, apartamento_id):
     apartamento = get_object_or_404(Apartamentos, id=apartamento_id)
-    apartamento.delete()
-    return redirect('criar_apartamentos')  # Redireciona para a página de criação de apartamentos
+    if request.method == 'POST':  # Verifique se a requisição é um POST
+        apartamento.delete()  # Deletar o apartamento
+        return redirect('criar_apartamentos')  # Redirecionar após a exclusão
+    return render(request, 'deletar_apartamento.html', {'apartamento': apartamento})
 
 
 def editar_apartamento(request, apartamento_id):
