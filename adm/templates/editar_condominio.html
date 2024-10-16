@@ -1,304 +1,238 @@
 {% extends 'base_login.html' %}
 {% load static %}
 
-{% block css %}
-    <link rel="stylesheet" href="{% static 'css/styles_condominios.css' %}">
-    <style>
-        /* Remove os marcadores da lista */
-        .navbar-nav {
-            list-style-type: none; /* Remove os marcadores */
-        }
-
-        /* Alinha a imagem e o texto no centro */
-        .custom-nav-link {
-            color: black; /* Cor do texto dos links */
-            font-size: 14px; /* Aumenta o tamanho da fonte dos links */
-            font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
-            font-weight: bold; /* Adiciona negrito ao texto */
-            display: flex; /* Alinha ícone e texto em linha */
-            align-items: flex-start; /* Alinha à esquerda */
-            margin-left: 120px; /* Adiciona margem à esquerda */
-            flex-direction: column; /* Coloca a imagem acima do texto */
-
-        }
-
-        /* Ajusta o espaço entre a imagem e o texto */
-        .custom-nav-link img {
-            margin-right: 5px; /* Espaço entre a imagem e o texto */
-        }
-
-        /* Ajusta o espaçamento do texto para iniciar na linha 2 */
-        .nav-item {
-            margin-top: -50px; /* Adiciona espaço acima do item */
-        }
-
-        footer {
-            position: fixed; /* Fixa o rodapé na parte inferior */
-            bottom: 0; /* Alinha o rodapé na parte inferior */
-            left: 0; /* Alinha o rodapé à esquerda */
-            right: 0; /* Alinha o rodapé à direita */
-            background-color: #778898; /* Cor do rodapé igual à da navbar */
-            text-align: center; /* Centraliza o texto no footer */
-            padding: 10px 0; /* Espaçamento no footer */
-            color: black; /* Cor do texto no footer */
-            display: flex; /* Usar flexbox para alinhar os itens */
-            justify-content: center; /* Centraliza os itens horizontalmente */
-            align-items: center; /* Centraliza os itens verticalmente */
-        }
-
-        footer h2 {
-            margin: 0; /* Remove a margem do h2 */
-            display: inline; /* Mantém o h2 em linha com outros elementos */
-        }
-
-        footer strong {
-            display: inline; /* Mantém o texto em linha */
-        }
-
-    </style>
-{% endblock %}
-
 {% block menu %}
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}">
             <div class="icon-container">
-                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 50%; height: 50px; margin-left: 20px; margin-top: 20px;">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
             </div>
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'menu_add' %}">
-                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; filter: invert(1);">
-                        <span style="margin-top: 5px;">Retornar</span>
+                    <a class="nav-link text-center" href="{% url 'menu_add' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px;margin-left: 100px;">Retornar</span>
                     </a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
-</div>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
 <br>
 <br>
 <br>
-
-
 {% endblock %}
 
 {% block content %}
 <br>
-<br>
-
 
 <h2 style="flex-grow: 1; text-align: center; margin: 0;">Editar Condomínio</h2> <!-- Título centralizado -->
 
 <div class="container">
     <form method="post" id="condominium-form">
+       <input type="hidden" name="status" value="1">  <!-- Campo oculto para status -->
+
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6">
-                <!-- Nome do Condomínio e CNPJ na mesma linha -->
                 <div class="form-group">
-                    <label for="id_nome_condominio" style="display: inline-block; margin-left: 40px;">Nome do Condomínio:</label>
+                    <label for="id_nome_condominio">Nome do Condomínio:</label>
                     {{ form.nome_condominio }}
-
-                    <label for="id_cnpj" style="display: inline-block; margin-left: 20px;">CNPJ:</label>
-                    {{ form.cnpj }}
-
-                    <label for="id_data_condominio" style="display: inline-block; margin-left: 40px;">Data do Condomínio:</label>
-                    {{ form.data_condominio }}
-
                     <div class="error-message">{{ form.nome_condominio.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_cnpj">CNPJ:</label>
+                    {{ form.cnpj }}
                     <div class="error-message">{{ form.cnpj.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_data_condominio">Data do Condomínio:</label>
+                    {{ form.data_condominio }}
                     <div class="error-message">{{ form.data_condominio.errors }}</div>
                 </div>
 
-                <!-- Campo CEP -->
                 <div class="form-group">
-                    <label for="id_cep" style="display: inline-block; margin-left: 40px;">CEP:</label>
+                    <label for="id_cep">CEP:</label>
                     {{ form.cep }}
-
-                    <label for="id_logradouro" style="display: inline-block; margin-left: 40px;">Logradouro:</label>
-                    {{ form.logradouro }}
-
-                    <label for="id_numero" style="display: inline-block; margin-left: 40px;">Número:</label>
-                    {{ form.numero }}
-
-                    <div class="error-message">{{ form.logradouro.errors }}</div>
-                    <div class="error-message">{{ form.numero.errors }}</div>
                     <div class="error-message">{{ form.cep.errors }}</div>
                 </div>
 
-                <!-- Campo Complemento -->
                 <div class="form-group">
-                    <label for="id_complemento" style="display: inline-block; margin-left: 40px;">Complemento:</label>
+                    <label for="id_logradouro">Logradouro:</label>
+                    {{ form.logradouro }}
+                    <div class="error-message">{{ form.logradouro.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_numero">Número:</label>
+                    {{ form.numero }}
+                    <div class="error-message">{{ form.numero.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_complemento">Complemento:</label>
                     {{ form.complemento }}
                     <div class="error-message">{{ form.complemento.errors }}</div>
                 </div>
+            </div>
 
-                <!-- Campo Bairro -->
+            <div class="col-md-6">
                 <div class="form-group">
-                    <label for="id_bairro" style="display: inline-block; margin-left: 40px;">Bairro:</label>
+                    <label for="id_bairro">Bairro:</label>
                     {{ form.bairro }}
-
-                    <label for="id_cidade" style="display: inline-block; margin-left: 40px;">Cidade:</label>
-                    {{ form.cidade }}
-
-                    <label for="id_uf" style="display: inline-block; margin-left: 40px;">UF:</label>
-                    {{ form.uf }}
-
                     <div class="error-message">{{ form.bairro.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_cidade">Cidade:</label>
+                    {{ form.cidade }}
                     <div class="error-message">{{ form.cidade.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_uf">UF:</label>
+                    {{ form.uf }}
                     <div class="error-message">{{ form.uf.errors }}</div>
                 </div>
 
-                <!-- Campo Ramal do Condomínio -->
                 <div class="form-group">
-                    <label for="id_ramal_condominio" style="display: inline-block; margin-left: 40px;">Ramal do Condomínio:</label>
+                    <label for="id_ramal_condominio">Ramal do Condomínio:</label>
                     {{ form.ramal_condominio }}
-
-                    <label for="id_ramal_interno" style="display: inline-block; margin-left: 40px;">Ramal Interno:</label>
-                    {{ form.ramal_interno }}
-
-                    <label for="id_telefone" style="display: inline-block; margin-left: 40px;">Telefone:</label>
-                    {{ form.telefone }}
-
-                    <div class="error-message">{{ form.ramal_interno.errors }}</div>
                     <div class="error-message">{{ form.ramal_condominio.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_ramal_interno">Ramal Interno:</label>
+                    {{ form.ramal_interno }}
+                    <div class="error-message">{{ form.ramal_interno.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_telefone">Telefone:</label>
+                    {{ form.telefone }}
                     <div class="error-message">{{ form.telefone.errors }}</div>
                 </div>
 
-                <!-- Campo Internet -->
                 <div class="form-group">
-                    <label for="id_internet" style="display: inline-block; margin-left: 40px;">Internet:</label>
+                    <label for="id_internet">Internet:</label>
                     {{ form.internet }}
-
-                    <label for="id_unidade" style="display: inline-block; margin-left: 40px;">Unidade:</label>
-                    {{ form.unidade }}
-
-                    <label for="id_suporteunidade" style="display: inline-block; margin-left: 40px;">Suporte Unidade:</label>
-                    {{ form.suporteunidade }}
-
                     <div class="error-message">{{ form.internet.errors }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campos adicionais (continuar assim até o final do formulário) -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_unidade">Unidade:</label>
+                    {{ form.unidade }}
                     <div class="error-message">{{ form.unidade.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_suporteunidade">Suporte Unidade:</label>
+                    {{ form.suporteunidade }}
                     <div class="error-message">{{ form.suporteunidade.errors }}</div>
                 </div>
 
-                <!-- Campo Entregadores Norma -->
                 <div class="form-group">
-                    <label for="id_entregadores_norma" style="display: inline-block; margin-left: 40px;">Entregadores Norma:</label>
+                    <label for="id_entregadores_norma">Entregadores Norma:</label>
                     {{ form.entregadores_norma }}
-
-                    <label for="id_prestadores_norma" style="display: inline-block; margin-left: 40px;">Prestadores Norma:</label>
-                    {{ form.prestadores_norma }}
-
-                    <label for="id_reservas_norma" style="display: inline-block; margin-left: 40px;">Reservas Norma:</label>
-                    {{ form.reservas_norma }}
-
-                    <div class="error-message">{{ form.reservas_norma.errors }}</div>
-                    <div class="error-message">{{ form.prestadores_norma.errors }}</div>
                     <div class="error-message">{{ form.entregadores_norma.errors }}</div>
                 </div>
 
-                <!-- Campo Mudanças Norma -->
                 <div class="form-group">
-                    <label for="id_mudancas_norma" style="display: inline-block; margin-left: 40px;">Mudanças Norma:</label>
+                    <label for="id_prestadores_norma">Prestadores Norma:</label>
+                    {{ form.prestadores_norma }}
+                    <div class="error-message">{{ form.prestadores_norma.errors }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_reservas_norma">Reservas Norma:</label>
+                    {{ form.reservas_norma }}
+                    <div class="error-message">{{ form.reservas_norma.errors }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_mudancas_norma">Mudanças Norma:</label>
                     {{ form.mudancas_norma }}
-
-                    <label for="id_responsavel_tattica" style="display: inline-block; margin-left: 40px;">Responsável Tattica:</label>
-                    {{ form.responsavel_tattica }}
-
-                    <div class="error-message">{{ form.responsavel_tattica.errors }}</div>
                     <div class="error-message">{{ form.mudancas_norma.errors }}</div>
                 </div>
 
-                <!-- Campo Norma Observação -->
                 <div class="form-group">
-                    <label for="id_norma_observacao" style="display: inline-block; margin-left: 40px;">Norma Observação:</label>
-                    {{ form.norma_observacao }}
+                    <label for="id_responsavel_tattica">Responsável Tattica:</label>
+                    {{ form.responsavel_tattica }}
+                    <div class="error-message">{{ form.responsavel_tattica.errors }}</div>
+                </div>
 
+                <div class="form-group">
+                    <label for="id_norma_observacao">Norma Observação:</label>
+                    {{ form.norma_observacao }}
                     <div class="error-message">{{ form.norma_observacao.errors }}</div>
                 </div>
+            </div>
 
-                <!-- Campo Website -->
-                <div class="form-group">
-                    <label for="id_website" style="display: inline-block; margin-left: 40px;">Website:</label>
-                    {{ form.website }}
-
-                    <label for="id_website_agendamento" style="display: inline-block; margin-left: 40px;">Website Agendamento:</label>
-                    {{ form.website_agendamento }}
-
-                    <div class="error-message">{{ form.website_agendamento.errors }}</div>
-                    <div class="error-message">{{ form.website.errors }}</div>
-                </div>
-
-                <!-- Campo Financeiro Responsável -->
-                <div class="form-group">
-                    <label for="id_financeiro_responsavel" style="display: inline-block; margin-left: 40px;">Financeiro Responsável:</label>
-                    {{ form.financeiro_responsavel }}
-
-                    <label for="id_financeiro_email" style="display: inline-block; margin-left: 40px;">Financeiro Email:</label>
-                    {{ form.financeiro_email }}
-
-                    <div class="error-message">{{ form.financeiro_email.errors }}</div>
-                    <div class="error-message">{{ form.financeiro_responsavel.errors }}</div>
-                </div>
-
-                   <!-- Botão de Enviar -->
+            <div class="row">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <br>
-                        <button type="submit" class="btn btn-primary custom-save-btn">Salvar</button>
-                        <br>
-                        <br>
+                        <label for="id_website">Website:</label>
+                        {{ form.website }}
+                        <div class="error-message">{{ form.website.errors }}</div>
                     </div>
 
-                <input type="hidden" name="status" value="1">
+                    <div class="form-group">
+                        <label for="id_website_agendamento">Website Agendamento:</label>
+                        {{ form.website_agendamento }}
+                        <div class="error-message">{{ form.website_agendamento.errors }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="id_financeiro_responsavel">Responsável Financeiro:</label>
+                        {{ form.financeiro_responsavel }}
+                        <div class="error-message">{{ form.financeiro_responsavel.errors }}</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_financeiro_email">Email Financeiro:</label>
+                        {{ form.financeiro_email }}
+                        <div class="error-message">{{ form.financeiro_email.errors }}</div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <div class="form-group">
+            <br>
+            <button type="submit" class="btn btn-primary ">Cadastrar</button>
+        </div>
+        <br>
+        <br>
+        <br>
     </form>
+</div>
 
-    <!-- Incluindo o jQuery e jQuery Mask Plugin -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
-    <script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
     $(document).ready(function(){
-        // Máscara para o CNPJ
-        $('#id_cnpj').mask('00.000.000/0000-00');
-
-        // Máscara para o CEP
+        // Aplica as máscaras nos campos
         $('#id_cep').mask('00000-000');
-
-        // Máscara para o TEL
-        $('#id_telefone').mask('(00) 0 0000-00000');
-
-        // Função para preencher o endereço a partir do CEP
-        $('#id_cep').blur(function() {
-            const cep = this.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-            if (cep.length === 8) {
-                fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.erro) {
-                            $('#id_logradouro').val(data.logradouro);
-                            $('#id_bairro').val(data.bairro);
-                            $('#id_cidade').val(data.localidade);
-                            $('#id_uf').val(data.uf);
-                        } else {
-                            alert('CEP não encontrado.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erro ao buscar dados:', error);
-                        alert('Erro ao buscar dados do CEP.');
-                    });
-            }
-        });
+        $('#id_cnpj').mask('00.000.000/0000-00');
+        $('#id_telefone').mask('(00) 0000-0000');
+        $('#id_ramal_condominio').mask('0000');
+        $('#id_ramal_interno').mask('0000');
+        $('#id_unidade').mask('0000');
     });
-    </script>
-
-{% block footer %}
-{% endblock %}
+</script>
 {% endblock %}
