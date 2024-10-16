@@ -1,153 +1,206 @@
 {% extends 'base_login.html' %}
 {% load static %}
 
+    <style>
+        /* Remove os marcadores da lista */
+        .navbar-nav {
+            list-style-type: none; /* Remove os marcadores */
+        }
+
+        /* Alinha a imagem e o texto no centro */
+        .custom-nav-link {
+            color: black; /* Cor do texto dos links */
+            font-size: 14px; /* Aumenta o tamanho da fonte dos links */
+            font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
+            font-weight: bold; /* Adiciona negrito ao texto */
+            display: flex; /* Alinha ícone e texto em linha */
+            align-items: flex-start; /* Alinha à esquerda */
+            margin-left: 120px; /* Adiciona margem à esquerda */
+            flex-direction: column; /* Coloca a imagem acima do texto */
+
+        }
+
+        /* Ajusta o espaço entre a imagem e o texto */
+        .custom-nav-link img {
+            margin-right: 5px; /* Espaço entre a imagem e o texto */
+        }
+
+        /* Ajusta o espaçamento do texto para iniciar na linha 2 */
+        .nav-item {
+            margin-top: -50px; /* Adiciona espaço acima do item */
+        }
+
+        footer {
+            position: fixed; /* Fixa o rodapé na parte inferior */
+            bottom: 0; /* Alinha o rodapé na parte inferior */
+            left: 0; /* Alinha o rodapé à esquerda */
+            right: 0; /* Alinha o rodapé à direita */
+            background-color: #778898; /* Cor do rodapé igual à da navbar */
+            text-align: center; /* Centraliza o texto no footer */
+            padding: 10px 0; /* Espaçamento no footer */
+            color: black; /* Cor do texto no footer */
+            display: flex; /* Usar flexbox para alinhar os itens */
+            justify-content: center; /* Centraliza os itens horizontalmente */
+            align-items: center; /* Centraliza os itens verticalmente */
+        }
+
+        footer h2 {
+            margin: 0; /* Remove a margem do h2 */
+            display: inline; /* Mantém o h2 em linha com outros elementos */
+        }
+
+        footer strong {
+            display: inline; /* Mantém o texto em linha */
+        }
+
+    </style>
+
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 50%; height: 50px; margin-left: 20px; margin-top: 20px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'menu_add' %}">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; filter: invert(1);">
+                        <span style="margin-top: 5px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
+</div>
+<br>
+<br>
+<br>
+{% endblock %}
 {% block content %}
+
 <div class="container mt-5">
-    <h2 class="text-center">Cadastro de Pessoa</h2>
-    <form method="post">
-        {% csrf_token %}
+    <h2 class="text-center mb-4">Cadastro de Pessoa</h2>
+    <div class="card">
+        <div class="card-body mx-3"> <!-- Adicionando margens esquerda e direita -->
+            <form method="post">
+                {% csrf_token %}
 
-        <!-- Condomínio -->
-        <div class="mb-3">
-            <label for="condominio" class="form-label">Condomínio</label>
-            <select id="condominio" name="condominio" class="form-select" required>
-                <option value="">Selecione o Condomínio...</option>
-                {% for condominio in condominios %}
-                    <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
-                {% endfor %}
-            </select>
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="condominio" class="form-label">Condomínio</label>
+                        <select id="condominio" name="condominio" class="form-select" required>
+                            <option value="">Selecione o Condomínio...</option>
+                            {% for condominio in condominios %}
+                                <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="apartamento" class="form-label">Apartamento</label>
+                        <select id="apartamento" name="apartamento" class="form-select" required>
+                            <option value="">Selecione o Apartamento...</option>
+                        </select>
+                    </div>
+                </div>
 
-        <!-- Apartamento -->
-        <div class="mb-3">
-            <label for="apartamento" class="form-label">Apartamento</label>
-            <select id="apartamento" name="apartamento" class="form-select" required>
-                <option value="">Selecione o Apartamento...</option>
-            </select>
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="tipos_de_pessoa" class="form-label">Tipos de Pessoa</label>
+                        <div>
+                            <input type="radio" id="tipos_de_pessoa_proprietario" name="tipos_de_pessoa" value="1"> Proprietário
+                            <input type="radio" id="tipos_de_pessoa_inquilino" name="tipos_de_pessoa" value="2"> Inquilino
+                            <input type="radio" id="tipos_de_pessoa_visitante" name="tipos_de_pessoa" value="3"> Visitante
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="responsavel" class="form-label">Responsável</label>
+                        <div>
+                            <input type="radio" id="responsavel_sim" name="responsavel" value="1"> Sim
+                            <input type="radio" id="responsavel_nao" name="responsavel" value="2"> Não
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Tipos de Pessoa (Radio Buttons) -->
-        <div class="mb-3">
-            <label for="Tipos de Pessoa" class="form-label">Tipos de Pessoa</label><br>
-            <input type="radio" id="Tipos de Pessoa_Proprietário" name="Tipos de Pessoa" value="1"> Proprietário
-            <input type="radio" id="Tipos de Pessoa_Inquilino" name="Tipos de Pessoa" value="2"> Inquilino
-            <input type="radio" id="Tipos de Pessoa_Visitante" name="Tipos de Pessoa" value="3"> Visitante
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="nome_pessoa" class="form-label">Nome da Pessoa</label>
+                        <input type="text" id="nome_pessoa" name="nome_pessoa" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="parentesco" class="form-label">Parentesco</label>
+                        <input type="text" id="parentesco" name="parentesco" class="form-control">
+                    </div>
+                </div>
 
-        <!-- Responsável -->
-        <div class="mb-3">
-            <label for="responsavel" class="form-label">Responsável</label><br>
-            <input type="radio" id="responsavel_sim" name="responsavel" value="1"> Sim
-            <input type="radio" id="responsavel_nao" name="responsavel" value="2"> Não
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="data_aniversario" class="form-label">Data de Aniversário</label>
+                        <input type="date" id="data_aniversario" name="data_aniversario" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="sexo" class="form-label">Sexo</label>
+                        <div>
+                            <input type="radio" id="sexo_m" name="sexo" value="M"> M
+                            <input type="radio" id="sexo_f" name="sexo" value="F"> F
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Nome da Pessoa -->
-        <div class="mb-3">
-            <label for="nome_pessoa" class="form-label">Nome da Pessoa</label>
-            <input type="text" id="nome_pessoa" name="nome_pessoa" class="form-control" maxlength="220" required>
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="celular" class="form-label">Celular</label>
+                        <input type="text" id="celular" name="celular" class="form-control" maxlength="45" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="celular_2" class="form-label">Celular 2</label>
+                        <input type="text" id="celular_2" name="celular_2" class="form-control" maxlength="45">
+                    </div>
+                </div>
 
-        <!-- Parentesco -->
-        <div class="mb-3">
-            <label for="parentesco" class="form-label">Parentesco</label>
-            <input type="text" id="parentesco" name="parentesco" class="form-control" maxlength="220">
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" maxlength="220">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="cpf" class="form-label">CPF</label>
+                        <input type="text" id="cpf" name="cpf" class="form-control" maxlength="45">
+                    </div>
+                </div>
 
-        <!-- Data de Aniversário -->
-        <div class="mb-3">
-            <label for="data_aniversario" class="form-label">Data de Aniversário</label>
-            <input type="date" id="data_aniversario" name="data_aniversario" class="form-control">
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="rg" class="form-label">RG</label>
+                        <input type="text" id="rg" name="rg" class="form-control" maxlength="45">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="data_vencimento" class="form-label">Data de Vencimento</label>
+                        <input type="date" id="data_vencimento" name="data_vencimento" class="form-control">
+                    </div>
+                </div>
 
-        <!-- Sexo -->
-        <div class="mb-3">
-            <label for="sexo" class="form-label">Sexo</label><br>
-            <input type="radio" id="sexo_m" name="sexo" value="M"> M
-            <input type="radio" id="sexo_f" name="sexo" value="F"> F
-        </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label for="observacoes" class="form-label">Observações</label>
+                        <textarea id="observacoes" name="observacoes" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
 
-        <!-- Celular -->
-        <div class="mb-3">
-            <label for="celular" class="form-label">Celular</label>
-            <input type="text" id="celular" name="celular" class="form-control" maxlength="45" required>
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+                <br>
+                <br>
+                <br>
+            </form>
         </div>
-
-        <!-- Celular 2 -->
-        <div class="mb-3">
-            <label for="celular_2" class="form-label">Celular 2</label>
-            <input type="text" id="celular_2" name="celular_2" class="form-control" maxlength="45">
-        </div>
-
-        <!-- Email -->
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control" maxlength="220">
-        </div>
-
-        <!-- CPF -->
-        <div class="mb-3">
-            <label for="cpf" class="form-label">CPF</label>
-            <input type="text" id="cpf" name="cpf" class="form-control" maxlength="45">
-        </div>
-
-        <!-- RG -->
-        <div class="mb-3">
-            <label for="rg" class="form-label">RG</label>
-            <input type="text" id="rg" name="rg" class="form-control" maxlength="45">
-        </div>
-
-        <!-- Profissão -->
-        <div class="mb-3">
-            <label for="profissao" class="form-label">Profissão</label>
-            <input type="text" id="profissao" name="profissao" class="form-control" maxlength="45">
-        </div>
-
-        <!-- Classificação -->
-        <div class="mb-3">
-            <label for="tipos_classificacao" class="form-label">Classificação</label>
-            <select id="tipos_classificacao" name="tipos_classificacao" class="form-select">
-                <option value="">Selecione</option>
-                {% for classificacao in tipos_classificacaos %}
-                <option value="{{ classificacao.id }}">{{ classificacao.nome_classificacao }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Criticidade -->
-        <div class="mb-3">
-            <label for="criticidade" class="form-label">Criticidade</label>
-            <select id="criticidade" name="criticidade" class="form-select">
-                <option value="">Selecione a Criticidade...</option>
-                {% for criticidade in criticidades %}
-                <option value="{{ criticidade.id }}">{{ criticidade.nome_criticidade }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Observação -->
-        <div class="mb-3">
-            <label for="observacao" class="form-label">Observação</label>
-            <textarea id="observacao" name="observacao" class="form-control" maxlength="220"></textarea>
-        </div>
-
-        <!-- Status Facial -->
-        <div class="mb-3">
-            <label for="status_facial" class="form-label">Status Facial</label>
-            <select id="status_facial" name="status_facial" class="form-select">
-                <option value="1">Ativo</option>
-                <option value="2">Inativo</option>
-            </select>
-        </div>
-
-        <!-- Botões -->
-        <div class="d-flex justify-content-center mt-4">
-            <button type="submit" class="btn btn-primary">Salvar</button>
-            <a href="{% url 'list_pessoas' %}" class="btn btn-secondary ms-3">Cancelar</a>
-        </div>
-    </form>
+    </div>
 </div>
 
-<!-- Script para carregar os apartamentos dinamicamente -->
 <script>
     document.getElementById('condominio').addEventListener('change', function() {
         var condominioId = this.value;
