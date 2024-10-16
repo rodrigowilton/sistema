@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from app.models import Pessoas, Apartamentos, Condominios, Criticidades, TiposClassificacaos, TiposPessoas
@@ -13,15 +14,61 @@ class ListPessoasView(View):
         return render(request, 'list_pessoas.html', {'pessoas': pessoas})
 
 
-
 def criar_pessoa(request):
     condominios = Condominios.objects.filter(status=1)  # Condominios ativos
     criticidades = Criticidades.objects.all()  # Criticidades do banco
     classificacoes = TiposClassificacaos.objects.all()  # Classificações do banco
 
     if request.method == 'POST':
-        # Tratamento de formulário POST e criação da pessoa
-        pass
+        # Coletando dados do formulário
+        condominio_id = request.POST.get('condominio')
+        apartamento_id = request.POST.get('apartamento')
+        tipos_pessoa_value = request.POST.get('tipos_pessoa')  # Alterado para 'tipos_pessoa'
+        responsavel = request.POST.get('responsavel')
+        nome_pessoa = request.POST.get('nome_pessoa')
+        parentesco = request.POST.get('parentesco')
+        data_aniversario = request.POST.get('data_aniversario')
+        sexo = request.POST.get('sexo')
+        celular = request.POST.get('celular')
+        celular_2 = request.POST.get('celular_2')
+        email = request.POST.get('email')
+        cpf = request.POST.get('cpf')
+        rg = request.POST.get('rg')
+        profissao = request.POST.get('profissao')
+        criticidade_id = request.POST.get('criticidade')
+        tipos_classificacao_id = request.POST.get('tipos_classificacao')
+        observacao = request.POST.get('observacoes')  # Alterado para 'observacao'
+
+        # Buscando o objeto TiposPessoas usando o campo correto
+        tipos_pessoa = TiposPessoas.objects.get(nome_tipos_pessoa=tipos_pessoa_value)  # Use 'nome_tipos_pessoa'
+
+        # Criando a nova pessoa
+        try:
+            nova_pessoa = Pessoas(
+                apartamento_id=apartamento_id,
+                tipos_pessoa=tipos_pessoa,
+                responsavel=responsavel,
+                nome_pessoa=nome_pessoa,
+                parentesco=parentesco,
+                data_aniversario=data_aniversario,
+                sexo=sexo,
+                celular=celular,
+                celular_2=celular_2,
+                email=email,
+                cpf=cpf,
+                rg=rg,
+                profissao=profissao,
+                criticidade_id=criticidade_id,
+                tipos_classificacao_id=tipos_classificacao_id,
+                observacao=observacao,  # Alterado para 'observacao'
+                status = 1  # Definindo o status como 1
+
+            )
+            nova_pessoa.save()  # Salvando a nova pessoa no banco de dados
+            messages.success(request, 'Pessoa cadastrada com sucesso!')
+            return redirect('criar_pessoas')  # Redireciona para a página inicial ou onde preferir
+        except Exception as e:
+            messages.error(request, f'Erro ao cadastrar pessoa: {str(e)}')
 
     return render(request, 'criar_pessoas.html', {
         'condominios': condominios,
@@ -30,8 +77,8 @@ def criar_pessoa(request):
         'tipos_pessoas': TiposPessoas.objects.all(),  # Tipos de pessoa (Proprietário, Inquilino, etc)
     })
 
+
 # View para carregar apartamentos dinamicamente
-from django.http import JsonResponse
 
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
