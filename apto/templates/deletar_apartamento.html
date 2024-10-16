@@ -46,14 +46,14 @@
     <div class="col-md-6">
         <div class="card shadow">
             <div class="card-header bg-danger text-white">
-                <h2 class="text-center">Deletar Apartamento: {{ apartamento.nome_apartamento }}</h2>
+                <h2 class="text-center">Deletar Apartamento </h2>
             </div>
             <div class="card-body">
-                <p class="text-center">Você tem certeza que deseja deletar este apartamento?</p>
+                <p class="text-center">Você tem certeza que deseja deletar este apartamento? <strong>"{{ apartamento.nome_apartamento }}"</strong>?</p>
                 <div class="d-flex justify-content-center mt-4">
                     <form method="post" class="mr-2">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
+                        <button type="submit" class="btn btn-danger">Remover</button>
                     </form>
                 </div>
             </div>

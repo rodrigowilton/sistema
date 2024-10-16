@@ -1,0 +1,171 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Cadastro de Pessoa</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Condomínio -->
+        <div class="mb-3">
+            <label for="condominio" class="form-label">Condomínio</label>
+            <select id="condominio" name="condominio" class="form-select" required>
+                <option value="">Selecione o Condomínio...</option>
+                {% for condominio in condominios %}
+                    <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Apartamento -->
+        <div class="mb-3">
+            <label for="apartamento" class="form-label">Apartamento</label>
+            <select id="apartamento" name="apartamento" class="form-select" required>
+                <option value="">Selecione o Apartamento...</option>
+            </select>
+        </div>
+
+        <!-- Tipos de Pessoa (Radio Buttons) -->
+        <div class="mb-3">
+            <label for="Tipos de Pessoa" class="form-label">Tipos de Pessoa</label><br>
+            <input type="radio" id="Tipos de Pessoa_Proprietário" name="Tipos de Pessoa" value="1"> Proprietário
+            <input type="radio" id="Tipos de Pessoa_Inquilino" name="Tipos de Pessoa" value="2"> Inquilino
+            <input type="radio" id="Tipos de Pessoa_Visitante" name="Tipos de Pessoa" value="3"> Visitante
+        </div>
+
+        <!-- Responsável -->
+        <div class="mb-3">
+            <label for="responsavel" class="form-label">Responsável</label><br>
+            <input type="radio" id="responsavel_sim" name="responsavel" value="1"> Sim
+            <input type="radio" id="responsavel_nao" name="responsavel" value="2"> Não
+        </div>
+
+        <!-- Nome da Pessoa -->
+        <div class="mb-3">
+            <label for="nome_pessoa" class="form-label">Nome da Pessoa</label>
+            <input type="text" id="nome_pessoa" name="nome_pessoa" class="form-control" maxlength="220" required>
+        </div>
+
+        <!-- Parentesco -->
+        <div class="mb-3">
+            <label for="parentesco" class="form-label">Parentesco</label>
+            <input type="text" id="parentesco" name="parentesco" class="form-control" maxlength="220">
+        </div>
+
+        <!-- Data de Aniversário -->
+        <div class="mb-3">
+            <label for="data_aniversario" class="form-label">Data de Aniversário</label>
+            <input type="date" id="data_aniversario" name="data_aniversario" class="form-control">
+        </div>
+
+        <!-- Sexo -->
+        <div class="mb-3">
+            <label for="sexo" class="form-label">Sexo</label><br>
+            <input type="radio" id="sexo_m" name="sexo" value="M"> M
+            <input type="radio" id="sexo_f" name="sexo" value="F"> F
+        </div>
+
+        <!-- Celular -->
+        <div class="mb-3">
+            <label for="celular" class="form-label">Celular</label>
+            <input type="text" id="celular" name="celular" class="form-control" maxlength="45" required>
+        </div>
+
+        <!-- Celular 2 -->
+        <div class="mb-3">
+            <label for="celular_2" class="form-label">Celular 2</label>
+            <input type="text" id="celular_2" name="celular_2" class="form-control" maxlength="45">
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" maxlength="220">
+        </div>
+
+        <!-- CPF -->
+        <div class="mb-3">
+            <label for="cpf" class="form-label">CPF</label>
+            <input type="text" id="cpf" name="cpf" class="form-control" maxlength="45">
+        </div>
+
+        <!-- RG -->
+        <div class="mb-3">
+            <label for="rg" class="form-label">RG</label>
+            <input type="text" id="rg" name="rg" class="form-control" maxlength="45">
+        </div>
+
+        <!-- Profissão -->
+        <div class="mb-3">
+            <label for="profissao" class="form-label">Profissão</label>
+            <input type="text" id="profissao" name="profissao" class="form-control" maxlength="45">
+        </div>
+
+        <!-- Criticidade -->
+        <div class="mb-3">
+            <label for="criticidade" class="form-label">Criticidade</label>
+            <select id="criticidade" name="criticidade" class="form-select">
+                <option value="">Selecione caso tenha criticidade</option>
+                {% for criticidade in criticidades %}
+                <option value="{{ criticidade.id }}">{{ criticidade.nome_criticidade }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Observação -->
+        <div class="mb-3">
+            <label for="observacao" class="form-label">Observação</label>
+            <textarea id="observacao" name="observacao" class="form-control" maxlength="220"></textarea>
+        </div>
+
+        <!-- Status Facial -->
+        <div class="mb-3">
+            <label for="status_facial" class="form-label">Status Facial</label>
+            <select id="status_facial" name="status_facial" class="form-select">
+                <option value="1">Ativo</option>
+                <option value="2">Inativo</option>
+            </select>
+        </div>
+
+        <!-- Classificação -->
+        <div class="mb-3">
+            <label for="tipos_classificacao" class="form-label">Classificação</label>
+            <select id="tipos_classificacao" name="tipos_classificacao" class="form-select">
+                <option value="">Selecione</option>
+                {% for classificacao in tipos_classificacaos %}
+                <option value="{{ classificacao.id }}">{{ classificacao.nome_classificacao }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Botões -->
+        <div class="d-flex justify-content-center mt-4">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'list_pessoas' %}" class="btn btn-secondary ms-3">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<!-- Script para carregar os apartamentos dinamicamente -->
+<script>
+    document.getElementById('condominio').addEventListener('change', function() {
+        var condominioId = this.value;
+        var apartamentoSelect = document.getElementById('apartamento');
+        apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+
+        if (condominioId) {
+            fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
+                .then(response => response.json())
+                .then(data => {
+                    data.apartamentos.forEach(function(apartamento) {
+                        var option = document.createElement('option');
+                        option.value = apartamento.id;
+                        option.text = apartamento.nome_apartamento;
+                        apartamentoSelect.appendChild(option);
+                    });
+                });
+        }
+    });
+</script>
+{% endblock %}
