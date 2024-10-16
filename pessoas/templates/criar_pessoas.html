@@ -93,7 +93,7 @@
 
                 <div class="row mb-3">
                     <div class="col-md-12">
-                        <label for="condominio" class="form-label">Condomínio</label>
+                        <strong><label for="condominio" class="form-label">Condomínio</label></strong>
                         <select id="condominio" name="condominio" class="form-select" required>
                             <option value="">Selecione o Condomínio...</option>
                             {% for condominio in condominios %}
@@ -102,7 +102,7 @@
                         </select>
                     </div>
                     <div class="col-md-12">
-                        <label for="apartamento" class="form-label">Apartamento</label>
+                        <strong><label for="apartamento" class="form-label">Apartamento</label></strong>
                         <select id="apartamento" name="apartamento" class="form-select" required>
                             <option value="">Selecione o Apartamento...</option>
                         </select>
@@ -111,7 +111,7 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="tipos_de_pessoa" class="form-label">Tipos de Pessoa</label>
+                        <strong><label for="tipos_de_pessoa" class="form-label">Tipos de Pessoa</label></strong>
                         <div>
                             <input type="radio" id="tipos_de_pessoa_proprietario" name="tipos_de_pessoa" value="1"> Proprietário
                             <input type="radio" id="tipos_de_pessoa_inquilino" name="tipos_de_pessoa" value="2"> Inquilino
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label for="responsavel" class="form-label">Responsável</label>
+                        <strong><label for="responsavel" class="form-label">Responsável</label></strong>
                         <div>
                             <input type="radio" id="responsavel_sim" name="responsavel" value="1"> Sim
                             <input type="radio" id="responsavel_nao" name="responsavel" value="2"> Não
@@ -129,22 +129,22 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="nome_pessoa" class="form-label">Nome da Pessoa</label>
+                        <strong><label for="nome_pessoa" class="form-label">Nome da Pessoa</label></strong>
                         <input type="text" id="nome_pessoa" name="nome_pessoa" class="form-control" required>
                     </div>
                     <div class="col-md-6">
-                        <label for="parentesco" class="form-label">Parentesco</label>
+                        <strong><label for="parentesco" class="form-label">Parentesco</label></strong>
                         <input type="text" id="parentesco" name="parentesco" class="form-control">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="data_aniversario" class="form-label">Data de Aniversário</label>
+                        <strong><label for="data_aniversario" class="form-label">Data de Aniversário</label></strong>
                         <input type="date" id="data_aniversario" name="data_aniversario" class="form-control">
                     </div>
                     <div class="col-md-6">
-                        <label for="sexo" class="form-label">Sexo</label>
+                        <strong><label for="sexo" class="form-label">Sexo</label></strong>
                         <div>
                             <input type="radio" id="sexo_m" name="sexo" value="M"> M
                             <input type="radio" id="sexo_f" name="sexo" value="F"> F
@@ -154,40 +154,61 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="celular" class="form-label">Celular</label>
+                        <strong><label for="celular" class="form-label">Celular</label></strong>
                         <input type="text" id="celular" name="celular" class="form-control" maxlength="45" required>
                     </div>
                     <div class="col-md-6">
-                        <label for="celular_2" class="form-label">Celular 2</label>
+                        <strong><label for="celular_2" class="form-label">Celular 2</label></strong>
                         <input type="text" id="celular_2" name="celular_2" class="form-control" maxlength="45">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="email" class="form-label">Email</label>
+                        <strong><label for="email" class="form-label">Email</label></strong>
                         <input type="email" id="email" name="email" class="form-control" maxlength="220">
                     </div>
                     <div class="col-md-6">
-                        <label for="cpf" class="form-label">CPF</label>
+                        <strong><label for="cpf" class="form-label">CPF</label></strong>
                         <input type="text" id="cpf" name="cpf" class="form-control" maxlength="45">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="rg" class="form-label">RG</label>
+                        <strong><label for="rg" class="form-label">RG</label></strong>
                         <input type="text" id="rg" name="rg" class="form-control" maxlength="45">
                     </div>
                     <div class="col-md-6">
-                        <label for="data_vencimento" class="form-label">Data de Vencimento</label>
-                        <input type="date" id="data_vencimento" name="data_vencimento" class="form-control">
+                        <strong><label for="profissao" class="form-label">Profissão</label></strong>
+                        <input type="text" id="profissao" name="profissao" class="form-control">
                     </div>
+                </div>
+                <!-- Criticidade -->
+                <div class="mb-3">
+                    <strong><label for="criticidade" class="form-label">Criticidade</label></strong>
+                    <select id="criticidade" name="criticidade" class="form-select">
+                        <option value="">Selecione caso tenha criticidade</option>
+                        {% for criticidade in criticidades %}
+                        <option value="{{ criticidade.id }}">{{ criticidade.nome_criticidade }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Classificação -->
+                <div class="mb-3">
+                    <strong><label for="tipos_classificacao" class="form-label">Status Facial</label></strong>
+                    <select id="tipos_classificacao" name="tipos_classificacao" class="form-select">
+                        <option value="">Selecione</option>
+                        {% for classificacao in tipos_classificacaos %}
+                        <option value="{{ classificacao.id }}">{{ classificacao.nome_classificacao }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-12">
-                        <label for="observacoes" class="form-label">Observações</label>
+                        <strong><label for="observacoes" class="form-label">Observações</label></strong>
                         <textarea id="observacoes" name="observacoes" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
