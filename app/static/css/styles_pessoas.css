@@ -207,6 +207,10 @@ h2 {
     background-color: darkred; /* Cor ao passar o mouse */
 }
 
+.radio-spacing {
+    margin-right: 15px; /* ajuste o valor conforme necessário */
+}
+
 
 /* Se precisar de um padding diferente para apenas alguns campos, você pode usar classes específicas */
 #id_parentesco {
