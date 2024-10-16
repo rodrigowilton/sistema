@@ -78,6 +78,29 @@ def criar_pessoa(request):
     })
 
 
+def listar_pessoas(request):
+    pessoas = Pessoas.objects.all()  # Obtém todas as pessoas do banco de dados
+    return render(request, 'list_pessoas.html', {'pessoas': pessoas})
+
+def editar_pessoa(request, pessoa_id):
+    pessoa = get_object_or_404(Pessoas, id=pessoa_id)
+
+    if request.method == 'POST':
+        # Coletando dados do formulário
+        pessoa.nome_pessoa = request.POST.get('nome_pessoa')
+        pessoa.cpf = request.POST.get('cpf')
+        pessoa.celular = request.POST.get('celular')
+        pessoa.email = request.POST.get('email')
+        # Atualize outros campos conforme necessário
+
+        try:
+            pessoa.save()  # Salvando as alterações no banco de dados
+            messages.success(request, 'Pessoa editada com sucesso!')
+            return redirect('list_pessoas')  # Redireciona para a lista de pessoas
+        except Exception as e:
+            messages.error(request, f'Erro ao editar pessoa: {str(e)}')
+
+    return render(request, 'editar_pessoas.html', {'pessoa': pessoa})
 # View para carregar apartamentos dinamicamente
 
 def get_apartamentos_por_condominio(request):

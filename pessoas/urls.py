@@ -1,11 +1,12 @@
 from django.urls import path
-from .views import ListPessoasView, criar_pessoa, DeletarPessoasView,get_apartamentos_por_condominio
+from .views import criar_pessoa, DeletarPessoasView,get_apartamentos_por_condominio,editar_pessoa,listar_pessoas
 from . import views
 
 urlpatterns = [
-    path('criar/', criar_pessoa, name='criar_pessoas'),
+    path('criar/', criar_pessoa, name='criar_pessoas'),  # URL para criar uma nova pessoa
+    path('editar/<int:pessoa_id>/', editar_pessoa, name='editar_pessoa'),  # URL para editar uma pessoa
+    path('listar/', listar_pessoas, name='listar_pessoas'),  # URL para listar pessoas
     path('get-apartamentos-por-condominio/', get_apartamentos_por_condominio, name='get_apartamentos_por_condominio'),
-    path('', ListPessoasView.as_view(), name='list_pessoas'),  # CBV - View baseada em classe
     path('deletar/<int:pk>/', DeletarPessoasView.as_view(), name='deletar_pessoas'),  # CBV
     path('get-condominio/<int:apartamento_id>/', views.get_condominio, name='get_condominio'),  # Função para obter condomínio
 ]
