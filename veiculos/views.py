@@ -3,14 +3,11 @@ from django.contrib import messages
 from app.models import Veiculos, Apartamentos, TiposVeiculos, Condominios
 from django.http import JsonResponse
 
-
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
-    apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
+    apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id).values('id', 'nome_apartamento')
 
-    apartamentos_data = [{'id': apartamento.id, 'nome_apartamento': apartamento.nome_apartamento} for apartamento in apartamentos]
-
-    return JsonResponse({'apartamentos': apartamentos_data})
+    return JsonResponse({'apartamentos': list(apartamentos)})
 
 
 

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apto',
     'pessoas',
     'veiculos',
+    'pets',
 
 ]
 

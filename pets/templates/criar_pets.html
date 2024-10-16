@@ -1,0 +1,132 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_add' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px;margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br><br><br>
+{% endblock %}
+
+{% block content %}
+<br>
+<h2 style="flex-grow: 1; text-align: center; margin: 0;">Cadastrar Pet</h2> <!-- Título centralizado -->
+
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="condominio">Condomínio:</label>
+                    <select name="condominio" id="condominio" class="form-control" required>
+                        <option value="">Selecione o Condomínio...</option>
+                        {% for condominio in condominios %}
+                            <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="apartamento">Apartamento:</label>
+                    <select name="apartamento" id="apartamento" class="form-control" required>
+                        <option value="">Selecione o Apartamento...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo_raca">Tipo de Animal:</label>
+                    <select name="tipo_raca" id="tipo_raca" class="form-control" required>
+                        <option value="">Selecione o Tipo de Animal...</option>
+                        {% for tipo in tipos_racas %}
+                            <option value="{{ tipo.id }}">{{ tipo.nome_tipos_raca }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="raca">Raça:</label>
+                    <select name="raca" id="raca" class="form-control" required>
+                        <option value="">Selecione a Raça...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="nome_pet">Nome do Pet:</label>
+                    <input type="text" name="nome_pet" id="nome_pet" class="form-control" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <br>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+        <br><br><br>
+    </form>
+</div>
+
+<script>
+    document.getElementById('condominio').addEventListener('change', function() {
+        var condominioId = this.value;
+        var apartamentoSelect = document.getElementById('apartamento');
+        apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+
+        if (condominioId) {
+            fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
+                .then(response => response.json())
+                .then(data => {
+                    data.apartamentos.forEach(function(apartamento) {
+                        var option = document.createElement('option');
+                        option.value = apartamento.id;
+                        option.text = apartamento.nome_apartamento;
+                        apartamentoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar apartamentos:', error);
+                });
+        }
+    });
+
+    document.getElementById('tipo_raca').addEventListener('change', function() {
+        var tipoRacaId = this.value;
+        var racaSelect = document.getElementById('raca');
+        racaSelect.innerHTML = '<option value="">Selecione a Raça...</option>';
+
+        if (tipoRacaId) {
+            fetch("{% url 'get_racas_por_tipo_raca' %}?tipo_raca_id=" + tipoRacaId)
+                .then(response => response.json())
+                .then(data => {
+                    data.racas.forEach(function(raca) {
+                        var option = document.createElement('option');
+                        option.value = raca.id;
+                        option.text = raca.nome_raca;
+                        racaSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar raças:', error);
+                });
+        }
+    });
+</script>
+{% endblock %}
