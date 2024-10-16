@@ -1,79 +1,20 @@
 {% extends 'base_login.html' %}
 {% load static %}
 
-<style>
-        /* Remove os marcadores da lista */
-        .navbar-nav {
-            list-style-type: none; /* Remove os marcadores */
-        }
-
-        /* Alinha a imagem e o texto no centro */
-        .custom-nav-link {
-            color: black; /* Cor do texto dos links */
-            font-size: 14px; /* Aumenta o tamanho da fonte dos links */
-            font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Estilo da fonte */
-            font-weight: bold; /* Adiciona negrito ao texto */
-            display: flex; /* Alinha ícone e texto em linha */
-            align-items: flex-start; /* Alinha à esquerda */
-            margin-left: 120px; /* Adiciona margem à esquerda */
-            flex-direction: column; /* Coloca a imagem acima do texto */
-
-        }
-
-        /* Ajusta o espaço entre a imagem e o texto */
-        .custom-nav-link img {
-            margin-right: 5px; /* Espaço entre a imagem e o texto */
-        }
-
-        /* Ajusta o espaçamento do texto para iniciar na linha 2 */
-        .nav-item {
-            margin-top: -50px; /* Adiciona espaço acima do item */
-        }
-
-        footer {
-            position: fixed; /* Fixa o rodapé na parte inferior */
-            bottom: 0; /* Alinha o rodapé na parte inferior */
-            left: 0; /* Alinha o rodapé à esquerda */
-            right: 0; /* Alinha o rodapé à direita */
-            background-color: #778898; /* Cor do rodapé igual à da navbar */
-            text-align: center; /* Centraliza o texto no footer */
-            padding: 10px 0; /* Espaçamento no footer */
-            color: black; /* Cor do texto no footer */
-            display: flex; /* Usar flexbox para alinhar os itens */
-            justify-content: center; /* Centraliza os itens horizontalmente */
-            align-items: center; /* Centraliza os itens verticalmente */
-        }
-
-        footer h2 {
-            margin: 0; /* Remove a margem do h2 */
-            display: inline; /* Mantém o h2 em linha com outros elementos */
-        }
-
-        footer strong {
-            display: inline; /* Mantém o texto em linha */
-        }
-        .radio-spacing {
-            margin-right: 45px; /* ajuste o valor conforme necessário */
-        }
-
-
-</style>
-
-
 {% block menu %}
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}">
             <div class="icon-container">
-                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 50%; height: 50px; margin-left: 20px; margin-top: 20px;">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
             </div>
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'menu_add' %}">
-                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; filter: invert(1);">
-                        <span style="margin-top: 5px;">Retornar</span>
+                    <a class="nav-link text-center" href="{% url 'menu_add' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px;margin-left: 100px;">Retornar</span>
                     </a>
                 </li>
             </ul>
@@ -82,6 +23,7 @@
 </nav>
 <div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
 </div>
+
 <br>
 <br>
 <br>
@@ -97,7 +39,7 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <strong><label for="condominio" class="form-label">Condomínio</label></strong>
+                            <label for="condominio" class="label">Condomínio</label>
                             <select id="condominio" name="condominio" class="form-select" required>
                                 <option value="">Selecione o Condomínio...</option>
                                 {% for condominio in condominios %}
@@ -105,6 +47,7 @@
                                 {% endfor %}
                             </select>
                         </div>
+
                         <div class="col-md-6">
                             <strong><label for="apartamento" class="form-label">Apartamento</label></strong>
                             <select id="apartamento" name="apartamento" class="form-select" required>

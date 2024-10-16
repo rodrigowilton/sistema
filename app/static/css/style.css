@@ -98,3 +98,15 @@ footer {
 .logout-link:hover {
     color: darkred; /* Cor ao passar o mouse */
 }
+
+            label {
+                font-size: 14px; /* Tamanho da fonte dos rótulos */
+                font-weight: bold; /* Deixa os rótulos em negrito */
+            }
+
+            .label {
+                font-size: 14px !important; /* Tamanho da fonte */
+                font-weight: bold !important; /* Negrito */
+                font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif !important; /* Fonte */
+                margin-bottom: 5px !important; /* Espaçamento abaixo */
+            }
