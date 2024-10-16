@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from app.models import Pessoas, Apartamentos, Condominios
-
+from app.models import Pessoas, Apartamentos, Condominios, Criticidades, TiposClassificacaos, TiposPessoas
 from .forms import PessoasForm  # Certifique-se de criar um formulário para o modelo Pessoas
 from django.http import JsonResponse
 
@@ -15,38 +14,33 @@ class ListPessoasView(View):
 
 
 
-
-# View para criar uma nova pessoa
 def criar_pessoa(request):
-    if request.method == 'POST':
-        # Aqui você processa os dados do formulário e cria a pessoa
-        form = PessoaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('list_pessoas')
-    else:
-        form = PessoasForm()
+    condominios = Condominios.objects.filter(status=1)  # Condominios ativos
+    criticidades = Criticidades.objects.all()  # Criticidades do banco
+    classificacoes = TiposClassificacaos.objects.all()  # Classificações do banco
 
-    # Pegamos todos os condomínios ativos (ajuste de status conforme sua lógica de status)
-    condominios = Condominios.objects.filter(status=1)  # Considerando '1' como ativo
+    if request.method == 'POST':
+        # Tratamento de formulário POST e criação da pessoa
+        pass
 
     return render(request, 'criar_pessoas.html', {
-        'form': form,
-        'condominios': condominios
+        'condominios': condominios,
+        'criticidades': criticidades,
+        'tipos_classificacaos': classificacoes,
+        'tipos_pessoas': TiposPessoas.objects.all(),  # Tipos de pessoa (Proprietário, Inquilino, etc)
     })
 
+# View para carregar apartamentos dinamicamente
+from django.http import JsonResponse
 
-# View para retornar os apartamentos de um condomínio via AJAX
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
-    apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id, status=1)  # '1' como ativo
+    apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
+    data = {
+        'apartamentos': [{'id': apto.id, 'nome_apartamento': apto.nome_apartamento} for apto in apartamentos]
+    }
+    return JsonResponse(data)
 
-    apartamentos_data = [
-        {'id': apartamento.id, 'nome_apartamento': apartamento.nome_apartamento}
-        for apartamento in apartamentos
-    ]
-
-    return JsonResponse({'apartamentos': apartamentos_data})
 
 class DeletarPessoasView(View):
     def get(self, request, pk):

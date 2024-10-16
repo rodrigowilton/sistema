@@ -102,11 +102,22 @@
             <input type="text" id="profissao" name="profissao" class="form-control" maxlength="45">
         </div>
 
+        <!-- Classificação -->
+        <div class="mb-3">
+            <label for="tipos_classificacao" class="form-label">Classificação</label>
+            <select id="tipos_classificacao" name="tipos_classificacao" class="form-select">
+                <option value="">Selecione</option>
+                {% for classificacao in tipos_classificacaos %}
+                <option value="{{ classificacao.id }}">{{ classificacao.nome_classificacao }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
         <!-- Criticidade -->
         <div class="mb-3">
             <label for="criticidade" class="form-label">Criticidade</label>
             <select id="criticidade" name="criticidade" class="form-select">
-                <option value="">Selecione caso tenha criticidade</option>
+                <option value="">Selecione a Criticidade...</option>
                 {% for criticidade in criticidades %}
                 <option value="{{ criticidade.id }}">{{ criticidade.nome_criticidade }}</option>
                 {% endfor %}
@@ -125,17 +136,6 @@
             <select id="status_facial" name="status_facial" class="form-select">
                 <option value="1">Ativo</option>
                 <option value="2">Inativo</option>
-            </select>
-        </div>
-
-        <!-- Classificação -->
-        <div class="mb-3">
-            <label for="tipos_classificacao" class="form-label">Classificação</label>
-            <select id="tipos_classificacao" name="tipos_classificacao" class="form-select">
-                <option value="">Selecione</option>
-                {% for classificacao in tipos_classificacaos %}
-                <option value="{{ classificacao.id }}">{{ classificacao.nome_classificacao }}</option>
-                {% endfor %}
             </select>
         </div>
 
