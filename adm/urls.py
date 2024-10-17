@@ -3,6 +3,7 @@ from .views import  menu_adm, menu_add, menu_ctr, menu_agd, menu_srv, menu_slc, 
 from django.urls import path
 from .views import *
 
+
 urlpatterns = [
     path('menu_adm/', menu_adm, name='menu_adm'),
     path('menu_add/', menu_add, name='menu_add'),

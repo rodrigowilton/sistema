@@ -1,5 +1,3 @@
-# views.py
-
 from django.shortcuts import render, redirect
 from app.models import LiberacoesAcessos, Condominios, Apartamentos, Pessoas, TatticaFuncionarios
 from django.utils import timezone
@@ -12,9 +10,9 @@ def get_apartamentos_por_condominio(request):
 
 def get_pessoas_por_apartamento(request):
     apartamento_id = request.GET.get('apartamento_id')
-    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id, status__in=['proprietario', 'inquilino']).values('id', 'nome')  # Ajuste o campo conforme necessário
+    # Retorna todas as pessoas vinculadas ao apartamento, sem filtro de status
+    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id).values('id', 'nome_pessoa')  # Use 'nome_pessoa'
     return JsonResponse({'pessoas': list(pessoas)})
-
 
 def criar_liberacao_acesso(request):
     if request.method == "POST":
@@ -48,22 +46,22 @@ def criar_liberacao_acesso(request):
         liberacao.save()  # Salva a liberação no banco de dados
 
         # Exibe uma mensagem de sucesso e redireciona
-        return redirect('criar_liberacao_acesso')  # Redireciona para uma página de sucesso (ajuste conforme necessário)
+        return redirect('criar_liberacao_acesso')  # Aqui você pode redirecionar para uma página de sucesso, se necessário
 
     # Se não for um POST, renderiza o formulário
     condominios = Condominios.objects.all()
     apartamentos = []
     pessoas = []
 
-    # Verifica se há um condomínio selecionado
-    if request.GET.get("condominio"):
-        condominio_id = request.GET.get("condominio")
+    # Verifica se há um condomínio e um apartamento selecionados
+    condominio_id = request.GET.get("condominio")
+    apartamento_id = request.GET.get("apartamento")
+
+    if condominio_id:
         apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
 
-        # Se um apartamento for selecionado, busque as pessoas vinculadas
-        if request.GET.get("apartamento"):
-            apartamento_id = request.GET.get("apartamento")
-            pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id, status__in=['proprietario', 'inquilino'])
+    if apartamento_id:
+        pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)  # Sem filtro de status
 
     funcionarios = TatticaFuncionarios.objects.all()
 

@@ -3,6 +3,8 @@
 from django.urls import path
 from liberacaoacesso import views
 
+app_name = 'liberacaoacesso'  # Define o namespace da aplicação
+
 urlpatterns = [
     path('criar_liberacao_acesso/', views.criar_liberacao_acesso, name='criar_liberacao_acesso'),
     path('get_apartamentos_por_condominio/', views.get_apartamentos_por_condominio, name='get_apartamentos_por_condominio'),

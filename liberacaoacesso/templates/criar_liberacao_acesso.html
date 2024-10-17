@@ -25,9 +25,7 @@
 
 {% block content %}
 <div class="container">
-    <br>
-    <br>
-    <br>
+    <br><br><br>
     <h2 class="text-center">Criar Liberação de Acesso</h2>
     <form method="POST">
         {% csrf_token %}
@@ -55,11 +53,9 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="pessoa" class="form-label">Pessoa:</label>
-                <select name="pessoa" id="pessoa" class="form-control" required>
+                <select id="pessoa" name="pessoa" class="form-control">
                     <option value="">Selecione a Pessoa...</option>
-                    {% for pessoa in pessoas %}
-                        <option value="{{ pessoa.id }}">{{ pessoa.nome }}</option>
-                    {% endfor %}
+                    <!-- As opções serão preenchidas pelo JavaScript -->
                 </select>
             </div>
             <div class="col-md-6">
@@ -109,7 +105,9 @@
         <button type="submit" class="btn btn-primary mt-3">Cadastrar</button>
     </form>
 </div>
+
 <script>
+    // Atualiza lista de apartamentos ao escolher um condomínio
     document.getElementById('condominio').addEventListener('change', function() {
         var condominioId = this.value;
         var apartamentoSelect = document.getElementById('apartamento');
@@ -129,20 +127,20 @@
         }
     });
 
+    // Atualiza lista de pessoas ao escolher um apartamento
     document.getElementById('apartamento').addEventListener('change', function() {
         var apartamentoId = this.value;
         var pessoaSelect = document.getElementById('pessoa');
         pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
 
         if (apartamentoId) {
-            // Fetch pessoas vinculadas ao apartamento
-            fetch("{% url 'get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
+            fetch("{% url 'liberacaoacesso:get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)  // Corrigindo a URL
                 .then(response => response.json())
                 .then(data => {
                     data.pessoas.forEach(function(pessoa) {
                         var option = document.createElement('option');
                         option.value = pessoa.id;
-                        option.text = pessoa.nome;  // Ajuste conforme o campo que identifica a pessoa
+                        option.text = pessoa.nome_pessoa;
                         pessoaSelect.appendChild(option);
                     });
                 });
