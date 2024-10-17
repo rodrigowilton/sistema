@@ -1,0 +1,112 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_add' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <br>
+    <br>
+    <br>
+    <h2 class="text-center">Criar Liberação de Acesso</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="condominio" class="form-label">Condomínio:</label>
+                <select name="condominio" id="condominio" class="form-control" required>
+                    <option value="">Selecione o Condomínio...</option>
+                    {% for condominio in condominios %}
+                        <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="apartamento" class="form-label">Apartamento:</label>
+                <select name="apartamento" id="apartamento" class="form-control" required>
+                    <option value="">Selecione o Apartamento...</option>
+                    {% for apartamento in apartamentos %}
+                        <option value="{{ apartamento.id }}">{{ apartamento.nome_apartamento }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="pessoa" class="form-label">Pessoa:</label>
+                <select name="pessoa" id="pessoa" class="form-control" required>
+                    <option value="">Selecione a Pessoa...</option>
+                    {% for pessoa in pessoas %}
+                        <option value="{{ pessoa.id }}">{{ pessoa.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="tattica_funcionario" class="form-label">Funcionário Tattica:</label>
+                <select name="tattica_funcionario" id="tattica_funcionario" class="form-control" required>
+                    <option value="">Selecione o Funcionário...</option>
+                    {% for funcionario in funcionarios %}
+                        <option value="{{ funcionario.id }}">{{ funcionario.nome_funcionario }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="nome_acesso" class="form-label">Nome do Acesso:</label>
+                <input type="text" name="nome_acesso" id="nome_acesso" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="descricao" class="form-label">Descrição:</label>
+                <textarea name="descricao" id="descricao" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="rg" class="form-label">RG:</label>
+                <input type="text" name="rg" id="rg" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="cpf" class="form-label">CPF:</label>
+                <input type="text" name="cpf" id="cpf" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="data_inicio" class="form-label">Data de Início:</label>
+                <input type="date" name="data_inicio" id="data_inicio" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="data_fim" class="form-label">Data de Fim:</label>
+                <input type="date" name="data_fim" id="data_fim" class="form-control" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Cadastrar</button>
+    </form>
+</div>
+{% endblock %}

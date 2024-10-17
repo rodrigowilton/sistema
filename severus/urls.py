@@ -32,5 +32,6 @@ urlpatterns = [
     path("pets/", include("pets.urls")),
     path("contatoemergencia/", include("contatoemergencia.urls")),
     path("permissaoacesso/", include("permissaoacesso.urls")),
+    path("liberacaoacesso/", include("liberacaoacesso.urls")),
     path("recados/", include("recados.urls")),
 ]
