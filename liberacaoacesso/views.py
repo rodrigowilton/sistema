@@ -3,6 +3,18 @@
 from django.shortcuts import render, redirect
 from app.models import LiberacoesAcessos, Condominios, Apartamentos, Pessoas, TatticaFuncionarios
 from django.utils import timezone
+from django.http import JsonResponse
+
+def get_apartamentos_por_condominio(request):
+    condominio_id = request.GET.get('condominio_id')
+    apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id).values('id', 'nome_apartamento')
+    return JsonResponse({'apartamentos': list(apartamentos)})
+
+def get_pessoas_por_apartamento(request):
+    apartamento_id = request.GET.get('apartamento_id')
+    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id, status__in=['proprietario', 'inquilino']).values('id', 'nome')  # Ajuste o campo conforme necessário
+    return JsonResponse({'pessoas': list(pessoas)})
+
 
 def criar_liberacao_acesso(request):
     if request.method == "POST":
@@ -40,8 +52,19 @@ def criar_liberacao_acesso(request):
 
     # Se não for um POST, renderiza o formulário
     condominios = Condominios.objects.all()
-    apartamentos = Apartamentos.objects.all()
-    pessoas = Pessoas.objects.all()
+    apartamentos = []
+    pessoas = []
+
+    # Verifica se há um condomínio selecionado
+    if request.GET.get("condominio"):
+        condominio_id = request.GET.get("condominio")
+        apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
+
+        # Se um apartamento for selecionado, busque as pessoas vinculadas
+        if request.GET.get("apartamento"):
+            apartamento_id = request.GET.get("apartamento")
+            pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id, status__in=['proprietario', 'inquilino'])
+
     funcionarios = TatticaFuncionarios.objects.all()
 
     return render(request, 'criar_liberacao_acesso.html', {

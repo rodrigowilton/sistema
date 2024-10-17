@@ -109,4 +109,45 @@
         <button type="submit" class="btn btn-primary mt-3">Cadastrar</button>
     </form>
 </div>
+<script>
+    document.getElementById('condominio').addEventListener('change', function() {
+        var condominioId = this.value;
+        var apartamentoSelect = document.getElementById('apartamento');
+        apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+
+        if (condominioId) {
+            fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
+                .then(response => response.json())
+                .then(data => {
+                    data.apartamentos.forEach(function(apartamento) {
+                        var option = document.createElement('option');
+                        option.value = apartamento.id;
+                        option.text = apartamento.nome_apartamento;
+                        apartamentoSelect.appendChild(option);
+                    });
+                });
+        }
+    });
+
+    document.getElementById('apartamento').addEventListener('change', function() {
+        var apartamentoId = this.value;
+        var pessoaSelect = document.getElementById('pessoa');
+        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+
+        if (apartamentoId) {
+            // Fetch pessoas vinculadas ao apartamento
+            fetch("{% url 'get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
+                .then(response => response.json())
+                .then(data => {
+                    data.pessoas.forEach(function(pessoa) {
+                        var option = document.createElement('option');
+                        option.value = pessoa.id;
+                        option.text = pessoa.nome;  // Ajuste conforme o campo que identifica a pessoa
+                        pessoaSelect.appendChild(option);
+                    });
+                });
+        }
+    });
+</script>
+
 {% endblock %}
