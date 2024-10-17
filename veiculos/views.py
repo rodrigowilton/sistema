@@ -39,7 +39,7 @@ def editar_veiculos(request, veiculo_id):
         veiculo.save()
 
         messages.success(request, 'Veículo atualizado com sucesso!')
-        return redirect('listar_pessoas')
+        return redirect('editar_veiculos')
 
     return render(request, 'editar_veiculos.html', {
         'veiculo': veiculo,

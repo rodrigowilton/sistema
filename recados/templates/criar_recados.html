@@ -51,9 +51,6 @@
                     <label for="pessoa">Pessoa:</label>
                     <select name="pessoa" id="pessoa" class="form-control" required>
                         <option value="">Selecione a Pessoa...</option>
-                        {% for pessoa in pessoas %}
-                            <option value="{{ pessoa.id }}">{{ pessoa.nome_pessoa }}</option>
-                        {% endfor %}
                     </select>
                 </div>
 
@@ -88,11 +85,6 @@
                     <label for="data_fim">Data de Fim:</label>
                     <input type="date" name="data_fim" id="data_fim" class="form-control" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="status">Status:</label>
-                    <input type="number" name="status" id="status" class="form-control" required>
-                </div>
             </div>
         </div>
 
@@ -103,10 +95,13 @@
 </div>
 
 <script>
+    // Carrega apartamentos ao selecionar o condomínio
     document.getElementById('condominio').addEventListener('change', function() {
         var condominioId = this.value;
         var apartamentoSelect = document.getElementById('apartamento');
         apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+        var pessoaSelect = document.getElementById('pessoa');
+        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
 
         if (condominioId) {
             fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
@@ -119,8 +114,35 @@
                         apartamentoSelect.appendChild(option);
                     });
                 })
-                .catch(error => console.error('Erro ao buscar apartamentos:', error));
+                .catch(error => {
+                    console.error('Erro ao buscar apartamentos:', error);
+                });
+        }
+    });
+
+    // Carrega pessoas ao selecionar o apartamento
+    document.getElementById('apartamento').addEventListener('change', function() {
+        var apartamentoId = this.value;
+        var condominioId = document.getElementById('condominio').value;
+        var pessoaSelect = document.getElementById('pessoa');
+        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+
+        if (apartamentoId && condominioId) {
+            fetch("{% url 'get_pessoas_por_apartamento' %}?condominio_id=" + condominioId + "&apartamento_id=" + apartamentoId)
+                .then(response => response.json())
+                .then(data => {
+                    data.pessoas.forEach(function(pessoa) {
+                        var option = document.createElement('option');
+                        option.value = pessoa.id;
+                        option.text = pessoa.nome_pessoa;
+                        pessoaSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar pessoas:', error);
+                });
         }
     });
 </script>
+
 {% endblock %}
