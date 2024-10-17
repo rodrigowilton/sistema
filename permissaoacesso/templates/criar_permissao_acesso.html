@@ -1,0 +1,168 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_add' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <br>
+    <br>
+    <br>
+    <h2 class="text-center">Criar Permissão de Acesso</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="condominio">Condomínio:</label>
+            <select name="condominio" id="condominio" class="form-control" required>
+                <option value="">Selecione o Condomínio...</option>
+                {% for condominio in condominios %}
+                    <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="apartamento">Apartamento:</label>
+            <select name="apartamento" id="apartamento" class="form-control" required>
+                <option value="">Selecione o Apartamento...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tipos_acesso">Tipo de Acesso:</label>
+            <select name="tipos_acesso" id="tipos_acesso" class="form-control" required>
+                <option value="">Selecione o Tipo de Acesso...</option>
+                {% for tipo in tipos_acessos %}
+                    <option value="{{ tipo.id }}">{{ tipo.nome_tipos_acesso }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tipos_funcionario">Tipo de Funcionário:</label>
+            <select name="tipos_funcionario" id="tipos_funcionario" class="form-control" required>
+                <option value="">Selecione o Tipo de Funcionário...</option>
+                {% for tipo in tipos_funcionarios %}
+                    <option value="{{ tipo.id }}">{{ tipo.nome_tipos_funcionario }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="nome_funcionario">Nome do Funcionário:</label>
+            <input type="text" name="nome_funcionario" id="nome_funcionario" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cpf">CPF:</label>
+            <input type="text" name="cpf" id="cpf" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="rg">RG:</label>
+            <input type="text" name="rg" id="rg" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="celular">Celular:</label>
+            <input type="text" name="celular" id="celular" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="data_inicio">Data de Início:</label>
+            <input type="date" name="data_inicio" id="data_inicio" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="data_fim">Data de Fim:</label>
+            <input type="date" name="data_fim" id="data_fim" class="form-control" required>
+        </div>
+
+        <fieldset>
+            <legend>Acesso Livre</legend>
+            <div class="form-check">
+                <input type="checkbox" name="domingo" id="domingo" class="form-check-input">
+                <label class="form-check-label" for="domingo">Domingo</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="segunda" id="segunda" class="form-check-input">
+                <label class="form-check-label" for="segunda">Segunda</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="terca" id="terca" class="form-check-input">
+                <label class="form-check-label" for="terca">Terça</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="quarta" id="quarta" class="form-check-input">
+                <label class="form-check-label" for="quarta">Quarta</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="quinta" id="quinta" class="form-check-input">
+                <label class="form-check-label" for="quinta">Quinta</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="sexta" id="sexta" class="form-check-input">
+                <label class="form-check-label" for="sexta">Sexta</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="sabado" id="sabado" class="form-check-input">
+                <label class="form-check-label" for="sabado">Sábado</label>
+            </div>
+        </fieldset>
+
+        <!-- Novo campo para Acesso Livre -->
+        <div class="form-group">
+            <label for="acesso_livre">Acesso Livre (observações):</label>
+            <textarea name="acesso_livre" id="acesso_livre" class="form-control" rows="3" placeholder="Especifique as observações sobre o acesso livre"></textarea>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+        <br>
+        <br>
+        <br>
+        <br>
+    </form>
+</div>
+
+
+<script>
+    document.getElementById('condominio').addEventListener('change', function() {
+        const condominioId = this.value;
+        fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
+            .then(response => response.json())
+            .then(data => {
+                const apartamentoSelect = document.getElementById('apartamento');
+                apartamentoSelect.innerHTML = ''; // Limpa opções anteriores
+
+                data.apartamentos.forEach(apartamento => {
+                    const option = document.createElement('option');
+                    option.value = apartamento.id;
+                    option.textContent = apartamento.nome_apartamento;
+                    apartamentoSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Erro ao buscar apartamentos:', error));
+    });
+</script>
+
+{% endblock %}

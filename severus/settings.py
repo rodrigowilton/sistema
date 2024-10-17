@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'veiculos',
     'pets',
     'contatoemergencia',
+    'permissaoacesso',
     'recados',
 
 ]
