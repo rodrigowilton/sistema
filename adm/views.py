@@ -1,14 +1,16 @@
-from django.contrib import messages
-from django.http import request
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, Group
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from .forms import CondominiosForm
 from app.models import *
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+
+@login_required
+def verificar_condominio_existe(request):
+    if request.method == 'GET':
+        nome_condominio = request.GET.get('nome_condominio', '').strip()
+        existe = Condominios.objects.filter(nome_condominio__iexact=nome_condominio).exists()
+        return JsonResponse({'existe': existe})
 
 
 # CREATE

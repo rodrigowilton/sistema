@@ -221,10 +221,28 @@
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
+    $(document).ready(function() {
+        $('#id_nome_condominio').on('input', function() {
+            const nome = $(this).val();
+            if (nome) {
+                $.ajax({
+                    url: '{% url "verificar_condominio_existe" %}',  // Ajuste para a URL da nova view
+                    data: {
+                        'nome_condominio': nome
+                    },
+                    success: function(data) {
+                        if (data.existe) {
+                            alert('Este condomínio já existe!');
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    // Código existente para máscara e CEP aqui...
     $(document).ready(function(){
-        // Aplica as máscaras nos campos
         $('#id_cep').mask('00000-000'); // Máscara para CEP
         $('#id_cnpj').mask('00.000.000/0000-00'); // Máscara para CNPJ
         $('#id_telefone').mask('(00) 0 0000-0000'); // Máscara para telefone
