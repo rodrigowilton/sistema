@@ -4,6 +4,9 @@ from .forms import ApartamentoForm
 from django.contrib import messages
 from app.models import Condominios, Apartamentos
 from django.http import JsonResponse
+from django.db.models import F, IntegerField
+from django.db.models.functions import Substr, Cast
+
 
 @login_required
 def criar_apartamentos(request):
@@ -28,7 +31,8 @@ def criar_apartamentos(request):
         condominio_selecionado = condominio  # Mantém o condomínio selecionado na tela
 
         # Obtenha todos os apartamentos existentes no condomínio
-        apartamentos_existentes_db = Apartamentos.objects.filter(condominio=condominio).values_list('nome_apartamento', flat=True)
+        apartamentos_existentes_db = Apartamentos.objects.filter(condominio=condominio).values_list('nome_apartamento',
+                                                                                                    flat=True)
 
         novos_apartamentos = []  # Lista para armazenar novos apartamentos a serem criados
         for andar in range(andares):
@@ -73,7 +77,12 @@ def criar_apartamentos(request):
     elif request.GET.get('condominio_id'):  # Para manter os apartamentos ao recarregar
         condominio_id = request.GET.get('condominio_id')
         condominio_selecionado = Condominios.objects.get(id=condominio_id)
-        apartamentos = Apartamentos.objects.filter(condominio=condominio_selecionado)
+
+        # Ajuste de ordenação usando `annotate` para ordenar corretamente pelo número do apartamento
+        apartamentos = Apartamentos.objects.filter(condominio=condominio_selecionado).annotate(
+            # Extrai a parte numérica do nome do apartamento (assumindo que há um espaço entre prefixo e número)
+            numero_apartamento=Cast(Substr('nome_apartamento', 5), IntegerField())  # Ajuste conforme o formato do nome
+        ).order_by('numero_apartamento')
 
         # Retorna os apartamentos em formato JSON
         apartamentos_data = [

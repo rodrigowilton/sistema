@@ -113,16 +113,18 @@
 {% endblock %}
 
 <div class="content">
-        {% if messages %}
     <br>
     <br>
-    <br>
-        <div class="alert alert-success" role="alert">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
+    {% if messages %}
+    <div id="message-container">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-sucess{% endif %}" role="alert">
+            {{ message }}
         </div>
+        {% endfor %}
+    </div>
     {% endif %}
+
     {% block content %}{% endblock %}
 </div>
 

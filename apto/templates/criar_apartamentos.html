@@ -32,6 +32,8 @@
 <div class="container mt-5">
     <h2 class="text-center">Criar Apartamentos</h2>
 
+
+
     <!-- Formulário para criação de apartamentos -->
     <form method="post" id="apartamento-form">
         {% csrf_token %}
@@ -56,7 +58,7 @@
         </div>
         <div class="form-group">
             <label for="prefixo_apartamento">Prefixo do Apartamento:</label>
-            <input type="text" name="prefixo_apartamento" class="form-control" placeholder="Ex: A, B, 1A.">
+            <input type="text" name="prefixo_apartamento" class="form-control" placeholder="Ex: A, B, 1A">
         </div>
         <div class="form-group">
             <label for="numero_inicial">Número Inicial do Apartamento:</label>
@@ -104,7 +106,6 @@
             <br>
             <br>
             <br>
-            <br>
         </div>
     </div>
 </div>
@@ -112,6 +113,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
+        // Alerta de 3 segundos para desaparecer automaticamente
+        setTimeout(function() {
+            $('#message-container').fadeOut('slow');
+        }, 3000);  // 3000 milissegundos = 3 segundos
+
         $('#condominio-select').change(function() {
             var condominioId = $(this).val();
             if (condominioId) {
