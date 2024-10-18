@@ -27,7 +27,6 @@ def get_pessoas_por_apartamento(request):
     }
     return JsonResponse(data)
 
-
 @login_required
 def criar_liberacao_acesso(request):
     if request.method == "POST":
@@ -41,6 +40,24 @@ def criar_liberacao_acesso(request):
         cpf = request.POST.get("cpf")
         data_inicio = request.POST.get("data_inicio")
         data_fim = request.POST.get("data_fim")
+
+        # Verifica se já existe uma liberação de acesso para o CPF entre as datas
+        existe_liberacao = LiberacoesAcessos.objects.filter(
+            cpf=cpf,
+            data_inicio__lte=data_fim,
+            # A data de início da nova liberação deve ser antes ou igual à data final da liberação existente
+            data_fim__gte=data_inicio
+            # A data de fim da nova liberação deve ser depois ou igual à data inicial da liberação existente
+        ).exists()
+
+        if existe_liberacao:
+            return render(request, 'criar_liberacao_acesso.html', {
+                'condominios': Condominios.objects.all(),
+                'apartamentos': Apartamentos.objects.filter(condominio_id=condominio_id) if condominio_id else [],
+                'pessoas': Pessoas.objects.filter(apartamento_id=apartamento_id),  # Sem filtro de status
+                'funcionarios': TatticaFuncionarios.objects.all(),
+                'erro': 'Já existe uma liberação de acesso para este CPF entre as datas especificadas.'
+            })
 
         # Cria uma nova liberação de acesso
         liberacao = LiberacoesAcessos(
@@ -60,20 +77,23 @@ def criar_liberacao_acesso(request):
         )
         liberacao.save()  # Salva a liberação no banco de dados
 
-        # Exibe uma mensagem de sucesso e redireciona
-        return redirect('liberacaoacesso:criar_liberacao_acesso')  # Aqui você pode redirecionar para uma página de sucesso, se necessário
+        return redirect(
+            'liberacaoacesso:criar_liberacao_acesso')  # Aqui você pode redirecionar para uma página de sucesso, se necessário
 
     # Se não for um POST, renderiza o formulário
     condominios = Condominios.objects.all()
     apartamentos = []
     pessoas = []
 
-    # Verifica se há um condomínio e um apartamento selecionados
+    # Verifica se há um condomínio selecionado e limpa os campos
     condominio_id = request.GET.get("condominio")
     apartamento_id = request.GET.get("apartamento")
 
     if condominio_id:
         apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
+        pessoas = []  # Limpa a lista de pessoas ao mudar o condomínio
+    else:
+        apartamento_id = None  # Limpa o apartamento se não houver condomínio selecionado
 
     if apartamento_id:
         pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)  # Sem filtro de status
@@ -85,4 +105,6 @@ def criar_liberacao_acesso(request):
         'apartamentos': apartamentos,
         'pessoas': pessoas,
         'funcionarios': funcionarios,
+        'erro': None  # Inicializa a variável de erro como None
     })
+

@@ -24,6 +24,13 @@
 {% endblock %}
 
 {% block content %}
+<br>
+<br>
+{% if erro %}
+    <div class="alert alert-danger" role="alert" id="alerta-erro">
+        {{ erro }}
+    </div>
+{% endif %}
 <div class="container">
     <br><br><br>
     <h2 class="text-center">Criar Liberação de Acesso</h2>
@@ -107,6 +114,17 @@
 </div>
 
 <script>
+    // Oculta o alerta de erro após 3 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        const alertaErro = document.getElementById('alerta-erro');
+
+        if (alertaErro) {
+            setTimeout(function() {
+                alertaErro.style.display = 'none'; // Oculta o alerta
+            }, 3000);
+        }
+    });
+
     // Atualiza lista de apartamentos ao escolher um condomínio
     document.getElementById('condominio').addEventListener('change', function() {
         var condominioId = this.value;
@@ -127,31 +145,28 @@
         }
     });
 
-// Atualiza lista de pessoas ao escolher um apartamento
-document.getElementById('apartamento').addEventListener('change', function() {
-    var apartamentoId = this.value;
-    var pessoaSelect = document.getElementById('pessoa');
-    pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+    // Atualiza lista de pessoas ao escolher um apartamento
+    document.getElementById('apartamento').addEventListener('change', function() {
+        var apartamentoId = this.value;
+        var pessoaSelect = document.getElementById('pessoa');
+        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
 
-    if (apartamentoId) {
-        fetch("{% url 'liberacaoacesso:get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
-            .then(response => response.json())
-            .then(data => {
-                data.pessoas.forEach(function(pessoa) {
-                    var option = document.createElement('option');
-                    option.value = pessoa.id;
-                    // Exibe o nome e o tipo de pessoa, destaca em negrito se for proprietário
-                    option.innerHTML = pessoa.is_proprietario
-                        ? "<b>" + pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa + "</b>"
-                        : pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa;
-                    pessoaSelect.appendChild(option);
+        if (apartamentoId) {
+            fetch("{% url 'liberacaoacesso:get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
+                .then(response => response.json())
+                .then(data => {
+                    data.pessoas.forEach(function(pessoa) {
+                        var option = document.createElement('option');
+                        option.value = pessoa.id;
+                        // Exibe o nome e o tipo de pessoa, destaca em negrito se for proprietário
+                        option.innerHTML = pessoa.is_proprietario
+                            ? "<b>" + pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa + "</b>"
+                            : pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa;
+                        pessoaSelect.appendChild(option);
+                    });
                 });
-            });
-    }
-});
-
-
-
+        }
+    });
 </script>
 
 {% endblock %}
