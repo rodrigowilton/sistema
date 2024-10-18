@@ -81,7 +81,7 @@ def criar_veiculos(request):
             messages.error(request, f'Erro ao cadastrar veículo: {str(e)}')
 
     # Passando condomínios para o template
-    condominios = Condominios.objects.all()
+    condominios = Condominios.objects.filter(status=1)
     return render(request, 'criar_veiculos.html', {
         'apartamentos': Apartamentos.objects.all(),  # Adicione conforme necessário
         'tipos_veiculos': TiposVeiculos.objects.all(),  # Adicione conforme necessário

@@ -48,7 +48,7 @@ def criar_pets(request):
         return redirect('criar_pets')  # Redireciona após criar o pet
 
     # Carrega dados para exibição no template
-    condominios = Condominios.objects.all()
+    condominios = Condominios.objects.filter(status=1)
     tipos_racas = TiposRacas.objects.all()  # Carregar tipos de raça
 
     return render(request, 'criar_pets.html', {

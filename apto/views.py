@@ -1,9 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
-from app.models import Apartamentos
 from .forms import ApartamentoForm
 from django.contrib import messages
 from app.models import Condominios, Apartamentos
@@ -18,9 +14,13 @@ def listar_apartamentos(request):
 
 @login_required
 def criar_apartamentos(request):
-    condominios = Condominios.objects.all()
+    condominios = Condominios.objects.filter(status=1)
     apartamentos = None
     condominio_selecionado = None
+    andares = None
+    apartamentos_por_andar = None
+    prefixo_apartamento = None
+    numero_inicial = None
 
     if request.method == 'POST':
         condominio_id = request.POST.get('condominio')
@@ -49,8 +49,8 @@ def criar_apartamentos(request):
                 )
                 numero_atual += 1  # Incrementa o número do apartamento dentro do andar
 
-        # Após criar, mostre os apartamentos criados
-        apartamentos = Apartamentos.objects.filter(condominio=condominio)
+        # Após criar, redirecione para a página que chamou a função
+        return redirect('menu_add')  # Substitua pelo nome da view ou URL correta
 
     elif request.GET.get('condominio_id'):  # Para manter os apartamentos ao recarregar
         condominio_id = request.GET.get('condominio_id')
@@ -73,7 +73,6 @@ def criar_apartamentos(request):
         'apartamentos': apartamentos,
         'condominio_selecionado': condominio_selecionado
     })
-
 
 # View para deletar apartamento
 @login_required

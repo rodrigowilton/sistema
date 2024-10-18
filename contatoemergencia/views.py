@@ -12,7 +12,7 @@ def get_apartamentos_por_condominio(request):
 
 @login_required
 def criar_contato_emergencia(request):
-    condominios = Condominios.objects.all()
+    condominios = Condominios.objects.filter(status=1)
 
     if request.method == 'POST':
         apartamento = Apartamentos.objects.get(id=request.POST['apartamento'])
