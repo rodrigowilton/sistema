@@ -146,6 +146,28 @@
                 });
         }
     });
+    document.addEventListener('DOMContentLoaded', function() {
+    // Seleciona todos os formulários na página
+    const forms = document.querySelectorAll('form');
+
+    forms.forEach(form => {
+        // Adiciona o evento keydown para todos os campos de entrada do formulário
+        form.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { // Verifica se a tecla pressionada é "Enter"
+                e.preventDefault(); // Previne o comportamento padrão do botão "Enter" (submissão do formulário)
+
+                // Encontra o próximo campo de entrada
+                const inputs = Array.from(form.querySelectorAll('input, select, textarea'));
+                const currentIndex = inputs.indexOf(document.activeElement);
+
+                if (currentIndex !== -1 && currentIndex < inputs.length - 1) {
+                    inputs[currentIndex + 1].focus(); // Move o foco para o próximo campo
+                }
+            }
+        });
+    });
+});
+
 </script>
 
 {% endblock %}
