@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from app.models import LiberacoesAcessos, Condominios, Apartamentos, Pessoas, TatticaFuncionarios
+from app.models import LiberacoesAcessos, Condominios, Apartamentos, Pessoas, TatticaFuncionarios, TiposPessoas
 from django.utils import timezone
 from django.http import JsonResponse
 
@@ -10,9 +10,18 @@ def get_apartamentos_por_condominio(request):
 
 def get_pessoas_por_apartamento(request):
     apartamento_id = request.GET.get('apartamento_id')
-    # Retorna todas as pessoas vinculadas ao apartamento, sem filtro de status
-    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id).values('id', 'nome_pessoa')  # Use 'nome_pessoa'
-    return JsonResponse({'pessoas': list(pessoas)})
+    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)  # Sem filtro de status, conforme solicitado
+    data = {
+        'pessoas': [
+            {'id': pessoa.id, 'nome_pessoa': pessoa.nome_pessoa, 'tipo_pessoa': pessoa.tipos_pessoa.nome_tipos_pessoa}
+            for pessoa in pessoas
+        ]
+    }
+    return JsonResponse(data)
+
+
+
+
 
 def criar_liberacao_acesso(request):
     if request.method == "POST":
@@ -46,7 +55,7 @@ def criar_liberacao_acesso(request):
         liberacao.save()  # Salva a liberação no banco de dados
 
         # Exibe uma mensagem de sucesso e redireciona
-        return redirect('criar_liberacao_acesso')  # Aqui você pode redirecionar para uma página de sucesso, se necessário
+        return redirect('liberacaoacesso:criar_liberacao_acesso')  # Aqui você pode redirecionar para uma página de sucesso, se necessário
 
     # Se não for um POST, renderiza o formulário
     condominios = Condominios.objects.all()
