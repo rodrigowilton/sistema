@@ -21,6 +21,8 @@ def criar_condominio(request):
         if form.is_valid():
             print("Formulário válido!")
             condominio = form.save()  # Salva imediatamente, pois o status já é definido no formulário
+            messages.success(request, 'Cadastro criado com sucesso!')
+
             return redirect('menu_adm')  # Redireciona para a página desejada após o salvamento
         else:
             print("Erros no formulário:", form.errors)

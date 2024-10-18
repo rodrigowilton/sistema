@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from app.models import Condominios, Apartamentos, Pets, TiposRacas, Racas
@@ -44,6 +45,7 @@ def criar_pets(request):
             nome_pet=nome_pet,
             status=1
         )
+        messages.success(request, 'Cadastro criado com sucesso!')
 
         return redirect('criar_pets')  # Redireciona após criar o pet
 

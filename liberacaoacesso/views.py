@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from app.models import LiberacoesAcessos, Condominios, Apartamentos, Pessoas, TatticaFuncionarios, TiposPessoas
@@ -76,6 +77,7 @@ def criar_liberacao_acesso(request):
             modified=timezone.now(),
         )
         liberacao.save()  # Salva a liberação no banco de dados
+        messages.success(request, 'Cadastro criado com sucesso!')
 
         return redirect(
             'liberacaoacesso:criar_liberacao_acesso')  # Aqui você pode redirecionar para uma página de sucesso, se necessário

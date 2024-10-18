@@ -29,8 +29,7 @@ def criar_permissao_acesso(request):
         funcionario_cpf = request.POST['cpf']
         funcionario_rg = request.POST['rg']
         funcionario_celular = request.POST['celular']
-        data_inicio = request.POST['data_inicio']
-        data_fim = request.POST['data_fim']
+
 
         # Convertendo 'on' para True e None para False
         domingo = True if request.POST.get('domingo') == 'on' else False
@@ -57,8 +56,6 @@ def criar_permissao_acesso(request):
             apartamento=apartamento,
             tipos_acesso=tipo_acesso,
             funcionario=funcionario,
-            data_inicio=data_inicio,
-            data_fim=data_fim,
             domingo=domingo,
             segunda=segunda,
             terca=terca,
@@ -72,7 +69,7 @@ def criar_permissao_acesso(request):
 
         permissao_acesso.save()
 
-        messages.success(request, 'Permissão de acesso criada com sucesso!')
+        messages.success(request, 'Cadastro criado com sucesso!')
         return redirect('criar_permissao_acesso')
 
     return render(request, 'criar_permissao_acesso.html', {
