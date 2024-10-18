@@ -5,13 +5,6 @@ from django.contrib import messages
 from app.models import Condominios, Apartamentos
 from django.http import JsonResponse
 
-
-# Listar apartamentos
-@login_required
-def listar_apartamentos(request):
-    apartamentos = Apartamentos.objects.all()
-    return render(request, 'listar_apartamentos.html', {'apartamentos': apartamentos})
-
 @login_required
 def criar_apartamentos(request):
     condominios = Condominios.objects.filter(status=1)
@@ -21,6 +14,7 @@ def criar_apartamentos(request):
     apartamentos_por_andar = None
     prefixo_apartamento = None
     numero_inicial = None
+    apartamentos_existentes = []
 
     if request.method == 'POST':
         condominio_id = request.POST.get('condominio')
@@ -33,24 +27,48 @@ def criar_apartamentos(request):
         condominio = Condominios.objects.get(id=condominio_id)
         condominio_selecionado = condominio  # Mantém o condomínio selecionado na tela
 
-        # Inicialize a geração de apartamentos
+        # Obtenha todos os apartamentos existentes no condomínio
+        apartamentos_existentes_db = Apartamentos.objects.filter(condominio=condominio).values_list('nome_apartamento', flat=True)
+
+        novos_apartamentos = []  # Lista para armazenar novos apartamentos a serem criados
         for andar in range(andares):
-            # O número inicial será o andar * 100 + 1 (para começar o primeiro apto do andar com 01)
+            # O número inicial será o andar * número_inicial + 1 (para começar o primeiro apto do andar com 01)
             numero_atual = (andar + 1) * numero_inicial + 1
 
             for apartamento in range(apartamentos_por_andar):
                 nome_apartamento = f"{prefixo_apartamento} {numero_atual}"  # Usa o prefixo alfanumérico
 
-                # Crie o apartamento com status 1
-                Apartamentos.objects.create(
-                    condominio=condominio,
-                    nome_apartamento=nome_apartamento,
-                    status=1  # Defina o status como 1
-                )
+                # Verificar se o apartamento já existe no condomínio (normalizamos espaços e caixa alta/baixa para evitar erros)
+                if nome_apartamento.strip().lower() not in [apt.strip().lower() for apt in apartamentos_existentes_db]:
+                    # Adiciona o novo apartamento à lista de novos apartamentos
+                    novos_apartamentos.append(
+                        Apartamentos(
+                            condominio=condominio,
+                            nome_apartamento=nome_apartamento,
+                            status=1  # Defina o status como 1
+                        )
+                    )
+                else:
+                    # Se o apartamento já existir, armazena o nome do apartamento na lista de existentes
+                    apartamentos_existentes.append(nome_apartamento)
+
                 numero_atual += 1  # Incrementa o número do apartamento dentro do andar
 
+        # Cria todos os apartamentos novos de uma vez
+        if novos_apartamentos:
+            Apartamentos.objects.bulk_create(novos_apartamentos)
+
+        # Verifica se houve apartamentos que já existiam
+        if apartamentos_existentes:
+            # Exibe um alerta com os nomes dos apartamentos que já existiam
+            messages.warning(request, f"Os seguintes apartamentos já existiam: {', '.join(apartamentos_existentes)}")
+
+        if novos_apartamentos:
+            # Caso tenha criado apartamentos novos, exibe uma mensagem de sucesso
+            messages.success(request, f"{len(novos_apartamentos)} apartamentos foram criados com sucesso.")
+
         # Após criar, redirecione para a página que chamou a função
-        return redirect('menu_add')  # Substitua pelo nome da view ou URL correta
+        return redirect('criar_apartamentos')  # Substitua pelo nome da view ou URL correta
 
     elif request.GET.get('condominio_id'):  # Para manter os apartamentos ao recarregar
         condominio_id = request.GET.get('condominio_id')
@@ -73,6 +91,7 @@ def criar_apartamentos(request):
         'apartamentos': apartamentos,
         'condominio_selecionado': condominio_selecionado
     })
+
 
 # View para deletar apartamento
 @login_required
