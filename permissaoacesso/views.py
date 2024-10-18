@@ -1,9 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from app.models import PermissaoAcessos, Condominios, Apartamentos, TiposAcessos, TiposFuncionarios, Funcionarios
 from django.http import JsonResponse
 
 
+@login_required
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id, status=1).values('id', 'nome_apartamento')
@@ -11,6 +13,7 @@ def get_apartamentos_por_condominio(request):
     return JsonResponse({'apartamentos': list(apartamentos)})
 
 
+@login_required
 def criar_permissao_acesso(request):
     condominios = Condominios.objects.filter(status=1)
     tipos_acessos = TiposAcessos.objects.filter(status=1)

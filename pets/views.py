@@ -1,7 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from app.models import Condominios, Apartamentos, Pets, TiposRacas, Racas
 from django.http import JsonResponse
 
+@login_required
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)  # Filtra apartamentos pelo ID do condomínio
@@ -11,6 +13,7 @@ def get_apartamentos_por_condominio(request):
     return JsonResponse(data)
 
 
+@login_required
 def get_racas_por_tipo_raca(request):
     tipo_raca_id = request.GET.get('tipo_raca_id')
 
@@ -22,6 +25,7 @@ def get_racas_por_tipo_raca(request):
     return JsonResponse(data)
 
 
+@login_required
 def criar_pets(request):
     if request.method == 'POST':
         apartamento_id = request.POST.get('apartamento')

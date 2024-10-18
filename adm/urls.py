@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import  menu_adm, menu_add, menu_ctr, menu_agd, menu_srv, menu_slc, menu_ocr, menu_tel, menu_inf
-from django.urls import path
 from .views import *
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -21,6 +20,6 @@ urlpatterns = [
     path('condominios/criar/', criar_condominio, name='create_condominio'),
     path('condominios/<int:id>/', editar_condominio, name='editar_condominio'),
     path('condominios/<int:id>/remover/', delete_condominio, name='delete_condominio'),
-
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
 ]

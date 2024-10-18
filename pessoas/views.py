@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from app.models import Pessoas, Apartamentos, Condominios, Criticidades, TiposClassificacaos, TiposPessoas
 from .forms import PessoasForm  # Certifique-se de criar um formulário para o modelo Pessoas
 from django.http import JsonResponse
 
+@login_required
 def get_condominio(request, apartamento_id):
     apartamento = Apartamentos.objects.get(id=apartamento_id)
     return JsonResponse({'condominio': str(apartamento.condominio)})
@@ -14,6 +16,7 @@ class ListPessoasView(View):
         return render(request, 'list_pessoas.html', {'pessoas': pessoas})
 
 
+@login_required
 def criar_pessoa(request):
     condominios = Condominios.objects.filter(status=1)  # Condominios ativos
     criticidades = Criticidades.objects.all()  # Criticidades do banco
@@ -78,10 +81,12 @@ def criar_pessoa(request):
     })
 
 
+@login_required
 def listar_pessoas(request):
     pessoas = Pessoas.objects.all()  # Obtém todas as pessoas do banco de dados
     return render(request, 'list_pessoas.html', {'pessoas': pessoas})
 
+@login_required
 def editar_pessoa(request, pessoa_id):
     pessoa = get_object_or_404(Pessoas, id=pessoa_id)
 
@@ -103,6 +108,7 @@ def editar_pessoa(request, pessoa_id):
     return render(request, 'editar_pessoas.html', {'pessoa': pessoa})
 # View para carregar apartamentos dinamicamente
 
+@login_required
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)

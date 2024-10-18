@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from app.models import Veiculos, Apartamentos, TiposVeiculos, Condominios
 from django.http import JsonResponse
 
+@login_required
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id).values('id', 'nome_apartamento')
@@ -11,10 +13,12 @@ def get_apartamentos_por_condominio(request):
 
 
 
+@login_required
 def listar_pessoas(request):
     veiculos = Veiculos.objects.all()  # Lista todos os veículos
     return render(request, 'listar_pessoas.html', {'veiculos': veiculos})
 
+@login_required
 def editar_veiculos(request, veiculo_id):
     veiculo = get_object_or_404(Veiculos, id=veiculo_id)
 
@@ -47,6 +51,7 @@ def editar_veiculos(request, veiculo_id):
         'tipos_veiculos': TiposVeiculos.objects.all(),
     })
 
+@login_required
 def criar_veiculos(request):
     if request.method == 'POST':
         # Coletando dados do formulário

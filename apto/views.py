@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 # Create your views here.
@@ -10,11 +11,12 @@ from django.http import JsonResponse
 
 
 # Listar apartamentos
+@login_required
 def listar_apartamentos(request):
     apartamentos = Apartamentos.objects.all()
     return render(request, 'listar_apartamentos.html', {'apartamentos': apartamentos})
 
-
+@login_required
 def criar_apartamentos(request):
     condominios = Condominios.objects.all()
     apartamentos = None
@@ -74,6 +76,7 @@ def criar_apartamentos(request):
 
 
 # View para deletar apartamento
+@login_required
 def deletar_apartamento(request, apartamento_id):
     apartamento = get_object_or_404(Apartamentos, id=apartamento_id)
     if request.method == 'POST':  # Verifique se a requisição é um POST
@@ -82,6 +85,7 @@ def deletar_apartamento(request, apartamento_id):
     return render(request, 'deletar_apartamento.html', {'apartamento': apartamento})
 
 
+@login_required
 def editar_apartamento(request, apartamento_id):
     apartamento = get_object_or_404(Apartamentos, id=apartamento_id)
 

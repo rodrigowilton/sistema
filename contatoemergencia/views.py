@@ -1,13 +1,16 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from app.models import ContatoEmergencias, Condominios, Apartamentos
 from django.http import JsonResponse
 from django.contrib import messages
 
+@login_required
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id).values('id', 'nome_apartamento')
     return JsonResponse({'apartamentos': list(apartamentos)})
 
+@login_required
 def criar_contato_emergencia(request):
     condominios = Condominios.objects.all()
 

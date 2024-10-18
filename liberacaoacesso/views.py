@@ -1,13 +1,16 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from app.models import LiberacoesAcessos, Condominios, Apartamentos, Pessoas, TatticaFuncionarios, TiposPessoas
 from django.utils import timezone
 from django.http import JsonResponse
 
+@login_required
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id).values('id', 'nome_apartamento')
     return JsonResponse({'apartamentos': list(apartamentos)})
 
+@login_required
 def get_pessoas_por_apartamento(request):
     apartamento_id = request.GET.get('apartamento_id')
     pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)  # Sem filtro de status, conforme solicitado
@@ -25,6 +28,7 @@ def get_pessoas_por_apartamento(request):
     return JsonResponse(data)
 
 
+@login_required
 def criar_liberacao_acesso(request):
     if request.method == "POST":
         condominio_id = request.POST.get("condominio")

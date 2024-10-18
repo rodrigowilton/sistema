@@ -1,8 +1,10 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from app.models import Recados, Condominios, Apartamentos, Pessoas, TatticaFuncionarios
 from django.http import JsonResponse
 
+@login_required
 def get_apartamentos_por_condominio(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id).values('id', 'nome_apartamento')
@@ -10,6 +12,7 @@ def get_apartamentos_por_condominio(request):
     return JsonResponse({'apartamentos': list(apartamentos)})
 
 
+@login_required
 def get_pessoas_por_apartamento(request):
     condominio_id = request.GET.get('condominio_id')
     apartamento_id = request.GET.get('apartamento_id')
@@ -20,6 +23,7 @@ def get_pessoas_por_apartamento(request):
 
     return JsonResponse({'pessoas': list(pessoas)})
 
+@login_required
 def criar_recados(request):
     condominios = Condominios.objects.all()
     funcionarios = TatticaFuncionarios.objects.all()
