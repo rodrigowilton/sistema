@@ -7,6 +7,17 @@ from .forms import PessoasForm  # Certifique-se de criar um formulário para o m
 from django.http import JsonResponse
 
 @login_required
+def verificar_cpf(request):
+    cpf = request.GET.get('cpf')
+    apartamento_id = request.GET.get('apartamento_id')
+
+    # Verifica se o CPF já está cadastrado no apartamento
+    existe = Pessoas.objects.filter(cpf=cpf, apartamento_id=apartamento_id).exists()
+
+    return JsonResponse({'existe': existe})
+
+
+@login_required
 def get_condominio(request, apartamento_id):
     apartamento = Apartamentos.objects.get(id=apartamento_id)
     return JsonResponse({'condominio': str(apartamento.condominio)})
@@ -42,6 +53,12 @@ def criar_pessoa(request):
         tipos_classificacao_id = request.POST.get('tipos_classificacao')
         observacao = request.POST.get('observacoes')  # Alterado para 'observacao'
 
+        # Verificando se o CPF já existe no apartamento
+        cpf_existe = Pessoas.objects.filter(apartamento_id=apartamento_id, cpf=cpf).exists()
+        if cpf_existe:
+            messages.warning(request, 'Já existe uma pessoa cadastrada com este CPF neste apartamento.')
+            return redirect('criar_pessoas')  # Redireciona para a página atual
+
         # Buscando o objeto TiposPessoas usando o campo correto
         tipos_pessoa = TiposPessoas.objects.get(nome_tipos_pessoa=tipos_pessoa_value)  # Use 'nome_tipos_pessoa'
 
@@ -64,8 +81,7 @@ def criar_pessoa(request):
                 criticidade_id=criticidade_id,
                 tipos_classificacao_id=tipos_classificacao_id,
                 observacao=observacao,  # Alterado para 'observacao'
-                status = 1  # Definindo o status como 1
-
+                status=1  # Definindo o status como 1
             )
             nova_pessoa.save()  # Salvando a nova pessoa no banco de dados
             messages.success(request, 'Pessoa cadastrada com sucesso!')

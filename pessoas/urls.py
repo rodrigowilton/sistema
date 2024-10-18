@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import criar_pessoa, DeletarPessoasView,get_apartamentos_por_condominio,editar_pessoa,listar_pessoas
+from .views import *
 from . import views
 
 urlpatterns = [
     path('criar/', criar_pessoa, name='criar_pessoas'),  # URL para criar uma nova pessoa
+    path('verificar-cpf/', verificar_cpf, name='verificar_cpf'),
     path('editar/<int:pessoa_id>/', editar_pessoa, name='editar_pessoa'),  # URL para editar uma pessoa
     path('listar/', listar_pessoas, name='listar_pessoas'),  # URL para listar pessoas
     path('get-apartamentos-por-condominio/', get_apartamentos_por_condominio, name='get_apartamentos_por_condominio'),

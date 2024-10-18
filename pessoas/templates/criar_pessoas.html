@@ -186,25 +186,93 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
     <script>
-        document.getElementById('condominio').addEventListener('change', function() {
-            var condominioId = this.value;
-            var apartamentoSelect = document.getElementById('apartamento');
-            apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+        $(document).ready(function() {
+            // Máscaras
+            $('#cpf').mask('000.000.000-00', {reverse: true});  // Máscara para CPF
+            $('#celular').mask('(00) 0 0000-0000');  // Máscara para celular
+            $('#celular_2').mask('(00) 0 0000-0000');  // Máscara para celular 2
 
-            if (condominioId) {
-                fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.apartamentos.forEach(function(apartamento) {
-                            var option = document.createElement('option');
-                            option.value = apartamento.id;
-                            option.text = apartamento.nome_apartamento;
-                            apartamentoSelect.appendChild(option);
+            // Listener para mudança no campo condomínio
+            document.getElementById('condominio').addEventListener('change', function() {
+                var condominioId = this.value;
+                var apartamentoSelect = document.getElementById('apartamento');
+                apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+
+                // Verifica se um condomínio foi selecionado
+                if (condominioId) {
+                    fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.apartamentos.forEach(function(apartamento) {
+                                var option = document.createElement('option');
+                                option.value = apartamento.id;
+                                option.text = apartamento.nome_apartamento;
+                                apartamentoSelect.appendChild(option);
+                            });
                         });
+                }
+            });
+
+            // Listener para mudança no campo apartamento
+            document.getElementById('apartamento').addEventListener('change', function() {
+                const cpfField = document.getElementById('cpf'); // Corrigido para usar o ID correto
+                const cpf = cpfField.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+                const apartamentoId = this.value;
+
+                // Verifica se o apartamento foi selecionado
+                if (apartamentoId && cpf) {
+                    // Realiza a verificação do CPF
+                    $.ajax({
+                        url: "{% url 'verificar_cpf' %}",  // URL da view que verifica o CPF
+                        data: {
+                            'cpf': cpf,
+                            'apartamento_id': apartamentoId // Se você precisar passar o ID do apartamento
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.existe) {
+                                alert('Já existe uma pessoa cadastrada com este CPF neste apartamento.');
+                            }
+                        },
+                        error: function() {
+                            alert('Erro ao verificar o CPF.');
+                        }
                     });
-            }
+                }
+            });
+
+            $('#cpf').on('keyup', function() {
+                const cpf = $(this).val().replace(/\D/g, ''); // Remove caracteres não numéricos
+
+                // Verifica se o CPF não está vazio e se tem 11 dígitos
+                if (cpf.length === 11) {
+                    const apartamentoId = $('#apartamento').val();
+                    if (apartamentoId) {
+                        $.ajax({
+                            url: "{% url 'verificar_cpf' %}",  // URL da view que verifica o CPF
+                            data: {
+                                'cpf': cpf,
+                                'apartamento_id': apartamentoId // Se você precisar passar o ID do apartamento
+                            },
+                            dataType: 'json',
+                            success: function(data) {
+                                if (data.existe) {
+                                    alert('Já existe uma pessoa cadastrada com este CPF neste apartamento.');
+                                }
+                            },
+                            error: function() {
+                                alert('Erro ao verificar o CPF.');
+                            }
+                        });
+                    }
+                }
+            });
         });
     </script>
+
+
 {% endblock %}
