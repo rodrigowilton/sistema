@@ -13,14 +13,16 @@ def get_pessoas_por_apartamento(request):
     pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)  # Sem filtro de status, conforme solicitado
     data = {
         'pessoas': [
-            {'id': pessoa.id, 'nome_pessoa': pessoa.nome_pessoa, 'tipo_pessoa': pessoa.tipos_pessoa.nome_tipos_pessoa}
+            {
+                'id': pessoa.id,
+                'nome_pessoa': pessoa.nome_pessoa,
+                'tipo_pessoa': pessoa.tipos_pessoa.nome_tipos_pessoa,  # Corrigido para 'tipos_pessoa'
+                'is_proprietario': pessoa.tipos_pessoa.nome_tipos_pessoa == 'Proprietário'  # Verifica se é proprietário
+            }
             for pessoa in pessoas
         ]
     }
     return JsonResponse(data)
-
-
-
 
 
 def criar_liberacao_acesso(request):

@@ -140,12 +140,17 @@ document.getElementById('apartamento').addEventListener('change', function() {
                 data.pessoas.forEach(function(pessoa) {
                     var option = document.createElement('option');
                     option.value = pessoa.id;
-                    option.text = pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa;  // Exibindo o nome e o tipo de pessoa
+                    // Exibe o nome e o tipo de pessoa, destaca em negrito se for proprietário
+                    option.innerHTML = pessoa.is_proprietario
+                        ? "<b>" + pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa + "</b>"
+                        : pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa;
                     pessoaSelect.appendChild(option);
                 });
             });
     }
 });
+
+
 
 </script>
 
