@@ -17,10 +17,11 @@
         <div class="collapse navbar-collapse " id="navbarNav">
             <ul class="navbar-nav d-flex ">
                 <li class="nav-item ">
-                    <a class="nav-link custom-nav-link" href="{% url 'menu_add' %}">
-                        <img src="{% static 'img/voltar.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
-                        <span>Retornar</span>
+                    <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
+
                 </li>
             </ul>
         </div>
