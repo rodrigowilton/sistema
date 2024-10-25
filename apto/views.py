@@ -4,7 +4,7 @@ from .forms import ApartamentoForm
 from django.contrib import messages
 from app.models import Condominios, Apartamentos
 from django.http import JsonResponse
-from django.db.models import F, IntegerField
+from django.db.models import F, IntegerField, ProtectedError
 from django.db.models.functions import Substr, Cast
 
 
@@ -101,15 +101,22 @@ def criar_apartamentos(request):
         'condominio_selecionado': condominio_selecionado
     })
 
-
 # View para deletar apartamento
 @login_required
 def deletar_apartamento(request, apartamento_id):
     apartamento = get_object_or_404(Apartamentos, id=apartamento_id)
-    if request.method == 'POST':  # Verifique se a requisição é um POST
-        apartamento.delete()  # Deletar o apartamento
-        return redirect('criar_apartamentos')  # Redirecionar após a exclusão
+    if request.method == 'POST':
+        try:
+            apartamento.delete()  # Tente deletar o apartamento
+            messages.success(request, "Apartamento deletado com sucesso.")  # Mensagem de sucesso
+            return redirect('criar_apartamentos')  # Redirecionar após a exclusão
+        except ProtectedError:
+            # Se um ProtectedError ocorrer, a mensagem já foi adicionada pelo middleware
+            messages.error(request, "Não é possível deletar este apartamento, pois ele está referenciado em outras entidades.")
+            return render(request, 'deletar_apartamento.html', {'apartamento': apartamento})  # Renderiza a mesma página
     return render(request, 'deletar_apartamento.html', {'apartamento': apartamento})
+
+
 
 
 @login_required
