@@ -21,6 +21,7 @@ urlpatterns = [
     path('condominios/verificar/', verificar_condominio_existe, name='verificar_condominio_existe'),
     path('condominios/<int:id>/', editar_condominio, name='editar_condominio'),
     path('condominios/<int:id>/remover/', delete_condominio, name='delete_condominio'),
+    path('consulta-condominio/<int:id>/',consulta_condominio, name='consulta_condominio'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
 ]

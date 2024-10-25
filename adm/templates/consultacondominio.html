@@ -1,0 +1,161 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'home' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br><br><br>
+<style>
+    /* Remove o fundo dos inputs e mantém apenas a borda */
+    .form-control.no-bg {
+        background-color: transparent !important;
+        border: 1px solid #ccc;
+        color: #000;
+        box-shadow: none; /* Remove o box-shadow */
+    }
+
+    /* Ajusta o textarea para exibir o conteúdo completo da observação */
+    textarea[disabled] {
+        background-color: transparent;
+        border: 1px solid #ccc;
+        color: #000;
+        resize: none; /* impede o redimensionamento manual */
+        overflow-y: auto; /* permite rolagem vertical */
+        min-height: 100px; /* altura mínima */
+        width: 100%; /* largura total */
+    }
+
+    /* Estilo para títulos */
+    h2 {
+        flex-grow: 1;
+        text-align: center;
+        margin: 0;
+    }
+
+    /* Estilo para labels */
+    label {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<br>
+<h2>Consultar Condomínio</h2><br><br> <!-- Título centralizado -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <label>Nome do Condomínio:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.nome_condominio }}" disabled>
+
+            <label>CNPJ:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.cnpj }}" disabled>
+
+            <label>Data do Condomínio:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.data_condominio }}" disabled>
+
+            <label>CEP:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.cep }}" disabled>
+
+            <label>Logradouro:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.logradouro }}" disabled>
+
+            <label>Número:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.numero }}" disabled>
+
+            <label>Complemento:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.complemento }}" disabled>
+        </div>
+
+        <div class="col-md-6">
+            <label>Bairro:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.bairro }}" disabled>
+
+            <label>Cidade:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.cidade }}" disabled>
+
+            <label>UF:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.uf }}" disabled>
+
+            <label>Ramal do Condomínio:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.ramal_condominio }}" disabled>
+
+            <label>Ramal Interno:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.ramal_interno }}" disabled>
+
+            <label>Telefone:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.telefone }}" disabled>
+
+            <label>Internet:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.internet }}" disabled>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label>Unidade:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.unidade }}" disabled>
+
+            <label>Suporte Unidade:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.suporteunidade }}" disabled>
+
+            <label>Entregadores Norma:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.entregadores_norma }}" disabled>
+
+            <label>Prestadores Norma:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.prestadores_norma }}" disabled>
+
+            <label>Reservas Norma:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.reservas_norma }}" disabled>
+        </div>
+
+        <div class="col-md-6">
+            <label>Mudanças Norma:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.mudancas_norma }}" disabled>
+
+            <label>Responsável Tattica:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.responsavel_tattica }}" disabled>
+
+            <label>Norma Observação:</label>
+            <textarea class="form-control no-bg" disabled>{{ condominio.norma_observacao }}</textarea>
+
+            <label>Responsável Financeiro:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.financeiro_responsavel }}" disabled>
+
+        </div>
+</div>
+    <div class="row">
+        <div class="col-md-6">
+            <label>Website:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.website }}" disabled>
+
+            <label>Website Agendamento:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.website_agendamento }}" disabled>
+
+            <label>Email Financeiro:</label>
+            <input type="text" class="form-control no-bg" value="{{ condominio.financeiro_email }}" disabled>
+    </div>
+</div>
+
+<br><br><br>
+{% endblock %}

@@ -77,6 +77,10 @@ def redirect_based_on_group(request):
     else:
         return redirect('menu_adm')  # Redireciona para menu_adm
 
+@login_required
+def consulta_condominio(request, id):
+    condominio = get_object_or_404(Condominios, id=id)
+    return render(request, 'consultacondominio.html', {'condominio': condominio})
 
 @login_required
 def menu_adm(request):
