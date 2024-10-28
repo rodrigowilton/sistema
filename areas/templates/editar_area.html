@@ -1,0 +1,19 @@
+<!-- editar_area.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Área</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">  <!-- Link para seu CSS -->
+</head>
+<body>
+    <h1>Editar Área: {{ area.nome_area }}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Renderiza o formulário como parágrafos -->
+        <button type="submit">Salvar Alterações</button>
+    </form>
+    <a href="{% url 'consulta_are' %}">Cancelar</a>  <!-- Link para voltar à consulta -->
+</body>
+</html>
