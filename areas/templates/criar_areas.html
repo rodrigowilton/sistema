@@ -125,6 +125,32 @@
                         <input type="text" name="hora_fim_permitido" class="form-control">
                     </div>
                 </div>
+                            <!-- Quarta coluna com dias da semana -->
+                <div class="col-md-6">
+                    <label><strong>Segunda:</strong></label>
+                    <input type="checkbox" name="segunda">
+
+                    <label><strong>Terça:</strong></label>
+                    <input type="checkbox" name="terca">
+
+                    <label><strong>Quarta:</strong></label>
+                    <input type="checkbox" name="quarta">
+
+                    <label><strong>Quinta:</strong></label>
+                    <input type="checkbox" name="quinta">
+
+                    <label><strong>Sexta:</strong></label>
+                    <input type="checkbox" name="sexta">
+
+                    <label><strong>Sábado:</strong></label>
+                    <input type="checkbox" name="sabado">
+
+                    <label><strong>Domingo:</strong></label>
+                    <input type="checkbox" name="domingo">
+
+                    <label><strong>Tem Feriados:</strong></label>
+                    <input type="checkbox" name="tem_feriados">
+                </div>
             </div>
         </div>
 
@@ -142,42 +168,30 @@
                     </div>
                 </div>
 
-                <label><strong>Permitir Convidados:</strong></label>
-                <input type="checkbox" name="permite_convidados">
-
-                <label><strong>Necessita Aprovação:</strong></label>
-                <input type="checkbox" name="necessita_aprovacao">
-
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Permitir Convidados:</strong></label>
+                        <select name="permite_convidados" class="form-control">
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Necessita Aprovação:</strong></label>
+                        <select name="necessita_aprovacao" class="form-control">
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                    </div>
+                </div>
                 <label><strong>Status:</strong></label>
-                <input type="number" name="status" class="form-control">
+                <select name="necessita_aprovacao" class="form-control">
+                    <option value="1">Ativo</option>
+                    <option value="0">Inativo</option>
+                </select>
             </div>
 
-            <!-- Quarta coluna com dias da semana -->
-            <div class="col-md-6">
-                <label><strong>Segunda:</strong></label>
-                <input type="checkbox" name="segunda">
 
-                <label><strong>Terça:</strong></label>
-                <input type="checkbox" name="terca">
-
-                <label><strong>Quarta:</strong></label>
-                <input type="checkbox" name="quarta">
-
-                <label><strong>Quinta:</strong></label>
-                <input type="checkbox" name="quinta">
-
-                <label><strong>Sexta:</strong></label>
-                <input type="checkbox" name="sexta">
-
-                <label><strong>Sábado:</strong></label>
-                <input type="checkbox" name="sabado">
-
-                <label><strong>Domingo:</strong></label>
-                <input type="checkbox" name="domingo">
-
-                <label><strong>Tem Feriados:</strong></label>
-                <input type="checkbox" name="tem_feriados">
-            </div>
         </div>
 
         <br>
