@@ -1,0 +1,187 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
+</div>
+<br>
+<br>
+<br>
+{% endblock %}}
+
+{% block content %}
+<br>
+<h2 style="text-align: center;">Criar Área</h2><br>
+
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Primeira coluna -->
+            <div class="col-md-6">
+                <label><strong>Condomínio:</strong></label>
+                <select name="condominio" class="form-control" required>
+                    {% for condominio in condominios %}
+                        <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                    {% endfor %}
+                </select>
+
+                <label><strong>Nome da Área:</strong></label>
+                <input type="text" name="nome_area" class="form-control" required>
+
+                <label><strong>Andar:</strong></label>
+                <input type="text" name="andar" class="form-control">
+
+                <label><strong>Limite de Pessoas:</strong></label>
+                <input type="number" name="limite_pessoas" class="form-control">
+
+                <label><strong>Valor:</strong></label>
+                <input type="text" name="valor" class="form-control">
+
+                <label><strong>Normas:</strong></label>
+                <textarea name="normas" class="form-control"></textarea>
+
+                <label><strong>Informações:</strong></label>
+                <textarea name="info" class="form-control"></textarea>
+
+                <!-- Nova linha para Hora Mínima e Hora Máxima -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Hora Mínima:</strong></label>
+                        <input type="text" name="hora_min" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label><strong>Hora Máxima:</strong></label>
+                        <input type="text" name="hora_max" class="form-control">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Segunda coluna -->
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Antecedência Mínima:</strong></label>
+                        <input type="text" name="antecedencia_min" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Antecedência Máxima:</strong></label>
+                        <input type="number" name="antecedencia_max" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Intervalo entre Reservas:</strong></label>
+                        <input type="text" name="intervalo_entre_reservas" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Máximo de Reservas Abertas:</strong></label>
+                        <input type="number" name="max_abertos" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Tempo entre Reservas:</strong></label>
+                        <input type="number" name="tempo_entre_reservas" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Tipo de Reserva:</strong></label>
+                        <select name="tipo_reserva" class="form-control">
+                            {% for tipo in tipos_reserva_opcoes %}
+                                <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Hora Início Permitido:</strong></label>
+                        <input type="text" name="hora_inicio_permitido" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Hora Fim Permitido:</strong></label>
+                        <input type="text" name="hora_fim_permitido" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <!-- Terceira coluna -->
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Hora Início Permitido FDS:</strong></label>
+                        <input type="text" name="hora_inicio_permitido_fds" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Hora Fim Permitido FDS:</strong></label>
+                        <input type="text" name="hora_fim_permitido_fds" class="form-control">
+                    </div>
+                </div>
+
+                <label><strong>Permitir Convidados:</strong></label>
+                <input type="checkbox" name="permite_convidados">
+
+                <label><strong>Necessita Aprovação:</strong></label>
+                <input type="checkbox" name="necessita_aprovacao">
+
+                <label><strong>Status:</strong></label>
+                <input type="number" name="status" class="form-control">
+            </div>
+
+            <!-- Quarta coluna com dias da semana -->
+            <div class="col-md-6">
+                <label><strong>Segunda:</strong></label>
+                <input type="checkbox" name="segunda">
+
+                <label><strong>Terça:</strong></label>
+                <input type="checkbox" name="terca">
+
+                <label><strong>Quarta:</strong></label>
+                <input type="checkbox" name="quarta">
+
+                <label><strong>Quinta:</strong></label>
+                <input type="checkbox" name="quinta">
+
+                <label><strong>Sexta:</strong></label>
+                <input type="checkbox" name="sexta">
+
+                <label><strong>Sábado:</strong></label>
+                <input type="checkbox" name="sabado">
+
+                <label><strong>Domingo:</strong></label>
+                <input type="checkbox" name="domingo">
+
+                <label><strong>Tem Feriados:</strong></label>
+                <input type="checkbox" name="tem_feriados">
+            </div>
+        </div>
+
+        <br>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
+{% endblock %}

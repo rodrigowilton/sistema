@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'permissaoacesso',
     'liberacaoacesso',
     'recados',
+    'areas',
 
 ]
 

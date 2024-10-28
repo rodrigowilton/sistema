@@ -34,4 +34,5 @@ urlpatterns = [
     path("permissaoacesso/", include("permissaoacesso.urls")),
     path("liberacaoacesso/", include("liberacaoacesso.urls")),
     path("recados/", include("recados.urls")),
+    path("areas/", include("areas.urls")),
 ]
