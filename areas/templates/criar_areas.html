@@ -16,221 +16,231 @@
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
-
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
-</div>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
 <br>
 <br>
 <br>
-{% endblock %}}
+{% endblock %}
 
 {% block content %}
-<br>
-<h2 style="text-align: center;">Criar Área</h2><br>
+    <br>
+    <h2 style="text-align: center;">Adicionar Área</h2><br>
 
-<div class="container">
-    <form method="post">
-        {% csrf_token %}
-        <div class="row">
-            <!-- Primeira coluna -->
-            <div class="col-md-6">
-                <label><strong>Condomínio:</strong></label>
-                <select name="condominio" class="form-control" required>
-                    {% for condominio in condominios %}
-                        <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
-                    {% endfor %}
-                </select>
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <!-- Primeira coluna -->
+                <div class="col-md-6">
+                    <label><strong>Condomínio:</strong></label>
+                    <select name="condominio" class="form-control" required>
+                        {% for condominio in condominios %}
+                            <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                        {% endfor %}
+                    </select>
 
-                <label><strong>Nome da Área:</strong></label>
-                <input type="text" name="nome_area" class="form-control" required>
+                    <label><strong>Nome da Área:</strong></label>
+                    <input type="text" name="nome_area" class="form-control" required>
 
-                <label><strong>Andar:</strong></label>
-                <input type="text" name="andar" class="form-control">
+                    <label><strong>Andar:</strong></label>
+                    <input type="text" name="andar" class="form-control">
 
-                <label><strong>Limite de Pessoas:</strong></label>
-                <input type="number" name="limite_pessoas" class="form-control">
+                    <label><strong>Limite de Pessoas:</strong></label>
+                    <input type="number" name="limite_pessoas" class="form-control">
 
-                <label><strong>Valor:</strong></label>
-                <input type="text" name="valor" class="form-control">
+                    <label><strong>Valor:</strong></label>
+                    <input type="text" name="valor" class="form-control">
 
-                <label><strong>Normas:</strong></label>
-                <textarea name="normas" class="form-control"></textarea>
+                    <label><strong>Normas:</strong></label>
+                    <textarea name="normas" class="form-control"></textarea>
 
-                <label><strong>Informações:</strong></label>
-                <textarea name="info" class="form-control"></textarea>
+                    <label><strong>Informações:</strong></label>
+                    <textarea name="info" class="form-control"></textarea>
 
-                <!-- Nova linha para Hora Mínima e Hora Máxima -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <label><strong>Hora Mínima:</strong></label>
-                        <input type="text" name="hora_min" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label><strong>Hora Máxima:</strong></label>
-                        <input type="text" name="hora_max" class="form-control">
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Segunda coluna -->
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label><strong>Antecedência Mínima:</strong></label>
-                        <input type="text" name="antecedencia_min" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label><strong>Antecedência Máxima:</strong></label>
-                        <input type="number" name="antecedencia_max" class="form-control">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label><strong>Intervalo entre Reservas:</strong></label>
-                        <input type="text" name="intervalo_entre_reservas" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label><strong>Máximo de Reservas Abertas:</strong></label>
-                        <input type="number" name="max_abertos" class="form-control">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label><strong>Tempo entre Reservas:</strong></label>
-                        <input type="number" name="tempo_entre_reservas" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label><strong>Tipo de Reserva:</strong></label>
-                        <select name="tipo_reserva" class="form-control">
-                            {% for tipo in tipos_reserva_opcoes %}
-                                <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label><strong>Hora Início Permitido:</strong></label>
-                        <input type="text" name="hora_inicio_permitido" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label><strong>Hora Fim Permitido:</strong></label>
-                        <input type="text" name="hora_fim_permitido" class="form-control">
-                    </div>
-                </div>
-                <br>
-
-                <!-- Quarta coluna com dias da semana -->
-                <div class="row">
-                    <label><strong>Dias Permitidos</strong></label><br><br>
-
-                    <div class="col-md-12 d-flex flex-wrap mb-4">
-                        <div class="form-check me-5">
-                            <input type="checkbox" name="segunda" class="form-check-input">
-                            <label class="form-check-label"><strong>Segunda:</strong></label>
-                        </div>
-
-                        <div class="form-check me-5">
-                            <input type="checkbox" name="terca" class="form-check-input">
-                            <label class="form-check-label"><strong>Terça:</strong></label>
-                        </div>
-
-                        <div class="form-check me-5">
-                            <input type="checkbox" name="quarta" class="form-check-input">
-                            <label class="form-check-label"><strong>Quarta:</strong></label>
-                        </div>
-                        <div class="form-check me-5">
-                            <input type="checkbox" name="quinta" class="form-check-input">
-                            <label class="form-check-label"><strong>Quinta:</strong></label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 d-flex flex-wrap mb-4">
-
-
-                            <div class="form-check me-5">
-                                <input type="checkbox" name="sexta" class="form-check-input">
-                                <label class="form-check-label"><strong>Sexta:</strong></label>
-                            </div>
-
-                            <div class="form-check me-5">
-                                <input type="checkbox" name="sabado" class="form-check-input">
-                                <label class="form-check-label"><strong>Sábado:</strong></label>
-                            </div>
-                            <div class="form-check me-5">
-                                <input type="checkbox" name="domingo" class="form-check-input">
-                                <label class="form-check-label"><strong>Domingo:</strong></label>
-                            </div>
-                        </div>
-                    </div>
-
-
+                    <!-- Nova linha para Hora Mínima e Hora Máxima -->
+                    <!-- HTML: Adicione o atributo placeholder nos campos de hora -->
                     <div class="row">
                         <div class="col-md-6">
-                            <label><strong>Tem Feriados:</strong></label>
-                            <select name="tem_feriados" class="form-control me-4" style="margin-right: 10px;">
-                                <option value="1">Sim</option>
-                                <option value="0">Não</option>
+                            <label><strong>Hora Mínima:</strong></label>
+                            <input type="text" name="hora_min" id="hora_min" class="form-control"  placeholder="00:00">
+                        </div>
+                        <div class="col-md-6">
+                            <label><strong>Hora Máxima:</strong></label>
+                            <input type="text" name="hora_max" id="hora_max" class="form-control"  placeholder="00:00">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segunda coluna -->
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><strong>Antecedência Mínima:</strong></label>
+                            <input type="text" name="antecedencia_min" id="antmini" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label><strong>Antecedência Máxima:</strong></label>
+                            <input type="number" name="antecedencia_max" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><strong>Intervalo entre Reservas:</strong></label>
+                            <input type="text" name="intervalo_entre_reservas" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label><strong>Máximo de Reservas Abertas:</strong></label>
+                            <input type="number" name="max_abertos" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><strong>Tempo entre Reservas:</strong></label>
+                            <input type="number" name="tempo_entre_reservas" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label><strong>Tipo de Reserva:</strong></label>
+                            <select name="tipo_reserva" class="form-control">
+                                {% for tipo in tipos_reserva_opcoes %}
+                                    <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><strong>Hora Início Permitido:</strong></label>
+                            <input type="text" name="hora_inicio_permitido" id="horainicio" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label><strong>Hora Fim Permitido:</strong></label>
+                            <input type="text" name="hora_fim_permitido" id="horafim" class="form-control">
+                        </div>
+                    </div>
+                    <br>
+
+                    <!-- Quarta coluna com dias da semana -->
+                    <div class="row">
+                        <label><strong>Dias Permitidos</strong></label><br><br>
+
+                        <div class="col-md-12 d-flex flex-wrap mb-4">
+                            <div class="form-check me-5">
+                                <input type="checkbox" name="segunda" class="form-check-input">
+                                <label class="form-check-label"><strong>Segunda:</strong></label>
+                            </div>
+
+                            <div class="form-check me-5">
+                                <input type="checkbox" name="terca" class="form-check-input">
+                                <label class="form-check-label"><strong>Terça:</strong></label>
+                            </div>
+
+                            <div class="form-check me-5">
+                                <input type="checkbox" name="quarta" class="form-check-input">
+                                <label class="form-check-label"><strong>Quarta:</strong></label>
+                            </div>
+                            <div class="form-check me-5">
+                                <input type="checkbox" name="quinta" class="form-check-input">
+                                <label class="form-check-label"><strong>Quinta:</strong></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 d-flex flex-wrap mb-4">
+
+                                <div class="form-check me-5">
+                                    <input type="checkbox" name="sexta" class="form-check-input">
+                                    <label class="form-check-label"><strong>Sexta:</strong></label>
+                                </div>
+
+                                <div class="form-check me-5">
+                                    <input type="checkbox" name="sabado" class="form-check-input">
+                                    <label class="form-check-label"><strong>Sábado:</strong></label>
+                                </div>
+                                <div class="form-check me-5">
+                                    <input type="checkbox" name="domingo" class="form-check-input">
+                                    <label class="form-check-label"><strong>Domingo:</strong></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label><strong>Tem Feriados:</strong></label>
+                                <select name="tem_feriados" class="form-control me-4" style="margin-right: 10px;">
+                                    <option value="1">Sim</option>
+                                    <option value="0">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <br>
+                        <button type="submit" class="btn btn-primary ">Cadastrar</button>
+                    </div>
+
                 </div>
 
+                <div class="row mt-3">
+                    <!-- Terceira coluna -->
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label><strong>Hora Início Permitido FDS:</strong></label>
+                                <input type="text" name="hora_inicio_permitido_fds" id="hifds" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label><strong>Hora Fim Permitido FDS:</strong></label>
+                                <input type="text" name="hora_fim_permitido_fds" id="hffds" class="form-control">
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label><strong>Permitir Convidados:</strong></label>
+                                <select name="permite_convidados" class="form-control">
+                                    <option value="1">Sim</option>
+                                    <option value="0">Não</option>
+                                </select>
+                            </div>
 
+                            <div class="col-md-6">
+                                <label><strong>Necessita Aprovação:</strong></label>
+                                <select name="necessita_aprovacao" class="form-control">
+                                    <option value="1">Sim</option>
+                                    <option value="0">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </form>
+    </div>
 
-        <div class="row mt-3">
-            <!-- Terceira coluna -->
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label><strong>Hora Início Permitido FDS:</strong></label>
-                        <input type="text" name="hora_inicio_permitido_fds" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label><strong>Hora Fim Permitido FDS:</strong></label>
-                        <input type="text" name="hora_fim_permitido_fds" class="form-control">
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <label><strong>Permitir Convidados:</strong></label>
-                        <select name="permite_convidados" class="form-control">
-                            <option value="1">Sim</option>
-                            <option value="0">Não</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label><strong>Necessita Aprovação:</strong></label>
-                        <select name="necessita_aprovacao" class="form-control">
-                            <option value="1">Sim</option>
-                            <option value="0">Não</option>
-                        </select>
-                    </div>
-                </div>
-                <label><strong>Status:</strong></label>
-                <select name="necessita_aprovacao" class="form-control">
-                    <option value="1">Ativo</option>
-                    <option value="0">Inativo</option>
-                </select>
-            </div>
-        </div>
+    <!-- Inclua jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Inclua o jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
-        <div class="form-groupr">
-            <br>
-            <button type="submit" class="btn btn-primary ">Cadastrar</button>
-        </div>
-        <br>
-        <br>
-    </form>
-</div>
+<script>
+    $(document).ready(function() {
+        // Aplica a máscara no formato HH:MM aos campos de hora mínima e máxima
+        $('#hora_min, #hora_max, #hifds, #hffds, #antmini, #horainio, #horafim').mask('00:00', {reverse: true});
+
+        // Define o placeholder como o formato da máscara
+        $('#hora_min').attr('placeholder', '00:00');
+        $('#hora_max').attr('placeholder', '00:00');
+        $('#hifds').attr('placeholder', '00:00');
+        $('#hffds').attr('placeholder', '00:00');
+        $('#antmini').attr('placeholder', '00:00');
+        $('#horainicio').attr('placeholder', '00:00');
+        $('#horafim').attr('placeholder', '00:00');
+    });
+</script>
 {% endblock %}
