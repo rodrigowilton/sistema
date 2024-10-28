@@ -125,35 +125,66 @@
                         <input type="text" name="hora_fim_permitido" class="form-control">
                     </div>
                 </div>
-                            <!-- Quarta coluna com dias da semana -->
-                    <div class="row">
-                        <label><strong>Dias Permitidos</strong></label><br>
-                        <div class="col-md-12">
-                            <label><strong>Segunda:</strong></label>
-                            <input type="checkbox" name="segunda" class="form-check-input mb-2">
+                <br>
 
-                            <label><strong>Terça:</strong></label>
-                            <input type="checkbox" name="terca" class="form-check-input mb-2">
+                <!-- Quarta coluna com dias da semana -->
+                <div class="row">
+                    <label><strong>Dias Permitidos</strong></label><br><br>
 
-                            <label><strong>Quarta:</strong></label>
-                            <input type="checkbox" name="quarta" class="form-check-input mb-2">
+                    <div class="col-md-12 d-flex flex-wrap mb-4">
+                        <div class="form-check me-5">
+                            <input type="checkbox" name="segunda" class="form-check-input">
+                            <label class="form-check-label"><strong>Segunda:</strong></label>
+                        </div>
 
-                            <label><strong>Quinta:</strong></label>
-                            <input type="checkbox" name="quinta" class="form-check-input mb-2">
+                        <div class="form-check me-5">
+                            <input type="checkbox" name="terca" class="form-check-input">
+                            <label class="form-check-label"><strong>Terça:</strong></label>
+                        </div>
 
-                            <label><strong>Sexta:</strong></label>
-                            <input type="checkbox" name="sexta" class="form-check-input mb-2">
-
-                            <label><strong>Sábado:</strong></label>
-                            <input type="checkbox" name="sabado" class="form-check-input mb-2">
-
-                            <label><strong>Domingo:</strong></label>
-                            <input type="checkbox" name="domingo" class="form-check-input mb-2">
-
-                            <label><strong>Tem Feriados:</strong></label>
-                            <input type="checkbox" name="tem_feriados" class="form-check-input mb-2">
+                        <div class="form-check me-5">
+                            <input type="checkbox" name="quarta" class="form-check-input">
+                            <label class="form-check-label"><strong>Quarta:</strong></label>
+                        </div>
+                        <div class="form-check me-5">
+                            <input type="checkbox" name="quinta" class="form-check-input">
+                            <label class="form-check-label"><strong>Quinta:</strong></label>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12 d-flex flex-wrap mb-4">
+
+
+                            <div class="form-check me-5">
+                                <input type="checkbox" name="sexta" class="form-check-input">
+                                <label class="form-check-label"><strong>Sexta:</strong></label>
+                            </div>
+
+                            <div class="form-check me-5">
+                                <input type="checkbox" name="sabado" class="form-check-input">
+                                <label class="form-check-label"><strong>Sábado:</strong></label>
+                            </div>
+                            <div class="form-check me-5">
+                                <input type="checkbox" name="domingo" class="form-check-input">
+                                <label class="form-check-label"><strong>Domingo:</strong></label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><strong>Tem Feriados:</strong></label>
+                            <select name="tem_feriados" class="form-control me-4" style="margin-right: 10px;">
+                                <option value="1">Sim</option>
+                                <option value="0">Não</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
             </div>
 
         <div class="row mt-3">
