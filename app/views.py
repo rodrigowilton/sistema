@@ -80,7 +80,6 @@ def register(request):
 @login_required
 def manage_groups(request):
     if request.method == 'POST':
-        # Ações para adicionar ou editar grupo
         if 'group_name' in request.POST:
             group_name = request.POST['group_name']
             permissions_ids = request.POST.getlist('permissions')
@@ -88,7 +87,11 @@ def manage_groups(request):
             # Adicionar ou atualizar o grupo
             group, created = AuthGroup.objects.get_or_create(name=group_name)
             group.save()
-            group.authgrouppermissions_set.set(permissions_ids)  # Associar permissões ao grupo
+
+            # Obter instâncias de AuthGroupPermissions
+            permissions = AuthGroupPermissions.objects.filter(id__in=permissions_ids)
+            group.authgrouppermissions_set.set(permissions)  # Associar permissões ao grupo
+
             messages.success(request, f'Grupo "{group_name}" {"criado" if created else "atualizado"} com sucesso!')
 
         elif 'action' in request.POST and request.POST['action'] == 'delete':

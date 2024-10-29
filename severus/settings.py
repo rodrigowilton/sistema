@@ -95,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tattica',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': '29104130',
         'HOST': 'localhost',
         'PORT': '3306'
     }
@@ -151,3 +151,4 @@ LOGIN_REDIRECT_URL = "home"
 
 LOGOUT_REDIRECT_URL = "home"
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000  # Aumente o valor conforme necessário
