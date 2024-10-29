@@ -74,8 +74,12 @@ def redirect_based_on_group(request):
     # Verifica se o usuário pertence ao grupo "Diretoria"
     if request.user.groups.filter(name='Diretoria').exists():
         return redirect('home')  # Redireciona para home
+    # Verifica se o usuário pertence ao grupo "Administração"
+    elif request.user.groups.filter(name='Administração').exists():
+        return redirect('menu_adm')  # Redireciona para menu de administração
     else:
-        return redirect('menu_adm')  # Redireciona para menu_adm
+        messages.error(request, "Você não tem acesso à área administrativa.")
+        return redirect('login')  # Redirecione para uma página padrão
 
 @login_required
 def consulta_condominio(request, id):
