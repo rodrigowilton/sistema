@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from app.models import Condominios, Areas
@@ -103,18 +104,50 @@ def consulta_area(request):
     }
     return render(request, 'consulta_area.html', context)
 
+@login_required
 def editar_area(request, area_id):
-    area = get_object_or_404(Areas, id=area_id)  # Busca a área pelo ID
+    area = get_object_or_404(Areas, id=area_id)
 
     if request.method == 'POST':
-        form = AreaForm(request.POST, instance=area)  # Preenche o formulário com os dados da área
-        if form.is_valid():
-            form.save()  # Salva as alterações
-            return redirect('consulta_are')  # Redireciona para a página de consulta após salvar
-    else:
-        form = AreaForm(instance=area)  # Cria um formulário com os dados da área
+        # Atualiza os campos do modelo com os dados do formulário
+        area.nome_area = request.POST.get('nome_area')
+        area.andar = request.POST.get('andar')
+        area.limite_pessoas = request.POST.get('limite_pessoas')
+        area.valor = request.POST.get('valor')
+        area.normas = request.POST.get('normas')
+        area.info = request.POST.get('info')
+        area.cor = request.POST.get('cor')
+        area.hora_min = request.POST.get('hora_min')
+        area.hora_max = request.POST.get('hora_max')
+        area.antecedencia_min = request.POST.get('antecedencia_min')
+        area.antecedencia_max = request.POST.get('antecedencia_max')
+        area.intervalo_entre_reservas = request.POST.get('intervalo_entre_reservas')
+        area.max_abertos = request.POST.get('max_abertos')
+        area.tempo_entre_reservas = request.POST.get('tempo_entre_reservas')
+        area.tipo_reserva = request.POST.get('tipo_reserva')
+        area.hora_inicio_permitido = request.POST.get('hora_inicio_permitido')
+        area.hora_fim_permitido = request.POST.get('hora_fim_permitido')
+        area.hora_inicio_permitido_fds = request.POST.get('hora_inicio_permitido_fds')
+        area.hora_fim_permitido_fds = request.POST.get('hora_fim_permitido_fds')
+        area.segunda = request.POST.get('segunda')
+        area.terca = request.POST.get('terca')
+        area.quarta = request.POST.get('quarta')
+        area.quinta = request.POST.get('quinta')
+        area.sexta = request.POST.get('sexta')
+        area.sabado = request.POST.get('sabado')
+        area.domingo = request.POST.get('domingo')
+        area.tem_feriados = request.POST.get('tem_feriados')
+        area.permite_convidados = request.POST.get('permite_convidados')
+        area.necessita_aprovacao = request.POST.get('necessita_aprovacao')
+        area.status = request.POST.get('status')
 
-    return render(request, 'editar_area.html', {'form': form, 'area': area})
+        # Salva as alterações
+        area.save()
+        messages.success(request, 'Área editada com sucesso!')
+        return redirect('menu_agd')  # Ajuste o redirecionamento conforme necessário
+
+    return render(request, 'editar_area.html', {'area': area})
+
 
 
 

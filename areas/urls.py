@@ -7,6 +7,4 @@ urlpatterns = [
     path('consulta_area/', consulta_area, name='consulta_area'),
     path('editar_area/<int:area_id>/', editar_area, name='editar_area'),  # URL para editar área
     path('deletar_area/<int:area_id>/', deletar_area, name='deletar_area'),  # URL para deletar área
-
-
 ]

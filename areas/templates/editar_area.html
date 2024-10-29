@@ -21,19 +21,190 @@
         </div>
     </div>
 </nav>
-<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
 <br>
 <br>
 <br>
-{% endblock %}
-{% block content %}
-<body>
-    <h1>Editar Área: {{ area.nome_area }}</h1>
-    <form method="POST">
+<br>
+<br>
+<div class="container">
+    <h2 style="text-align: center;">Editar Área</h2><br>
+
+    <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}  <!-- Renderiza o formulário como parágrafos -->
-        <button type="submit">Salvar Alterações</button>
+        <div class="row">
+            <div class="col-md-6">
+                <label><strong>Condomínio:</strong></label>
+                <select name="condominio" class="form-control" required>
+                    {% for condominio in condominios %}
+                        <option value="{{ condominio.id }}" {% if condominio.id == area.condominio.id %}selected{% endif %}>
+                            {{ condominio.nome_condominio }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label><strong>Nome da Área:</strong></label>
+                <input type="text" name="nome_area" class="form-control" value="{{ area.nome_area }}" required>
+
+                <label><strong>Andar:</strong></label>
+                <input type="text" name="andar" class="form-control" value="{{ area.andar }}">
+
+                <label><strong>Limite de Pessoas:</strong></label>
+                <input type="number" name="limite_pessoas" class="form-control" value="{{ area.limite_pessoas }}">
+
+                <label><strong>Valor:</strong></label>
+                <input type="text" name="valor" class="form-control" value="{{ area.valor }}">
+
+                <label><strong>Normas:</strong></label>
+                <textarea name="normas" class="form-control">{{ area.normas }}</textarea>
+
+                <label><strong>Informações:</strong></label>
+                <textarea name="info" class="form-control">{{ area.info }}</textarea>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Hora Mínima:</strong></label>
+                        <input type="text" name="hora_min" id="hora_min" class="form-control" placeholder="00:00" value="{{ area.hora_min }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Hora Máxima:</strong></label>
+                        <input type="text" name="hora_max" id="hora_max" class="form-control" placeholder="00:00" value="{{ area.hora_max }}">
+                    </div>
+                </div>
+				<div class="row">
+				<div class="col-md-6">
+					<label><strong>Permitir Convidados:</strong></label>
+					<select name="permite_convidados" class="form-control">
+						<option value="1">Sim</option>
+						<option value="0">Não</option>
+					</select>
+				</div>
+
+				<div class="col-md-6">
+					<label><strong>Necessita Aprovação:</strong></label>
+					<select name="necessita_aprovacao" class="form-control">
+						<option value="1">Sim</option>
+						<option value="0">Não</option>
+					</select>
+				</div>
+			</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Antecedência Mínima:</strong></label>
+                        <input type="text" name="antecedencia_min" class="form-control" value="{{ area.antecedencia_min }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Antecedência Máxima:</strong></label>
+                        <input type="number" name="antecedencia_max" class="form-control" value="{{ area.antecedencia_max }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Intervalo entre Reservas:</strong></label>
+                        <input type="text" name="intervalo_entre_reservas" class="form-control" value="{{ area.intervalo_entre_reservas }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Máximo de Reservas Abertas:</strong></label>
+                        <input type="number" name="max_abertos" class="form-control" value="{{ area.max_abertos }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Tempo entre Reservas:</strong></label>
+                        <input type="number" name="tempo_entre_reservas" class="form-control" value="{{ area.tempo_entre_reservas }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Tipo de Reserva:</strong></label>
+                        <select name="tipo_reserva" class="form-control">
+                            {% for tipo in tipos_reserva_opcoes %}
+                                <option value="{{ tipo.id }}" {% if tipo.id == area.tipo_reserva %}selected{% endif %}>
+                                    {{ tipo.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Hora Início Permitido:</strong></label>
+                        <input type="text" name="hora_inicio_permitido" class="form-control" value="{{ area.hora_inicio_permitido }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Hora Fim Permitido:</strong></label>
+                        <input type="text" name="hora_fim_permitido" class="form-control" value="{{ area.hora_fim_permitido }}">
+                    </div>
+                </div>
+                <br>
+
+				<div class="row">
+					<label><strong>Dias Permitidos</strong></label><br><br>
+
+					<div class="col-md-12 d-flex flex-wrap mb-4">
+						<div class="form-check me-5">
+							<input type="checkbox" name="segunda" class="form-check-input" {% if area.segunda %}checked{% endif %}>
+							<label class="form-check-label"><strong>Segunda:</strong></label>
+						</div>
+
+						<div class="form-check me-5">
+							<input type="checkbox" name="terca" class="form-check-input" {% if area.terca %}checked{% endif %}>
+							<label class="form-check-label"><strong>Terça:</strong></label>
+						</div>
+
+						<div class="form-check me-5">
+							<input type="checkbox" name="quarta" class="form-check-input" {% if area.quarta %}checked{% endif %}>
+							<label class="form-check-label"><strong>Quarta:</strong></label>
+						</div>
+						<div class="form-check me-5">
+							<input type="checkbox" name="quinta" class="form-check-input" {% if area.quinta %}checked{% endif %}>
+							<label class="form-check-label"><strong>Quinta:</strong></label>
+						</div>
+
+						<div class="form-check me-5">
+							<input type="checkbox" name="sexta" class="form-check-input" {% if area.sexta %}checked{% endif %}>
+							<label class="form-check-label"><strong>Sexta:</strong></label>
+						</div>
+
+						<div class="form-check me-5">
+							<input type="checkbox" name="sabado" class="form-check-input" {% if area.sabado %}checked{% endif %}>
+							<label class="form-check-label"><strong>Sábado:</strong></label>
+						</div>
+
+						<div class="form-check me-5">
+							<input type="checkbox" name="domingo" class="form-check-input" {% if area.domingo %}checked{% endif %}>
+							<label class="form-check-label"><strong>Domingo:</strong></label>
+						</div>
+					</div>
+				</div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Tem Feriados:</strong></label>
+                        <select name="tem_feriados" class="form-control">
+                            <option value="1" {% if area.tem_feriados == 1 %}selected{% endif %}>Sim</option>
+                            <option value="0" {% if area.tem_feriados == 0 %}selected{% endif %}>Não</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <br>
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+        </div>
     </form>
-    <a href="{% url 'consulta_area' %}">Cancelar</a>  <!-- Link para voltar à consulta -->
-</body>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#hora_min, #hora_max, #hora_inicio_permitido, #hora_fim_permitido').mask('00:00', {reverse: true});
+    });
+</script>
 {% endblock %}
