@@ -9,31 +9,52 @@
                 <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
             </div>
         </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav custom-nav-link">
+            <ul class="navbar-nav d-flex">
                 <li class="nav-item">
                     <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
-                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; filter: invert(1);">
+                        <span style="margin-top: 5px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- Botão de logout desabilitado -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link-menu logout-link" style="margin-right: 40px; pointer-events: none; opacity: 0.5;">
+                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; margin-right: 5px;"><br>
+                        𝐒𝐚𝐢𝐫
                     </a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
-<br>
-<br>
-<br>
 {% endblock %}
+
 {% block content %}
-<body>
-    <h1>Deletar Área: {{ area.nome_area }}</h1>
-    <p>Tem certeza que deseja deletar esta área?</p>
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit">Confirmar Deleção</button>
-    </form>
-    <a href="{% url 'consulta_area' %}">Cancelar</a>  <!-- Link para voltar à consulta -->
-</body>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h2 class="text-center">Desativar Área: {{ area.nome_area }}</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-center">Tem certeza que deseja desativar esta área?</p>
+                <div class="d-flex justify-content-center mt-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Confirmar Desativação</button>
+                    </form>
+                </div>
+                <div class="d-flex justify-content-center mt-2">
+                    <a href="{% url 'consulta_area' %}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -165,13 +165,17 @@ def editar_area(request, area_id):
         'condominios': condominios,
         'selected_condominio': area.condominio  # Passa o condomínio associado
     })
-
-
+@login_required
 def deletar_area(request, area_id):
-    area = get_object_or_404(Areas, id=area_id)  # Busca a área pelo ID
+    area = get_object_or_404(Areas, id=area_id)
 
     if request.method == 'POST':
-        area.delete()  # Deleta a área
-        return redirect('consulta_are')  # Redireciona para a página de consulta após a deleção
+        # Define o status da área como 2 (inativo)
+        area.status = 2  # Altera para o valor correspondente ao status inativo
+        area.save()
 
-    return render(request, 'deletar_area.html', {'area': area})  # Renderiza a página de confirmação
+        messages.success(request, 'Área definida como inativa com sucesso!')
+        return redirect('consulta_area')  # Ajuste o redirecionamento conforme necessário
+
+    return render(request, 'deletar_area.html', {'area': area})
+
