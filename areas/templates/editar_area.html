@@ -30,14 +30,10 @@
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6">
-                <label><strong>Condomínio:</strong></label>
-                <select name="condominio" class="form-control" required disabled>
-                    {% for condominio in condominios %}
-                        <option value="{{ condominio.id }}" {% if condominio.id == area.condominio.id %}selected{% endif %}>
-                            {{ condominio.nome_condominio }}
-                        </option>
-                    {% endfor %}
-                </select>
+				<div class="form-group">
+					<label><strong>Condomínio:</strong></label>
+					<input type="text" class="form-control" value="{{ area.condominio.nome_condominio }}" readonly>  <!-- Exibe o nome do condomínio -->
+				</div>
 
                 <label><strong>Nome da Área:</strong></label>
                 <input type="text" name="nome_area" class="form-control" value="{{ area.nome_area }}" required>
@@ -139,43 +135,39 @@
                 <br>
 
                 <div class="row">
-                    <label><strong>Dias Permitidos</strong></label><br><br>
-                    <div class="col-md-12 d-flex flex-wrap mb-4">
-                        <div class="form-check me-5">
-                            <input type="checkbox" name="segunda" class="form-check-input">
-                            <label class="form-check-label"><strong>Segunda:</strong></label>
-                        </div>
-                        <div class="form-check me-5">
-                            <input type="checkbox" name="terca" class="form-check-input">
-                            <label class="form-check-label"><strong>Terça:</strong></label>
-                        </div>
-                        <div class="form-check me-5">
-                            <input type="checkbox" name="quarta" class="form-check-input">
-                            <label class="form-check-label"><strong>Quarta:</strong></label>
-                        </div>
-                        <div class="form-check me-5">
-                            <input type="checkbox" name="quinta" class="form-check-input">
-                            <label class="form-check-label"><strong>Quinta:</strong></label>
-                        </div>
-                    </div>
+				<label><strong>Dias Permitidos</strong></label><br><br>
+				<div class="col-md-12 d-flex flex-wrap mb-4">
+					<div class="form-check me-5">
+						<input type="checkbox" name="segunda" class="form-check-input" {% if area.segunda %}checked{% endif %}>
+						<label class="form-check-label"><strong>Segunda:</strong></label>
+					</div>
+					<div class="form-check me-5">
+						<input type="checkbox" name="terca" class="form-check-input" {% if area.terca %}checked{% endif %}>
+						<label class="form-check-label"><strong>Terça:</strong></label>
+					</div>
+					<div class="form-check me-5">
+						<input type="checkbox" name="quarta" class="form-check-input" {% if area.quarta %}checked{% endif %}>
+						<label class="form-check-label"><strong>Quarta:</strong></label>
+					</div>
+					<div class="form-check me-5">
+						<input type="checkbox" name="quinta" class="form-check-input" {% if area.quinta %}checked{% endif %}>
+						<label class="form-check-label"><strong>Quinta:</strong></label>
+					</div>
+					<div class="form-check me-5">
+						<input type="checkbox" name="sexta" class="form-check-input" {% if area.sexta %}checked{% endif %}>
+						<label class="form-check-label"><strong>Sexta:</strong></label>
+					</div>
+					<div class="form-check me-5">
+						<input type="checkbox" name="sabado" class="form-check-input" {% if area.sabado %}checked{% endif %}>
+						<label class="form-check-label"><strong>Sábado:</strong></label>
+					</div>
+					<div class="form-check me-5">
+						<input type="checkbox" name="domingo" class="form-check-input" {% if area.domingo %}checked{% endif %}>
+						<label class="form-check-label"><strong>Domingo:</strong></label>
+					</div>
+				</div>
+			</div>
 
-                    <div class="row">
-                        <div class="col-md-12 d-flex flex-wrap mb-4">
-                            <div class="form-check me-5">
-                                <input type="checkbox" name="sexta" class="form-check-input">
-                                <label class="form-check-label"><strong>Sexta:</strong></label>
-                            </div>
-                            <div class="form-check me-5">
-                                <input type="checkbox" name="sabado" class="form-check-input">
-                                <label class="form-check-label"><strong>Sábado:</strong></label>
-                            </div>
-                            <div class="form-check me-5">
-                                <input type="checkbox" name="domingo" class="form-check-input">
-                                <label class="form-check-label"><strong>Domingo:</strong></label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="row">
                     <div class="col-md-6">
@@ -199,6 +191,12 @@
                         <input type="text" name="hora_fim_permitido_fds" id="hffds" class="form-control">
                     </div>
                 </div>
+
+				<label><strong>Status:</strong></label>
+                <select name="status" class="form-control">
+                    <option value="1" {% if area.status == 1 %}selected{% endif %}>Ativo</option>
+                    <option value="2" {% if area.status == 2 %}selected{% endif %}>Inativo</option>
+                </select>
 
                 <div class="form-group">
                     <br>
