@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from app.models import Areas, Condominios
+from app.models import Condominios, Areas
 from django.http import JsonResponse
-
+from .forms import AreaForm
 def criar_area(request):
     # Filtra apenas condomínios com status 1
     condominios = Condominios.objects.filter(status=1)

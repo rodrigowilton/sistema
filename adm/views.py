@@ -156,7 +156,17 @@ def menu_ctr(request):
 
 @login_required
 def menu_agd(request):
-    return render(request, 'menu_agd.html')
+    pesquisar = request.GET.get('pesquisar', '')  # Obtém o termo de pesquisa
+    areas = Areas.objects.all()  # Obtém todas as áreas inicialmente
+
+    if pesquisar:
+        # Filtra as áreas com base no nome da área
+        areas = areas.filter(nome_area__icontains=pesquisar)
+
+    context = {
+        'areas': areas,
+    }
+    return render(request, 'menu_agd.html', context)
 
 
 @login_required
