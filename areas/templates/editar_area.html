@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-md-6">
                 <label><strong>Condomínio:</strong></label>
-                <select name="condominio" class="form-control" required>
+                <select name="condominio" class="form-control" required disabled>
                     {% for condominio in condominios %}
                         <option value="{{ condominio.id }}" {% if condominio.id == area.condominio.id %}selected{% endif %}>
                             {{ condominio.nome_condominio }}

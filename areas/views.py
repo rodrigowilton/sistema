@@ -107,7 +107,9 @@ def consulta_area(request):
 @login_required
 def editar_area(request, area_id):
     area = get_object_or_404(Areas, id=area_id)
-
+    
+    condominios = Condominios.objects.filter(status=1)
+    
     if request.method == 'POST':
         # Atualiza os campos do modelo com os dados do formulário
         area.nome_area = request.POST.get('nome_area')
@@ -146,11 +148,10 @@ def editar_area(request, area_id):
         messages.success(request, 'Área editada com sucesso!')
         return redirect('menu_agd')  # Ajuste o redirecionamento conforme necessário
 
-    return render(request, 'editar_area.html', {'area': area})
-
-
-
-
+    return render(request, 'editar_area.html', {
+            'area': area,
+            'condominios': condominios,
+        })
 
 def deletar_area(request, area_id):
     area = get_object_or_404(Areas, id=area_id)  # Busca a área pelo ID
