@@ -1,42 +1,34 @@
-{% extends "base_login.html" %}
-{% load static %}
-
-{% block title %}Áreas Paralelas{% endblock %}
+{% extends 'base_login.html' %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container">
     <h2>Áreas Paralelas</h2>
-    <br>
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Condomínio</th>
-                    <th scope="col">Área 1</th>
-                    <th scope="col">Área 2</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for area_paralela in areas_paralelas %}
-                <tr>
-                    <td>{{ area_paralela.area.nome_condominio }}</td>
-                    <td>{{ area_paralela.area.nome_area }}</td>
-                    <td>{{ area_paralela.area2.nome_area }}</td>
-                    <td>{{ area_paralela.tipo }}</td>  {# Exiba o valor apropriado baseado em um mapeamento de tipos #}
-                    <td class="acoes-column">
-                        <a href="{% url 'editar_area_paralela' area_paralela.id %}">
-                            <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
-                        </a>
-                        <a href="{% url 'deletar_area_paralela' area_paralela.id %}">
-                            <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Condomínio Área 1</th>
+                <th>Área 1</th>
+                <th>Condomínio Área 2</th>
+                <th>Área 2</th>
+                <th>Tipo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for area_paralela in areas_paralelas %}
+            <tr>
+                <td>{{ area_paralela.area.condominio.nome_condominio }}</td>
+                <td>{{ area_paralela.area.nome_area }}</td>
+                <td>{{ area_paralela.area2.condominio.nome_condominio }}</td>
+                <td>{{ area_paralela.area2.nome_area }}</td>
+                <td>{{ area_paralela.get_tipo_display }}</td>  <!-- Certifique-se de ter choices no campo 'tipo' -->
+                <td>
+                    <a href="{% url 'editar_area_paralela' area_paralela.pk %}" class="btn btn-warning">Editar</a>
+                    <a href="{% url 'deletar_area_paralela' area_paralela.pk %}" class="btn btn-danger">Deletar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

@@ -3,9 +3,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from app.models import AreasParalelas  # Importando o modelo
 from .forms import AreasParalelasForm  # Certifique-se de que você tenha um formulário para as áreas paralelas
 
+
 class AreasParalelasView(View):
     def get(self, request):
-        areas_paralelas = AreasParalelas.objects.all()  # Obtém todas as áreas paralelas
+        # Consulta para buscar as áreas paralelas com as áreas e condomínios relacionados
+        areas_paralelas = AreasParalelas.objects.select_related(
+            'area__condominio',  # Puxa o condomínio da área 1
+            'area2__condominio'  # Puxa o condomínio da área 2
+        ).all()
+        
         return render(request, 'areas_paralelas.html', {'areas_paralelas': areas_paralelas})
 
 class EditarAreaParalelaView(View):
