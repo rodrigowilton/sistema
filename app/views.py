@@ -23,7 +23,7 @@ class CustomLoginView(LoginView):
         login(self.request, user)
 
         # Verifica se o usuário pertence ao grupo "Administrativo"
-        if user.groups.filter(name='Administrativo').exists():
+        if user.groups.filter(name='Administração').exists():
             return redirect('menu_adm')  # Redireciona para o menu de administração
         elif user.groups.filter(name='Supervisor T.I').exists():
             return redirect('home')  # Redireciona para a página inicial ou outra página desejada

@@ -35,4 +35,5 @@ urlpatterns = [
     path("liberacaoacesso/", include("liberacaoacesso.urls")),
     path("recados/", include("recados.urls")),
     path("areas/", include("areas.urls")),
+    path("areasparalelas/", include("areasparalelas.urls")),
 ]

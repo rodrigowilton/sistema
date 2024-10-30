@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'liberacaoacesso',
     'recados',
     'areas',
+    'areasparalelas',
 
 ]
 

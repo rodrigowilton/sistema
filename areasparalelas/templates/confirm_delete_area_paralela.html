@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmar Deletar Área Paralela{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Confirmar Deletar Área Paralela</h3>
+    <p>Você tem certeza de que deseja deletar a área paralela: {{ area_paralela }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Deletar</button>
+        <a href="{% url 'areas_paralelas' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
