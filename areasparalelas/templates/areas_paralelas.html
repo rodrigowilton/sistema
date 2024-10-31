@@ -16,7 +16,6 @@
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
-
                 </li>
             </ul>
         </div>
@@ -31,13 +30,12 @@
 
 {% block content %}
 <div class="container">
-    <h2>Áreas Paralelas</h2>
-    <table class="table">
-        <thead>
+    <h2 class="text-center mb-4">Áreas Paralelas</h2>
+    <table class="table table-striped">
+        <thead class="thead-dark">
             <tr>
-                <th>Condomínio Área 1</th>
+                <th>Condomínio</th>
                 <th>Área 1</th>
-                <th>Condomínio Área 2</th>
                 <th>Área 2</th>
                 <th>Tipo</th>
                 <th>Ações</th>
@@ -46,14 +44,24 @@
         <tbody>
             {% for area_paralela in areas_paralelas %}
             <tr>
-                <td>{{ area_paralela.area.condominio.nome_condominio }}</td>
-                <td>{{ area_paralela.area.nome_area }}</td>
-                <td>{{ area_paralela.area2.condominio.nome_condominio }}</td>
-                <td>{{ area_paralela.area2.nome_area }}</td>
-                <td>{{ area_paralela.get_tipo_display }}</td>  <!-- Certifique-se de ter choices no campo 'tipo' -->
                 <td>
-                    <a href="{% url 'editar_area_paralela' area_paralela.pk %}" class="btn btn-warning">Editar</a>
-                    <a href="{% url 'deletar_area_paralela' area_paralela.pk %}" class="btn btn-danger">Deletar</a>
+                    {% if area_paralela.area.condominio.id == area_paralela.area2.condominio.id %}
+                        {{ area_paralela.area.condominio.nome_condominio }}  <!-- Mostra o nome do condomínio apenas uma vez -->
+                    {% else %}
+                        {{ area_paralela.area.condominio.nome_condominio }}  <!-- Nome do condomínio da área 1 -->
+                    {% endif %}
+                </td>
+                <td>{{ area_paralela.area.nome_area }}</td>  <!-- Nome da área 1 -->
+                <td>
+                    {% if area_paralela.area.condominio.id != area_paralela.area2.condominio.id %}
+                        {{ area_paralela.area2.condominio.nome_condominio }}  <!-- Nome do condomínio da área 2, se for diferente -->
+                    {% endif %}
+                </td>
+                <td>{{ area_paralela.area2.nome_area }}</td>  <!-- Nome da área 2 -->
+                <td>{{ area_paralela.get_tipo_display }}</td>  <!-- Tipo da área paralela -->
+                <td>
+                    <a href="{% url 'editar_area_paralela' area_paralela.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'deletar_area_paralela' area_paralela.pk %}" class="btn btn-danger btn-sm">Deletar</a>
                 </td>
             </tr>
             {% endfor %}
