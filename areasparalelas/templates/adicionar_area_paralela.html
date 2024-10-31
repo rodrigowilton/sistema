@@ -30,14 +30,38 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Editar Área Paralela</h2>
+<body>
+    <h1>Adicionar Área Paralela</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}  <!-- Renderiza o formulário -->
-        <button type="submit" class="btn btn-primary">Salvar</button>
+
+        <label for="condominio">Condomínio:</label>
+        <select id="condominio" name="condominio">
+            <option value="">Selecione um condomínio</option>
+            {% for condominio in condominios %}
+                <option value="{{ condominio.id }}" {% if selected_condominio|stringformat:"i" == condominio.id|stringformat:"i" %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="areas-container">
+            <label for="area">Área 1:</label>
+            <select id="area" name="area">
+                <option value="">Selecione uma área</option>
+                {% for area in areas1 %}
+                    <option value="{{ area.id }}">{{ area.nome_area }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="area2">Área 2:</label>
+            <select id="area2" name="area2">
+                <option value="">Selecione uma área</option>
+                {% for area in areas2 %}
+                    <option value="{{ area.id }}">{{ area.nome_area }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Adicionar Área Paralela</button>
     </form>
-    <br>
-    <a href="{% url 'areas_paralelas' %}" class="btn btn-secondary">Voltar</a>
-</div>
+</body>
 {% endblock %}
