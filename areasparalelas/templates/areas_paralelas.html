@@ -21,11 +21,8 @@
         </div>
     </div>
 </nav>
-<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
-</div>
-<br>
-<br>
-<br>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br><br><br>
 {% endblock %}
 
 {% block content %}
@@ -46,7 +43,7 @@
             <tr>
                 <td>
                     {% if area_paralela.area.condominio.id == area_paralela.area2.condominio.id %}
-                        {{ area_paralela.area.condominio.nome_condominio }}  <!-- Mostra o nome do condomínio apenas uma vez -->
+                        {{ area_paralela.area.condominio.nome_condominio }}  <!-- Nome do condomínio apenas uma vez -->
                     {% else %}
                         {{ area_paralela.area.condominio.nome_condominio }}  <!-- Nome do condomínio da área 1 -->
                     {% endif %}
@@ -54,11 +51,12 @@
                 <td>{{ area_paralela.area.nome_area }}</td>  <!-- Nome da área 1 -->
                 <td>
                     {% if area_paralela.area.condominio.id != area_paralela.area2.condominio.id %}
-                        {{ area_paralela.area2.condominio.nome_condominio }}  <!-- Nome do condomínio da área 2, se for diferente -->
+                        {{ area_paralela.area2.nome_area }}  <!-- Nome da área 2 -->
+                    {% else %}
+                        {{ area_paralela.area2.nome_area }}  <!-- Nome da área 2, se for a mesma -->
                     {% endif %}
                 </td>
-                <td>{{ area_paralela.area2.nome_area }}</td>  <!-- Nome da área 2 -->
-                <td>{{ area_paralela.get_tipo_display }}</td>  <!-- Tipo da área paralela -->
+                <td>{{ area_paralela.tipo_display }}</td>  <!-- Tipo da área paralela -->
                 <td>
                     <a href="{% url 'editar_area_paralela' area_paralela.pk %}" class="btn btn-warning btn-sm">Editar</a>
                     <a href="{% url 'deletar_area_paralela' area_paralela.pk %}" class="btn btn-danger btn-sm">Deletar</a>

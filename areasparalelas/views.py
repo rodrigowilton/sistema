@@ -11,6 +11,14 @@ class AreasParalelasView(View):
     def get(self, request):
         # Lógica para mostrar áreas paralelas
         areas_paralelas = AreasParalelas.objects.all()
+        # Mapeamento de tipos
+        for area in areas_paralelas:
+            if area.tipo == 1:
+                area.tipo_display = 'Concorrente'
+            elif area.tipo == 2:
+                area.tipo_display = 'Conjunta'
+            else:
+                area.tipo_display = 'Desconhecido'
         return render(request, 'areas_paralelas.html', {'areas_paralelas': areas_paralelas})
 
 def get_areas(request, condominio_id):
