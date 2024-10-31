@@ -67,16 +67,17 @@
 
 {% block content %}
 <div class="container">
+    <h2 style="flex-grow: 1; text-align: center; margin: 0;">Áreas</h2><br> <!-- Título fora do thead -->
+
     <!-- Campo de pesquisa -->
     <form method="GET" class="mb-3">
         <div class="input-group">
             <input type="text" name="pesquisar" class="form-control" placeholder="Pesquisar por Área" aria-label="Pesquisar por Área" value="{{ request.GET.pesquisar }}">
-            <button class="btn btn-outline-secondary" type="submit">Pesquisar</button>
+            <button class="btn btn-primary" type="submit">Pesquisar</button>
         </div>
     </form>
 </div>
 
-<h2 style="flex-grow: 1; text-align: center; margin: 0;">Áreas</h2><br> <!-- Título fora do thead -->
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
