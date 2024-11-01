@@ -30,38 +30,65 @@
 <div class="container mt-4">
     <h2 class="text-center mb-4">Editar Área Paralela</h2>
 
+    {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <form method="post" action="{% url 'editar_area_paralela' area_paralela.pk %}">
         {% csrf_token %}
         <div class="form-group">
             <label for="condominio">Condomínio:</label>
             <input type="text" id="condominio" class="form-control" value="{{ area_paralela.area.condominio.nome_condominio }}" disabled>
         </div>
-        <div class="form-group">
-            <label for="area">Área 1:</label>
-            <select id="area" name="area" class="form-control">
-                {% for area in areas_disponiveis %}
-                    <option value="{{ area.id }}" {% if area.id == area_paralela.area.id %}selected{% endif %}>
-                        {{ area.nome_area }}  <!-- Supondo que o campo que você quer mostrar seja 'nome_area' -->
-                    </option>
-                {% endfor %}
-            </select>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="area">Área 1:</label>
+                    <select id="area" name="area" class="form-control">
+                        {% for area in areas_disponiveis %}
+                            <option value="{{ area.id }}" {% if area.id == area_paralela.area.id %}selected{% endif %}>
+                                {{ area.nome_area }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="area2">Área 2:</label>
+                    <select id="area2" name="area2" class="form-control">
+                        {% for area in areas_disponiveis %}
+                            <option value="{{ area.id }}" {% if area.id == area_paralela.area2.id %}selected{% endif %}>
+                                {{ area.nome_area }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="area2">Área 2:</label>
-            <select id="area2" name="area2" class="form-control">
-                {% for area in areas_disponiveis %}
-                    <option value="{{ area.id }}" {% if area.id == area_paralela.area2.id %}selected{% endif %}>
-                        {{ area.nome_area }}  <!-- Supondo que o campo que você quer mostrar seja 'nome_area' -->
-                    </option>
-                {% endfor %}
-            </select>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="tipo">Tipo:</label>
+                    <select name="tipo" id="tipo" class="form-control">
+                        <option value="">Selecione um tipo</option> <!-- Opção padrão -->
+                        {% for choice in form.tipo.field.choices %}
+                            <option value="{{ choice.0 }}" {% if choice.0 == form.tipo.value %}selected{% endif %}>
+                                {{ choice.1 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </div>
+        <br>
         <div class="form-group">
-            <label for="tipo">Tipo:</label>
-            {{ form.tipo }}  <!-- Campo para o tipo -->
+            <button type="submit" class="btn btn-primary">Salvar Alteração</button>
         </div>
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <a href="{% url 'areas_paralelas' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 {% endblock %}

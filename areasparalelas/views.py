@@ -2,8 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from app.models import Areas, AreasParalelas, Condominios
-from .forms import AreasParalelasForm, EditAreaParalelaForm
-
+from .forms import AreasParalelasForm
 
 def get_areas(request):
     condominio_id = request.GET.get('condominio_id')
@@ -38,7 +37,6 @@ def adicionar_area_paralela(request):
         'selected_condominio': selected_condominio,
     })
 
-
 def editar_area_paralela(request, pk):
     area_paralela = get_object_or_404(AreasParalelas, id=pk)
 
@@ -46,7 +44,7 @@ def editar_area_paralela(request, pk):
         form = AreasParalelasForm(request.POST, instance=area_paralela)
         if form.is_valid():
             form.save()
-            return redirect('areas_paralelas')
+            return redirect('areas_paralelas')  # Redireciona após salvar
     else:
         form = AreasParalelasForm(instance=area_paralela)
 
@@ -59,8 +57,6 @@ def editar_area_paralela(request, pk):
         'areas_disponiveis': areas_disponiveis,  # Adicionando as áreas disponíveis ao contexto
     }
     return render(request, 'editar_area_paralela.html', context)
-
-
 
 # Função de view para listar e buscar áreas paralelas
 def buscar_areas_paralelas(request):
@@ -86,7 +82,6 @@ def buscar_areas_paralelas(request):
     context = {'areas_paralelas': areas_paralelas, 'search_query': search_query}
     return render(request, 'areas_paralelas.html', context)
 
-
 # View para listar áreas paralelas
 class AreasParalelasView(View):
     def get(self, request):
@@ -103,7 +98,6 @@ class AreasParalelasView(View):
 
         return render(request, 'areas_paralelas.html', {'areas_paralelas': areas_paralelas})
 
-
 # View para editar área paralela
 class EditarAreaParalelaView(View):
     def get(self, request, pk):
@@ -116,9 +110,8 @@ class EditarAreaParalelaView(View):
         form = AreasParalelasForm(request.POST, instance=area_paralela)
         if form.is_valid():
             form.save()
-            return redirect('areas_paralelas')
+            return redirect('areas_paralelas')  # Redireciona após salvar
         return render(request, 'editar_area_paralela.html', {'form': form})
-
 
 # View para deletar área paralela
 class DeleteAreaParalelaView(View):
