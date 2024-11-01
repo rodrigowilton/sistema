@@ -1,10 +1,9 @@
-{% extends 'base_login.html' %}
+{% extends "base_login.html" %}
 {% load static %}
-
 {% block menu %}
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}">
+        <a class="navbar-brand" href="#">
             <div class="icon-container">
                 <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
             </div>
@@ -16,30 +15,28 @@
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
+
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
+</div>
 <br>
 <br>
 <br>
 {% endblock %}
-
 {% block content %}
-<br>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Adicionar Área Paralela</h2> <!-- Título centralizado -->
 
-<h2 style="flex-grow: 1; text-align: center; margin: 0;">Adicionar Área Paralela</h2> <!-- Título centralizado -->
-
-<div class="container">
     <form method="post" id="area-paralela-form">
         {% csrf_token %}
-        <input type="hidden" name="status" value="1">
 
         <div class="form-group">
             <label for="condominio">Condomínio:</label>
-            <select name="condominio" id="condominio">
+            <select name="condominio" id="condominio" class="form-control">
                 <option value="">Selecione um condomínio</option>
                 {% for condominio in condominios %}
                     {% if condominio.status == 1 %}  <!-- Apenas condomínios com status 1 -->
@@ -51,49 +48,57 @@
             </select>
         </div>
 
-        <br>
-
         <div class="row">
-            <div class="form-group">
-                {{ form.area.label }}:
-                <select name="area" id="area">
-                    <option value="">Selecione uma área</option> <!-- Opção padrão -->
-                </select>
-                <br>
-            </div>
-
-            <div class="form-group">
-                {{ form.area2.label }}:
-                <select name="area2" id="area2">
-                    <option value="">Selecione uma área</option> <!-- Opção padrão -->
-                </select>
-                <br>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="area">Área 1:</label>
+                    <select name="area" id="area" class="form-control">
+                        <option value="">Selecione uma área</option> <!-- Opção padrão -->
+                    </select>
+                    <div class="error-message text-danger">{{ form.area.errors }}</div> <!-- Erros de validação -->
+                </div>
             </div>
 
             <div class="col-md-6">
                 <div class="form-group">
-                    {{ form.tipo.label }}: {{ form.tipo }} <br>
-                    <div class="error-message">{{ form.tipo.errors }}</div>
+                    <label for="area2">Área 2:</label>
+                    <select name="area2" id="area2" class="form-control">
+                        <option value="">Selecione uma área</option> <!-- Opção padrão -->
+                    </select>
+                    <div class="error-message text-danger">{{ form.area2.errors }}</div> <!-- Erros de validação -->
                 </div>
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="tipo">{{ form.tipo.label }}</label>
+                    <select name="tipo" id="tipo" class="form-control">
+                        <option value="">Selecione um tipo</option> <!-- Opção padrão -->
+                        {% for tipo in form.tipo.field.choices %}
+                            <option value="{{ tipo.0 }}" {% if tipo.0|stringformat:"d" == form.tipo.value|stringformat:"d" %}selected{% endif %}>
+                                {{ tipo.1 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="error-message text-danger">{{ form.tipo.errors }}</div> <!-- Erros de validação -->
+                </div>
+            </div>
+        </div>
+<br>
+<br>
+<br>
         <div class="form-group">
-            <br>
             <button type="submit" class="btn btn-primary">Adicionar Área Paralela</button>
         </div>
-
-        <br>
-        <br>
-        <br>
     </form>
 </div>
 {% endblock %}
+
 {% block extra_js %}
-<!-- Importando jQuery via CDN -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7VdI1LY8qlpXXWz68xk1UbcRTfV+uSh1TWn" crossorigin="anonymous"></script>
 
-<!-- Código JS para AJAX ou outras funcionalidades com jQuery -->
 <script>
 $(document).ready(function() {
     $('#condominio').change(function() {

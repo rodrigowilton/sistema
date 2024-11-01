@@ -2,7 +2,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from app.models import Areas, AreasParalelas, Condominios
-from .forms import AreasParalelasForm
+from .forms import AreasParalelasForm, EditAreaParalelaForm
+
 
 def get_areas(request):
     condominio_id = request.GET.get('condominio_id')
@@ -36,6 +37,28 @@ def adicionar_area_paralela(request):
         'form': form,
         'selected_condominio': selected_condominio,
     })
+
+
+def editar_area_paralela(request, pk):
+    area_paralela = get_object_or_404(AreasParalelas, id=pk)
+
+    if request.method == 'POST':
+        form = AreasParalelasForm(request.POST, instance=area_paralela)
+        if form.is_valid():
+            form.save()
+            return redirect('areas_paralelas')
+    else:
+        form = AreasParalelasForm(instance=area_paralela)
+
+    # Obter as áreas disponíveis para o condomínio da área paralela
+    areas_disponiveis = Areas.objects.filter(condominio=area_paralela.area.condominio)  # Supondo que 'condominio' seja um campo no modelo Areas
+
+    context = {
+        'form': form,
+        'area_paralela': area_paralela,
+        'areas_disponiveis': areas_disponiveis,  # Adicionando as áreas disponíveis ao contexto
+    }
+    return render(request, 'editar_area_paralela.html', context)
 
 
 
