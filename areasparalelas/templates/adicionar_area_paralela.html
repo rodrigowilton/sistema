@@ -35,6 +35,8 @@
 <div class="container">
     <form method="post" id="area-paralela-form">
         {% csrf_token %}
+        <input type="hidden" name="status" value="1">
+
         <div class="form-group">
             <label for="condominio">Condomínio:</label>
             <select name="condominio" id="condominio">
@@ -104,14 +106,27 @@ $(document).ready(function() {
                 },
                 success: function(response) {
                     var areaSelect = $('#area');
+                    var area2Select = $('#area2');
+
+                    // Limpar as opções anteriores de ambas as áreas
                     areaSelect.empty();
+                    area2Select.empty();
+
+                    // Adicionar a opção padrão
                     areaSelect.append('<option value="">Selecione uma área</option>');
+                    area2Select.append('<option value="">Selecione uma área</option>');
+
+                    // Adicionar as áreas retornadas ao dropdown de area e area2
                     $.each(response.areas, function(index, area) {
                         areaSelect.append('<option value="' + area.id + '">' + area.nome_area + '</option>');
+                        area2Select.append('<option value="' + area.id + '">' + area.nome_area + '</option>');
                     });
                 }
-
             });
+        } else {
+            // Limpar as opções se nenhum condomínio estiver selecionado
+            $('#area').empty().append('<option value="">Selecione uma área</option>');
+            $('#area2').empty().append('<option value="">Selecione uma área</option>');
         }
     });
 });

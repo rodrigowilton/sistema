@@ -11,7 +11,6 @@ def get_areas(request):
 
     return JsonResponse({'areas': areas_list})
 
-
 def adicionar_area_paralela(request):
     condominios = Condominios.objects.all()
     selected_condominio = None
@@ -22,7 +21,9 @@ def adicionar_area_paralela(request):
         form = AreasParalelasForm(request.POST, selected_condominio=selected_condominio)
 
         if form.is_valid():
-            form.save()  # Salva a nova área paralela
+            area_paralela = form.save(commit=False)  # Cria a instância sem salvar ainda
+            area_paralela.status = 1  # Define o status como 1
+            area_paralela.save()  # Salva a nova área paralela com o status definido
             return redirect('areas_paralelas')  # Redireciona após a criação
 
     # Se um condomínio foi selecionado, busca as áreas
@@ -35,6 +36,7 @@ def adicionar_area_paralela(request):
         'form': form,
         'selected_condominio': selected_condominio,
     })
+
 
 
 # Função de view para listar e buscar áreas paralelas
