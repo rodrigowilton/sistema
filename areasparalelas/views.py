@@ -5,9 +5,32 @@ from app.models import Areas, AreasParalelas, Condominios
 from .forms import AreasParalelasForm
 
 
-# View de busca por condomínios
-from django.shortcuts import render
-from app.models import AreasParalelas
+# views para adicionar area paralela
+def adicionar_area_paralela(request):
+    condominios = Condominios.objects.all()
+    selected_condominio = None
+    form = AreasParalelasForm()
+
+    if request.method == 'POST':
+        selected_condominio = request.POST.get('condominio')
+        form = AreasParalelasForm(request.POST, selected_condominio=selected_condominio)
+
+        if form.is_valid():
+            form.save()  # Salva a nova área paralela
+            return redirect('areas_paralelas')  # Redireciona após a criação
+
+    # Se um condomínio foi selecionado, busca as áreas
+    if selected_condominio:
+        form.fields['area'].queryset = Areas.objects.filter(condominio_id=selected_condominio, status=1)
+        form.fields['area2'].queryset = Areas.objects.filter(condominio_id=selected_condominio, status=1)
+
+    return render(request, 'adicionar_area_paralela.html', {
+        'condominios': condominios,
+        'form': form,
+        'selected_condominio': selected_condominio,
+    })
+
+
 
 # Função de view para listar e buscar áreas paralelas
 def buscar_areas_paralelas(request):
@@ -49,46 +72,6 @@ class AreasParalelasView(View):
                 area.tipo_display = 'Desconhecido'
 
         return render(request, 'areas_paralelas.html', {'areas_paralelas': areas_paralelas})
-
-
-# View para buscar áreas de um condomínio específico
-def get_areas(request, condominio_id):
-    areas = Areas.objects.filter(condominio_id=condominio_id, status=1).values('id', 'nome_area')
-    return JsonResponse({'areas': list(areas)})
-
-
-# View para adicionar área paralela
-def adicionar_area_paralela(request):
-    condominios = Condominios.objects.all()
-    areas1, areas2 = [], []
-    selected_condominio = None
-
-    if request.method == 'POST':
-        selected_condominio = request.POST.get('condominio')
-        area1_id = request.POST.get('area1')
-        area2_id = request.POST.get('area2')
-
-        # Cria a área paralela, caso as áreas estejam definidas
-        if area1_id and area2_id:
-            AreasParalelas.objects.create(
-                area_id=area1_id,
-                area2_id=area2_id,
-                tipo=1,  # ou 2, conforme necessário
-                status=1,
-            )
-            return redirect('areas_paralelas')
-
-    # Se um condomínio foi selecionado, busca as áreas
-    if selected_condominio:
-        areas1 = Areas.objects.filter(condominio_id=selected_condominio, status=1)
-        areas2 = Areas.objects.filter(condominio_id=selected_condominio, status=1)
-
-    return render(request, 'adicionar_area_paralela.html', {
-        'condominios': condominios,
-        'areas1': areas1,
-        'areas2': areas2,
-        'selected_condominio': selected_condominio,
-    })
 
 
 # View para editar área paralela
