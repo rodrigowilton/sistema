@@ -4,8 +4,14 @@ from django.views import View
 from app.models import Areas, AreasParalelas, Condominios
 from .forms import AreasParalelasForm
 
+def get_areas(request):
+    condominio_id = request.GET.get('condominio_id')
+    areas = Areas.objects.filter(condominio_id=condominio_id).values('id', 'nome_area')  # Filtrar áreas pelo condomínio
+    areas_list = list(areas)  # Converte o queryset para lista
 
-# views para adicionar area paralela
+    return JsonResponse({'areas': areas_list})
+
+
 def adicionar_area_paralela(request):
     condominios = Condominios.objects.all()
     selected_condominio = None
@@ -29,7 +35,6 @@ def adicionar_area_paralela(request):
         'form': form,
         'selected_condominio': selected_condominio,
     })
-
 
 
 # Função de view para listar e buscar áreas paralelas

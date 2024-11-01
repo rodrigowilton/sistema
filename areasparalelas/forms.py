@@ -23,3 +23,7 @@ class AreasParalelasForm(forms.ModelForm):
         if selected_condominio:
             self.fields['area'].queryset = Areas.objects.filter(condominio_id=selected_condominio, status=1)
             self.fields['area2'].queryset = Areas.objects.filter(condominio_id=selected_condominio, status=1)
+
+    def label_from_instance(self, obj):
+        # Certifique-se de retornar apenas o nome da área
+        return obj.nome_area  # Altere isso para o campo que deseja exibir

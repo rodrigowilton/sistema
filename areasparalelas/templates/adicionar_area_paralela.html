@@ -1,39 +1,119 @@
-<!-- templates/adicionar_area_paralela.html -->
+{% extends 'base_login.html' %}
+{% load static %}
 
-<h2>Adicionar Área Paralela</h2>
-
-<form method="POST">
-    {% csrf_token %}
-
-    <label for="condominio">Condomínio:</label>
-    <select name="condominio" id="condominio" onchange="this.form.submit()">
-        <option value="">Selecione um condomínio</option>
-        {% for condominio in condominios %}
-            <option value="{{ condominio.id }}" {% if condominio.id == selected_condominio %}selected{% endif %}>{{ condominio }}</option>
-        {% endfor %}
-    </select>
-
-    <br><br>
-
-    {{ form.area.label }}: {{ form.area }} <br>
-    {{ form.area2.label }}: {{ form.area2 }} <br>
-    {{ form.tipo.label }}: {{ form.tipo }} <br>
-
-    <button type="submit">Adicionar Área Paralela</button>
-</form>
-
-{% if form.errors %}
-    <div>
-        <strong>Erro:</strong>
-        <ul>
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-{% endif %}
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
+{% endblock %}
+
+{% block content %}
+<br>
+
+<h2 style="flex-grow: 1; text-align: center; margin: 0;">Adicionar Área Paralela</h2> <!-- Título centralizado -->
+
+<div class="container">
+    <form method="post" id="area-paralela-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="condominio">Condomínio:</label>
+            <select name="condominio" id="condominio">
+                <option value="">Selecione um condomínio</option>
+                {% for condominio in condominios %}
+                    {% if condominio.status == 1 %}  <!-- Apenas condomínios com status 1 -->
+                        <option value="{{ condominio.id }}" {% if condominio.id|stringformat:"d" == selected_condominio|stringformat:"d" %}selected{% endif %}>
+                            {{ condominio }}
+                        </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="form-group">
+                {{ form.area.label }}:
+                <select name="area" id="area">
+                    <option value="">Selecione uma área</option> <!-- Opção padrão -->
+                </select>
+                <br>
+            </div>
+
+            <div class="form-group">
+                {{ form.area2.label }}:
+                <select name="area2" id="area2">
+                    <option value="">Selecione uma área</option> <!-- Opção padrão -->
+                </select>
+                <br>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form.tipo.label }}: {{ form.tipo }} <br>
+                    <div class="error-message">{{ form.tipo.errors }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <br>
+            <button type="submit" class="btn btn-primary">Adicionar Área Paralela</button>
+        </div>
+
+        <br>
+        <br>
+        <br>
+    </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<!-- Importando jQuery via CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7VdI1LY8qlpXXWz68xk1UbcRTfV+uSh1TWn" crossorigin="anonymous"></script>
+
+<!-- Código JS para AJAX ou outras funcionalidades com jQuery -->
+<script>
+$(document).ready(function() {
+    $('#condominio').change(function() {
+        var condominioId = $(this).val();
+        if (condominioId) {
+            $.ajax({
+                url: '{% url "get_areas" %}',
+                data: {
+                    'condominio_id': condominioId
+                },
+                success: function(response) {
+                    var areaSelect = $('#area');
+                    areaSelect.empty();
+                    areaSelect.append('<option value="">Selecione uma área</option>');
+                    $.each(response.areas, function(index, area) {
+                        areaSelect.append('<option value="' + area.id + '">' + area.nome_area + '</option>');
+                    });
+                }
+
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
