@@ -2,12 +2,12 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from app.models import Areas, AreasParalelas, Condominios
-from .forms import AreasParalelasForm
+from .forms import AreasParalelasForm, EditarAreaParalelaForm
 
 def get_areas(request):
     condominio_id = request.GET.get('condominio_id')
-    areas = Areas.objects.filter(condominio_id=condominio_id).values('id', 'nome_area')  # Filtrar áreas pelo condomínio
-    areas_list = list(areas)  # Converte o queryset para lista
+    areas = Areas.objects.filter(condominio_id=condominio_id).values('id', 'nome_area')
+    areas_list = list(areas)
 
     return JsonResponse({'areas': areas_list})
 
@@ -37,39 +37,45 @@ def adicionar_area_paralela(request):
         'selected_condominio': selected_condominio,
     })
 
+
 def editar_area_paralela(request, pk):
     area_paralela = get_object_or_404(AreasParalelas, id=pk)
+    selected_condominio = area_paralela.area.condominio  # Obtendo o objeto do condomínio
 
     if request.method == 'POST':
-        form = AreasParalelasForm(request.POST, instance=area_paralela)
+        form = EditarAreaParalelaForm(request.POST, instance=area_paralela, selected_condominio=selected_condominio.id)
         if form.is_valid():
-            form.save()
+            area_paralela = form.save(commit=False)  # Cria a instância sem salvar ainda
+            area_paralela.status = 1  # Mantém o status como 1
+            area_paralela.save()  # Salva a área paralela
             return redirect('areas_paralelas')  # Redireciona após salvar
     else:
-        form = AreasParalelasForm(instance=area_paralela)
+        form = EditarAreaParalelaForm(instance=area_paralela, selected_condominio=selected_condominio.id)
 
-    # Obter as áreas disponíveis para o condomínio da área paralela
-    areas_disponiveis = Areas.objects.filter(condominio=area_paralela.area.condominio)  # Supondo que 'condominio' seja um campo no modelo Areas
+    # Define a descrição do tipo com base no valor do tipo selecionado
+    if area_paralela.tipo == 1:
+        tipo_display = "Concorrente"
+    else:
+        tipo_display = "Conjunta"
 
     context = {
         'form': form,
         'area_paralela': area_paralela,
-        'areas_disponiveis': areas_disponiveis,  # Adicionando as áreas disponíveis ao contexto
+        'selected_condominio': selected_condominio,  # Passa o objeto do condomínio
+        'tipo_display': tipo_display,  # Passa o tipo como texto
     }
+
     return render(request, 'editar_area_paralela.html', context)
 
 # Função de view para listar e buscar áreas paralelas
 def buscar_areas_paralelas(request):
-    # Termo de pesquisa
     search_query = request.GET.get('search', '').strip()
 
-    # Filtra as áreas paralelas com base no nome do condomínio
     if search_query:
         areas_paralelas = AreasParalelas.objects.filter(area__condominio__nome_condominio__icontains=search_query)
     else:
         areas_paralelas = AreasParalelas.objects.all()
 
-    # Mapear o tipo de exibição
     for area in areas_paralelas:
         if area.tipo == 1:
             area.tipo_display = 'Concorrente'
@@ -78,16 +84,13 @@ def buscar_areas_paralelas(request):
         else:
             area.tipo_display = 'Desconhecido'
 
-    # Contexto para renderizar o template
     context = {'areas_paralelas': areas_paralelas, 'search_query': search_query}
     return render(request, 'areas_paralelas.html', context)
 
-# View para listar áreas paralelas
 class AreasParalelasView(View):
     def get(self, request):
         areas_paralelas = AreasParalelas.objects.all()
 
-        # Mapeamento de tipos
         for area in areas_paralelas:
             if area.tipo == 1:
                 area.tipo_display = 'Concorrente'
@@ -98,7 +101,6 @@ class AreasParalelasView(View):
 
         return render(request, 'areas_paralelas.html', {'areas_paralelas': areas_paralelas})
 
-# View para editar área paralela
 class EditarAreaParalelaView(View):
     def get(self, request, pk):
         area_paralela = get_object_or_404(AreasParalelas, pk=pk)
@@ -109,11 +111,12 @@ class EditarAreaParalelaView(View):
         area_paralela = get_object_or_404(AreasParalelas, pk=pk)
         form = AreasParalelasForm(request.POST, instance=area_paralela)
         if form.is_valid():
-            form.save()
+            area_paralela = form.save(commit=False)  # Cria a instância sem salvar ainda
+            area_paralela.status = 1  # Mantém o status como 1
+            area_paralela.save()  # Salva a área paralela com o status definido
             return redirect('areas_paralelas')  # Redireciona após salvar
         return render(request, 'editar_area_paralela.html', {'form': form})
 
-# View para deletar área paralela
 class DeleteAreaParalelaView(View):
     def get(self, request, pk):
         area_paralela = get_object_or_404(AreasParalelas, pk=pk)

@@ -2,93 +2,50 @@
 {% load static %}
 
 {% block menu %}
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <div class="icon-container">
-                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
-            </div>
-        </a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav custom-nav-link">
-                <li class="nav-item">
-                    <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
-                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;">
-</div>
-<br><br><br>
+<!-- Código do menu -->
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Editar Área Paralela</h2>
+<form method="POST">
+    {% csrf_token %}
 
-    {% if messages %}
-        <div class="alert alert-success" role="alert">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
+    <label for="condominio">Condomínio</label>
+    <select id="condominio" name="condominio" class="form-control" disabled>
+        <option value="{{ selected_condominio.id }}">{{ selected_condominio.nome_condominio }}</option>
+    </select>
 
-    <form method="post" action="{% url 'editar_area_paralela' area_paralela.pk %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="condominio">Condomínio:</label>
-            <input type="text" id="condominio" class="form-control" value="{{ area_paralela.area.condominio.nome_condominio }}" disabled>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="area">Área 1:</label>
-                    <select id="area" name="area" class="form-control">
-                        {% for area in areas_disponiveis %}
-                            <option value="{{ area.id }}" {% if area.id == area_paralela.area.id %}selected{% endif %}>
-                                {{ area.nome_area }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="area2">Área 2:</label>
-                    <select id="area2" name="area2" class="form-control">
-                        {% for area in areas_disponiveis %}
-                            <option value="{{ area.id }}" {% if area.id == area_paralela.area2.id %}selected{% endif %}>
-                                {{ area.nome_area }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="tipo">Tipo:</label>
-                    <select name="tipo" id="tipo" class="form-control">
-                        <option value="">Selecione um tipo</option> <!-- Opção padrão -->
-                        {% for choice in form.tipo.field.choices %}
-                            <option value="{{ choice.0 }}" {% if choice.0 == form.tipo.value %}selected{% endif %}>
-                                {{ choice.1 }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Salvar Alteração</button>
-        </div>
-    </form>
-</div>
+    <div>
+        <label for="id_area">Área 1:</label>
+        {{ form.area }}
+        {% if form.area.errors %}
+            <ul class="errorlist">
+                {% for error in form.area.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="id_area2">Área 2:</label>
+        {{ form.area2 }}
+        {% if form.area2.errors %}
+            <ul class="errorlist">
+                {% for error in form.area2.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="id_tipo">Tipo:</label>
+        <select name="tipo" id="id_tipo">
+            <option value="1" {% if area_paralela.tipo == 1 %}selected{% endif %}>Concorrente</option>
+            <option value="2" {% if area_paralela.tipo == 2 %}selected{% endif %}>Conjunta</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+</form>
 {% endblock %}
