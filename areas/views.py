@@ -175,7 +175,7 @@ def deletar_area(request, area_id):
         area.save()
 
         messages.success(request, 'Área definida como inativa com sucesso!')
-        return redirect('consulta_area')  # Ajuste o redirecionamento conforme necessário
+        return redirect('/menu_agd')  # Ajuste o redirecionamento conforme necessário
 
     return render(request, 'deletar_area.html', {'area': area})
 

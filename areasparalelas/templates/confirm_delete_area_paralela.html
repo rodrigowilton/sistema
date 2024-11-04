@@ -1,15 +1,47 @@
-{% extends "base.html" %}
+{% extends "base_login.html" %}
+{% load static %}
 
 {% block title %}Confirmar Deletar Área Paralela{% endblock %}
 
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'areas_paralelas' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="Voltar" style="width: 30px; height: 30px; filter: invert(1);">
+                        <span style="margin-top: 5px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h3>Confirmar Deletar Área Paralela</h3>
-    <p>Você tem certeza de que deseja deletar a área paralela: {{ area_paralela }}?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Deletar</button>
-        <a href="{% url 'areas_paralelas' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h2 class="text-center">Confirmar Deletar Área Paralela</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-center">Você tem certeza de que deseja deletar a área paralela: {{ area_paralela }}?</p>
+                <div class="d-flex justify-content-center mt-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Confirmar Desativação</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

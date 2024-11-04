@@ -9,34 +9,23 @@
                 <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
             </div>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav d-flex">
+            <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; filter: invert(1);">
-                        <span style="margin-top: 5px;">Retornar</span>
-                    </a>
-                </li>
-            </ul>
-            <!-- Botão de logout desabilitado -->
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link custom-nav-link-menu logout-link" style="margin-right: 40px; pointer-events: none; opacity: 0.5;">
-                        <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; margin-right: 5px;"><br>
-                        𝐒𝐚𝐢𝐫
+                    <a class="nav-link text-center" href="{% url 'menu_agd' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+<br><br><br><br><br>
 {% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center vh-100">
+<div class="d-flex justify-content-center align-items-center">
     <div class="col-md-6">
         <div class="card shadow">
             <div class="card-header bg-danger text-white">
@@ -49,9 +38,6 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">Confirmar Desativação</button>
                     </form>
-                </div>
-                <div class="d-flex justify-content-center mt-2">
-                    <a href="{% url 'consulta_area' %}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </div>
         </div>

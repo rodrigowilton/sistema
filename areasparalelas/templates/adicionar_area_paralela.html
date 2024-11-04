@@ -11,7 +11,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
+                    <a class="nav-link text-center" href="{% url 'areas_paralelas' %}" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
@@ -55,7 +55,6 @@
                     <select name="area" id="area" class="form-control">
                         <option value="">Selecione uma área</option> <!-- Opção padrão -->
                     </select>
-                    <div class="error-message text-danger">{{ form.area.errors }}</div> <!-- Erros de validação -->
                 </div>
             </div>
 
@@ -65,7 +64,6 @@
                     <select name="area2" id="area2" class="form-control">
                         <option value="">Selecione uma área</option> <!-- Opção padrão -->
                     </select>
-                    <div class="error-message text-danger">{{ form.area2.errors }}</div> <!-- Erros de validação -->
                 </div>
             </div>
         </div>
@@ -82,7 +80,6 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <div class="error-message text-danger">{{ form.tipo.errors }}</div> <!-- Erros de validação -->
                 </div>
             </div>
         </div>
@@ -100,40 +97,29 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7VdI1LY8qlpXXWz68xk1UbcRTfV+uSh1TWn" crossorigin="anonymous"></script>
 
 <script>
+// Script para carregar áreas com base no condomínio selecionado
 $(document).ready(function() {
     $('#condominio').change(function() {
         var condominioId = $(this).val();
         if (condominioId) {
             $.ajax({
-                url: '{% url "get_areas" %}',
-                data: {
-                    'condominio_id': condominioId
-                },
+                url: '{% url "get_areas" %}',  // URL da view para buscar áreas
+                data: {'condominio_id': condominioId},
                 success: function(response) {
                     var areaSelect = $('#area');
                     var area2Select = $('#area2');
+                    areaSelect.empty().append('<option value="">Selecione uma área</option>');
+                    area2Select.empty().append('<option value="">Selecione uma área</option>');
 
-                    // Limpar as opções anteriores de ambas as áreas
-                    areaSelect.empty();
-                    area2Select.empty();
-
-                    // Adicionar a opção padrão
-                    areaSelect.append('<option value="">Selecione uma área</option>');
-                    area2Select.append('<option value="">Selecione uma área</option>');
-
-                    // Adicionar as áreas retornadas ao dropdown de area e area2
                     $.each(response.areas, function(index, area) {
                         areaSelect.append('<option value="' + area.id + '">' + area.nome_area + '</option>');
                         area2Select.append('<option value="' + area.id + '">' + area.nome_area + '</option>');
                     });
                 }
             });
-        } else {
-            // Limpar as opções se nenhum condomínio estiver selecionado
-            $('#area').empty().append('<option value="">Selecione uma área</option>');
-            $('#area2').empty().append('<option value="">Selecione uma área</option>');
         }
     });
 });
+
 </script>
 {% endblock %}
