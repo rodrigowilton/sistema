@@ -29,8 +29,15 @@
 {% endblock %}
 
 {% block content %}
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <h2 class="mb-0">Áreas Paralelas</h2>
+    <a href="{% url 'adicionar_area_paralela' %}" class="btn btn-link p-0" style="text-decoration: none;">
+        <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 20px; height: 20px; margin-left: 60px;">
+    </a>
+</div>
+
+
 <div class="container mt-4">
-    <h2 class="text-center mb-4">Áreas Paralelas</h2>
 
     <form method="get" action="{% url 'areas_paralelas' %}" class="mb-4">
         <div class="input-group">
@@ -59,9 +66,6 @@
                 <td>{{ area_paralela.area2.nome_area }}</td>
                 <td>{{ area_paralela.tipo_display }}</td>
                 <td>
-                    <a href="{% url 'adicionar_area_paralela' %}">
-                    	<img src="{% static 'img/add.png' %}" alt="add" style="width: 20px; height: 20px; margin-right: 5px;">
-
                     <a href="{% url 'editar_area_paralela' area_paralela.pk %}">
                     	<img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
 
