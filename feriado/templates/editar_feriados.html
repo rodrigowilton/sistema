@@ -1,38 +1,91 @@
-{% extends 'base_login.html' %}
+{% extends "base_login.html" %}
 {% load static %}
 
-{% block menu %}
-<!-- Seu código de menu aqui -->
-{% endblock %}
-
-{% block title %}Editar Feriado{% endblock %}
-
 {% block content %}
-<div class="container">
+<div class="container mt-4">
     <h2>Editar Feriado</h2>
+
     <form method="post">
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="nome" class="form-label">Nome do Feriado</label>
-            <input type="text" class="form-control" id="nome" name="nome" value="{{ feriado.nome }}" required>
+        {{ form.as_p }}  <!-- Exibe os campos do formulário do feriado -->
+
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Condomínios Pendentes</h3>
+                <div class="container-condominios">
+                    <strong>Total de {{ condominios.count }} condomínios</strong>
+                    <div class="lista-condominios">
+                        <ul>
+                            {% for condominio in condominios %}
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="condominios" value="{{ condominio.id }}">
+                                    {{ condominio.nome_condominio }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h3>Condomínios Selecionados</h3>
+                <div class="container-condominios">
+                    <strong>Total de 0 condomínios selecionados</strong>
+                    <div class="lista-condominios" id="selected-condominios">
+                        <ul>
+                            <!-- Aqui você pode adicionar lógica para mostrar os condomínios selecionados -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="data" class="form-label">Data (dd/mm)</label>
-            <input type="text" class="form-control" id="data" name="data" value="{{ feriado.data }}" required>
-        </div>
-        <div class="mb-3">
-            <label for="sinc_acessos" class="form-label">Sincronização de Acessos</label>
-            <input type="number" class="form-control" id="sinc_acessos" name="sinc_acessos" value="{{ feriado.sinc_acessos }}">
-        </div>
-        <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
-            <select class="form-select" id="status" name="status">
-                <option value="1" {% if feriado.status == 1 %}selected{% endif %}>Ativo</option>
-                <option value="0" {% if feriado.status == 0 %}selected{% endif %}>Inativo</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
         <a href="{% url 'listar_feriados' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<script>
+    // JavaScript para gerenciar a seleção de condomínios
+    const checkboxes = document.querySelectorAll('input[name="condominios"]');
+    const selectedContainer = document.getElementById('selected-condominios').getElementsByTagName('ul')[0];
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                const newItem = document.createElement('li');
+                newItem.textContent = this.nextSibling.textContent; // O nome do condomínio
+                selectedContainer.appendChild(newItem);
+            } else {
+                const items = selectedContainer.getElementsByTagName('li');
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].textContent === this.nextSibling.textContent) {
+                        selectedContainer.removeChild(items[i]);
+                        break;
+                    }
+                }
+            }
+            // Atualizar total de condomínios selecionados
+            document.querySelector('strong').textContent = `Total de ${selectedContainer.children.length} condomínios selecionados`;
+        });
+    });
+</script>
+
+<style>
+    .container-condominios {
+        height: 300px; /* Define uma altura fixa para os containers */
+        overflow-y: auto; /* Adiciona barra de rolagem vertical */
+        border: 1px solid #ccc; /* Adiciona uma borda para visualização */
+        padding: 10px; /* Espaçamento interno */
+    }
+    .lista-condominios {
+        list-style-type: none; /* Remove os marcadores da lista */
+        padding: 0; /* Remove o padding padrão da lista */
+    }
+    .lista-condominios li {
+        padding: 5px 0; /* Espaçamento entre os itens */
+    }
+</style>
 {% endblock %}

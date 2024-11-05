@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from app.models import Feriados
+from app.models import Feriados, Condominios
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.db.models import Q
+from .forms import FeriadoForm  # Supondo que você tenha um formulário para Feriados
+
 
 
 # View para adicionar feriados
@@ -26,22 +28,24 @@ def adicionar_feriados(request):
 
     return render(request, 'adicionar_feriados.html')
 
-# View para editar feriados
-@require_http_methods(["GET", "POST"])
 def editar_feriados(request, feriado_id):
-    feriado = get_object_or_404(Feriados, id=feriado_id)
+    feriado = get_object_or_404(Feriados, id=feriado_id)  # Obtém o feriado pelo ID
+    condominios = Condominios.objects.all()  # Obtém todos os condomínios
 
-    if request.method == "POST":
-        feriado.nome = request.POST.get('nome')
-        feriado.data = request.POST.get('data')
-        feriado.sinc_acessos = request.POST.get('sinc_acessos', 0)
-        feriado.status = request.POST.get('status', 1)
-        feriado.modified = timezone.now()
-        feriado.save()
+    if request.method == 'POST':
+        form = FeriadoForm(request.POST, instance=feriado)
+        if form.is_valid():
+            form.save()  # Salva as alterações
+            return redirect('listar_feriados')  # Redireciona após salvar
+    else:
+        form = FeriadoForm(instance=feriado)
 
-        return redirect('listar_feriados')
-
-    return render(request, 'editar_feriados.html', {'feriado': feriado})
+    context = {
+        'form': form,
+        'feriado': feriado,
+        'condominios': condominios,
+    }
+    return render(request, 'editar_feriados.html', context)
 
 # View para deletar feriados
 @require_http_methods(["GET", "POST"])
