@@ -1,0 +1,38 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<!-- Seu código de menu aqui -->
+{% endblock %}
+
+{% block title %}Editar Feriado{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Editar Feriado</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome do Feriado</label>
+            <input type="text" class="form-control" id="nome" name="nome" value="{{ feriado.nome }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="data" class="form-label">Data (dd/mm)</label>
+            <input type="text" class="form-control" id="data" name="data" value="{{ feriado.data }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="sinc_acessos" class="form-label">Sincronização de Acessos</label>
+            <input type="number" class="form-control" id="sinc_acessos" name="sinc_acessos" value="{{ feriado.sinc_acessos }}">
+        </div>
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status">
+                <option value="1" {% if feriado.status == 1 %}selected{% endif %}>Ativo</option>
+                <option value="0" {% if feriado.status == 0 %}selected{% endif %}>Inativo</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        <a href="{% url 'listar_feriados' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

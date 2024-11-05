@@ -1,0 +1,20 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<!-- Seu código de menu aqui -->
+{% endblock %}
+
+{% block title %}Deletar Feriado{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Deletar Feriado</h2>
+    <p>Você tem certeza que deseja deletar o feriado "{{ feriado.nome }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
+        <a href="{% url 'listar_feriados' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -37,4 +37,5 @@ urlpatterns = [
     path("areas/", include("areas.urls")),
     path("areasparalelas/", include("areasparalelas.urls")),
     path("horarioagendamento/", include("horarioagendamento.urls")),
+    path("feriado/", include("feriado.urls")),
 ]

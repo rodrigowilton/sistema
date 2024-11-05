@@ -1,0 +1,76 @@
+{% extends "base_login.html" %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_agd' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <h2 class="mb-0">Feriados</h2>
+    <a href="{% url 'adicionar_feriados' %}" class="btn btn-link p-0" style="text-decoration: none;">
+        <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 20px; height: 20px; margin-left: 60px;">
+    </a>
+</div>
+<div class="container mt-4">
+
+    <form method="get" action="{% url 'listar_feriados' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Pesquisar por Feriado" value="{{ search_query|default:'' }}">
+            <button class="btn btn-primary" type="submit">Pesquisar</button>
+        </div>
+    </form>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for feriado in feriados %}
+        <tr>
+            <td>{{ feriado.nome }}</td>
+            <td>{{ feriado.data }}</td>
+            <td>
+                <a href="{% url 'editar_feriados' feriado.id %}">
+                    <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
+                </a>
+                <a href="{% url 'deletar_feriados' feriado.id %}">
+                    <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Nenhum feriado encontrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
