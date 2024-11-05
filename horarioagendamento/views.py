@@ -1,10 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from app.models import AgendamentoHorarios
+from app.models import AgendamentoHorarios, Areas, Condominios
 from .forms import AgendamentoHorariosForm  # Supondo que um formulário tenha sido criado para este modelo
 from django.db.models import Q
 
-
 def adicionar_horario_agendamento(request):
+    condominios = Condominios.objects.filter(status=1)  # Obtém os condomínios ativos
+    areas = []  # Inicializa a lista de áreas
+
+    # Verifica se um condomínio foi selecionado
+    condominio_id = request.POST.get('condominio') or request.GET.get('condominio_id')
+    if condominio_id:
+        areas = Areas.objects.filter(condominio_id=condominio_id)  # Filtra áreas pelo condomínio
+
     if request.method == 'POST':
         form = AgendamentoHorariosForm(request.POST)
         if form.is_valid():
@@ -13,7 +20,13 @@ def adicionar_horario_agendamento(request):
     else:
         form = AgendamentoHorariosForm()
 
-    return render(request, 'adicionar_horario_agendamento.html', {'form': form})
+    return render(request, 'adicionar_horario_agendamento.html', {
+        'form': form,
+        'condominios': condominios,
+        'areas': areas,
+        'selected_condominio': condominio_id,  # Passa o condomínio selecionado para o template
+    })
+
 
 
 def editar_horario_agendamento(request, id):
