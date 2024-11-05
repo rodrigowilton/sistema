@@ -1,6 +1,31 @@
 {% extends "base_login.html" %}
 {% load static %}
 
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_agd' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
+{% endblock %}
 {% block content %}
 <div class="container mt-4">
     <h2>Editar Feriado</h2>
@@ -11,17 +36,14 @@
 
         <div class="row">
             <div class="col-md-6">
-                <h3>Condomínios Pendentes</h3>
+                <h3>Condomínios Libereados</h3>
                 <div class="container-condominios">
-                    <strong>Total de {{ condominios.count }} condomínios</strong>
+                    <strong>Total de <span id="total-pendentes">{{ condominios.count }}</span> condomínios</strong>
                     <div class="lista-condominios">
-                        <ul>
+                        <ul id="pendentes-list">
                             {% for condominio in condominios %}
-                            <li>
-                                <label>
-                                    <input type="checkbox" name="condominios" value="{{ condominio.id }}">
-                                    {{ condominio.nome_condominio }}
-                                </label>
+                            <li class="condominio-item" data-id="{{ condominio.id }}">
+                                {{ condominio.nome_condominio }}
                             </li>
                             {% endfor %}
                         </ul>
@@ -30,47 +52,82 @@
             </div>
 
             <div class="col-md-6">
-                <h3>Condomínios Selecionados</h3>
+                <h3>Condomínios Bloqueados</h3>
                 <div class="container-condominios">
-                    <strong>Total de 0 condomínios selecionados</strong>
-                    <div class="lista-condominios" id="selected-condominios">
-                        <ul>
-                            <!-- Aqui você pode adicionar lógica para mostrar os condomínios selecionados -->
+                    <strong>Total de <span id="total-selecionados">0</span> condomínios selecionados</strong>
+                    <div class="lista-condominios">
+                        <ul id="selected-condominios">
+                            <!-- Os condomínios selecionados serão exibidos aqui -->
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <a href="{% url 'listar_feriados' %}" class="btn btn-secondary">Cancelar</a>
+        <div class="text-center mt-3">
+            <button type="button" id="move-to-selected" class="btn btn-success"> > </button>
+            <button type="button" id="move-to-pendentes" class="btn btn-danger"> < </button>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Salvar alterações</button>
     </form>
 </div>
 
 <script>
-    // JavaScript para gerenciar a seleção de condomínios
-    const checkboxes = document.querySelectorAll('input[name="condominios"]');
-    const selectedContainer = document.getElementById('selected-condominios').getElementsByTagName('ul')[0];
+    // JavaScript para gerenciar a seleção e movimentação de condomínios
+    const pendentesList = document.getElementById('pendentes-list');
+    const selectedContainer = document.getElementById('selected-condominios');
+    const totalPendentes = document.getElementById('total-pendentes');
+    const totalSelecionados = document.getElementById('total-selecionados');
 
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            if (this.checked) {
-                const newItem = document.createElement('li');
-                newItem.textContent = this.nextSibling.textContent; // O nome do condomínio
-                selectedContainer.appendChild(newItem);
-            } else {
-                const items = selectedContainer.getElementsByTagName('li');
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i].textContent === this.nextSibling.textContent) {
-                        selectedContainer.removeChild(items[i]);
-                        break;
-                    }
-                }
-            }
-            // Atualizar total de condomínios selecionados
-            document.querySelector('strong').textContent = `Total de ${selectedContainer.children.length} condomínios selecionados`;
+    // Atualiza total de condomínios selecionados
+    function updateTotals() {
+        totalPendentes.textContent = pendentesList.children.length;
+        totalSelecionados.textContent = selectedContainer.children.length;
+    }
+
+    // Mover os condomínios selecionados para a lista de condomínios selecionados
+    document.getElementById('move-to-selected').addEventListener('click', function() {
+        const selectedItems = Array.from(pendentesList.querySelectorAll('.condominio-item.selected'));
+        selectedItems.forEach(item => {
+            const newItem = document.createElement('li');
+            newItem.textContent = item.textContent; // O nome do condomínio
+            newItem.classList.add('condominio-item'); // Adiciona a classe para seleção
+            newItem.dataset.id = item.dataset.id; // Armazena o ID do condomínio
+
+            selectedContainer.appendChild(newItem);
+            item.remove(); // Remove da lista pendente
         });
+        updateTotals();
     });
+
+    // Mover os condomínios selecionados de volta para a lista de condomínios pendentes
+    document.getElementById('move-to-pendentes').addEventListener('click', function() {
+        const selectedItems = Array.from(selectedContainer.querySelectorAll('.condominio-item.selected'));
+        selectedItems.forEach(item => {
+            const newItem = document.createElement('li');
+            newItem.textContent = item.textContent; // O nome do condomínio
+            newItem.classList.add('condominio-item'); // Adiciona a classe para seleção
+            newItem.dataset.id = item.dataset.id; // Armazena o ID do condomínio
+
+            pendentesList.appendChild(newItem);
+            item.remove(); // Remove da lista selecionada
+        });
+        updateTotals();
+    });
+
+    // Permite a seleção ao clicar na linha
+    function toggleSelection(event) {
+        if (event.target.tagName === 'LI') {
+            event.target.classList.toggle('selected');
+        }
+    }
+
+    pendentesList.addEventListener('click', toggleSelection);
+    selectedContainer.addEventListener('click', toggleSelection);
+
+    // Atualizar totais inicialmente
+    updateTotals();
 </script>
 
 <style>
@@ -86,6 +143,14 @@
     }
     .lista-condominios li {
         padding: 5px 0; /* Espaçamento entre os itens */
+        cursor: pointer; /* Muda o cursor para indicar que a linha é clicável */
+    }
+    .lista-condominios li.selected {
+        background-color: #007bff; /* Cor de fundo para itens selecionados */
+        color: white; /* Cor do texto para itens selecionados */
+    }
+    .text-center {
+        margin: 20px 0; /* Espaçamento entre botões */
     }
 </style>
 {% endblock %}
