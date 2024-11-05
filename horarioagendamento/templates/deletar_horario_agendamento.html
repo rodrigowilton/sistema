@@ -1,0 +1,21 @@
+{% extends "base_login.html" %}
+
+{% block title %}Deletar Horário de Agendamento{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Deletar Horário de Agendamento</h2>
+    <p>Você tem certeza que deseja deletar o horário de agendamento para:</p>
+    <ul>
+        <li>Condomínio: {{ agendamento.condominio }}</li>
+        <li>Área: {{ agendamento.area }}</li>
+        <li>Horário Início: {{ agendamento.horario_inicio }}</li>
+        <li>Horário Fim: {{ agendamento.horario_fim }}</li>
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
+        <a href="{% url 'listar_agendamento_horarios' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
