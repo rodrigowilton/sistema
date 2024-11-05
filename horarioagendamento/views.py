@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from app.models import AgendamentoHorarios
 from .forms import AgendamentoHorariosForm  # Supondo que um formulário tenha sido criado para este modelo
+from django.db.models import Q
 
 
 def adicionar_horario_agendamento(request):
@@ -40,5 +41,18 @@ def deletar_horario_agendamento(request, id):
 
 
 def listar_agendamento_horarios(request):
+    search_query = request.GET.get('search', '')  # Captura o termo de busca do campo 'search'
+
+    # Realiza o filtro apenas se o termo de busca for fornecido
     agendamentos = AgendamentoHorarios.objects.all()
-    return render(request, 'horarioagendamento.html', {'agendamentos': agendamentos})
+    if search_query:
+        agendamentos = agendamentos.filter(
+            Q(condominio__nome_condominio__icontains=search_query) |  # Nome do condomínio
+            Q(area__nome_area__icontains=search_query)  # Nome da área
+        )
+
+    context = {
+        'agendamentos': agendamentos,
+        'search_query': search_query  # Passa o termo de busca para o template
+    }
+    return render(request, 'horarioagendamento.html', context)
