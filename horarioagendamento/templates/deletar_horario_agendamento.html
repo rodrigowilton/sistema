@@ -1,21 +1,54 @@
 {% extends "base_login.html" %}
+{% load static %}
 
-{% block title %}Deletar Horário de Agendamento{% endblock %}
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'listar_agendamento_horarios' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Deletar Horário de Agendamento</h2>
-    <p>Você tem certeza que deseja deletar o horário de agendamento para:</p>
-    <ul>
-        <li>Condomínio: {{ agendamento.condominio }}</li>
-        <li>Área: {{ agendamento.area }}</li>
-        <li>Horário Início: {{ agendamento.horario_inicio }}</li>
-        <li>Horário Fim: {{ agendamento.horario_fim }}</li>
-    </ul>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
-        <a href="{% url 'listar_agendamento_horarios' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
+<div class="d-flex justify-content-center align-items-center ">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h2 class="text-center">Deletar Horário de Agendamento</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-center">Você tem certeza que deseja deletar o horário de agendamento para: {{ agendamento.condominio }}?</p>
+                <div class="d-flex justify-content-center mt-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 {% endblock %}
