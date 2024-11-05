@@ -1,15 +1,83 @@
 {% extends "base_login.html" %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'listar_agendamento_horarios' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
+{% endblock %}
 
 {% block title %}Editar Horário de Agendamento{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Editar Horário de Agendamento</h2>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Editar Horário de Agendamento</h2> <!-- Título centralizado -->
+
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-        <a href="{% url 'listar_agendamento_horarios' %}" class="btn btn-secondary">Cancelar</a>
+        <div class="form-group">
+            <label for="condominio">Condomínio:</label>
+            <select id="condominio" name="condominio" class="form-control">
+                <option value="">Selecione um condomínio</option>
+                {% for condominio in condominios %}
+                    <option value="{{ condominio.id }}" {% if condominio.id == form.condominio.value %}selected{% endif %}>
+                        {{ condominio.nome_condominio }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="area">Área:</label>
+            <select id="area" name="area" class="form-control">
+                <option value="">Selecione uma área</option>
+                {% for area in areas %}
+                    <option value="{{ area.id }}" {% if area.id == form.area.value %}selected{% endif %}>
+                        {{ area.nome_area }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="horario_inicio">Horário de Início:</label>
+            {{ form.horario_inicio }} <!-- Renderiza o campo de horário de início -->
+        </div>
+
+        <div class="form-group">
+            <label for="horario_fim">Horário de Fim:</label>
+            {{ form.horario_fim }} <!-- Renderiza o campo de horário de fim -->
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status:</label>
+            {{ form.status }} <!-- Renderiza o campo de status -->
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            <a href="{% url 'listar_agendamento_horarios' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
     </form>
 </div>
 {% endblock %}

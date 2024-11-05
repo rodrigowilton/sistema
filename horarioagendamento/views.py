@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from app.models import AgendamentoHorarios, Areas, Condominios
-from .forms import AgendamentoHorariosForm  # Supondo que um formulário tenha sido criado para este modelo
+from app.models import AgendamentoHorarios, Areas, Condominios, Agendamentos
+from .forms import AgendamentoHorariosForm, AgendamentoForm
 from django.db.models import Q
 
 def adicionar_horario_agendamento(request):
@@ -28,19 +28,25 @@ def adicionar_horario_agendamento(request):
     })
 
 
-
 def editar_horario_agendamento(request, id):
-    agendamento = get_object_or_404(AgendamentoHorarios, id=id)
+    agendamento = get_object_or_404(Agendamentos, id=id)
 
     if request.method == 'POST':
-        form = AgendamentoHorariosForm(request.POST, instance=agendamento)
+        form = AgendamentoForm(request.POST, instance=agendamento)
         if form.is_valid():
             form.save()
-            return redirect('listar_agendamento_horarios')
+            return redirect('listar_agendamento_horarios')  # Redireciona após salvar
     else:
-        form = AgendamentoHorariosForm(instance=agendamento)
+        form = AgendamentoForm(instance=agendamento)
 
-    return render(request, 'editar_horario_agendamento.html', {'form': form, 'agendamento': agendamento})
+    condominios = Condominios.objects.filter(status=1)  # Filtra os condomínios ativos
+    areas = Areas.objects.all()  # Ajuste conforme sua lógica de áreas
+
+    return render(request, 'editar_horario_agendamento.html', {
+        'form': form,
+        'condominios': condominios,
+        'areas': areas,
+    })
 
 
 def deletar_horario_agendamento(request, id):
