@@ -31,39 +31,33 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Editar Horário de Agendamento</h2> <!-- Título centralizado -->
 
+    <h2 class="text-center mb-4">Editar Horário de Agendamento</h2>
 
-    <form method="post" id="agendamento-form">
-    {% csrf_token %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="condominio" class="form-label">Condomínio</label>
+            <input type="text" class="form-control" id="condominio" value="{{ agendamento.condominio.nome_condominio }}" disabled>
+        </div>
+        <div class="mb-3">
+            <label for="area" class="form-label">Área</label>
+            <input type="text" class="form-control" id="area" value="{{ agendamento.area.nome_area }}" disabled>
+            <!-- Campo oculto para o ID da área -->
+            <input type="hidden" name="area" value="{{ agendamento.area.id }}">
+        </div>
+        <div class="mb-3">
+            <label for="horario_inicio" class="form-label">Horário Início</label>
+            <input type="time" class="form-control" id="horario_inicio" name="horario_inicio" value="{{ agendamento.horario_inicio }}">
+        </div>
+        <div class="mb-3">
+            <label for="horario_fim" class="form-label">Horário Fim</label>
+            <input type="time" class="form-control" id="horario_fim" name="horario_fim" value="{{ agendamento.horario_fim }}">
+        </div>
 
-    <div class="form-group">
-        <label for="condominio">Condomínio:</label>
-        <select id="condominio" name="condominio" class="form-control" disabled>
-            <option value="">Selecione um condomínio</option>
-            {% for condominio in condominios %}
-                <option value="{{ condominio.id }}" {% if selected_condominio == condominio.id %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
-            {% endfor %}
-        </select>
-    </div>
+        <input type="hidden" name="status" value="1"> <!-- Adicione este campo -->
 
-    <div class="form-group">
-        <label for="area">Área:</label>
-        <input type="text" id="area" name="area" class="form-control" value="{{ agendamento.area.nome_area }}" disabled>
-    </div>
-    <br>
-
-    {{ form.horario_inicio.label_tag }}
-    {{ form.horario_inicio }}
-    {{ form.horario_fim.label_tag }}
-    {{ form.horario_fim }}
-
-    <div class="form-group">
-        <br>
-        <button type="submit" class="btn btn-primary">Salvar Agendamento</button>
-    </div>
-</form>
-
-
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    </form>
 </div>
 {% endblock %}

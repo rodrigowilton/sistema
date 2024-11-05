@@ -34,19 +34,25 @@ def adicionar_horario_agendamento(request):
         'selected_condominio': condominio_id,  # Passa o condomínio selecionado para o template
     })
 
+
 def editar_horario_agendamento(request, id):
-    agendamento = get_object_or_404(Agendamentos, id=id)
-
-    # Obtém os condomínios ativos
-    condominios = Condominios.objects.filter(status=1)
-
-    # Obtém as áreas do condomínio associado ao agendamento
-    areas = Areas.objects.filter(condominio=agendamento.condominio)
+    agendamento = get_object_or_404(AgendamentoHorarios, id=id)
+    condominios = Condominios.objects.filter(status=1)  # Filtra os condomínios ativos
+    areas = Areas.objects.filter(condominio=agendamento.condominio)  # Filtra áreas pelo condomínio do agendamento
 
     if request.method == 'POST':
-        form = AgendamentoHorariosForm(request.POST, instance=agendamento)
+        form = AgendamentoHorariosForm(request.POST)
+
+        # Atribui a área recebida do formulário ao agendamento
+        area_id = request.POST.get('area')
+        agendamento.area = get_object_or_404(Areas, id=area_id)  # Obtém a área com base no ID recebido
+
         if form.is_valid():
-            form.save()
+            agendamento.horario_inicio = form.cleaned_data['horario_inicio']
+            agendamento.horario_fim = form.cleaned_data['horario_fim']
+            agendamento.status = 1  # Define o status como 1
+            agendamento.save()  # Salva o agendamento com a área e horários atualizados
+
             return redirect('listar_agendamento_horarios')  # Redireciona após salvar
     else:
         form = AgendamentoHorariosForm(instance=agendamento)
@@ -54,8 +60,8 @@ def editar_horario_agendamento(request, id):
     return render(request, 'editar_horario_agendamento.html', {
         'form': form,
         'condominios': condominios,
-        'selected_condominio': agendamento.condominio.id,  # Passa o ID do condomínio selecionado
-        'agendamento': agendamento  # Passa a instância do agendamento para o template
+        'areas': areas,
+        'agendamento': agendamento,  # Passa o agendamento para o template
     })
 
 
@@ -74,9 +80,11 @@ def listar_agendamento_horarios(request):
 
     # Realiza o filtro apenas se o termo de busca for fornecido
     agendamentos = AgendamentoHorarios.objects.all()
+
     if search_query:
         agendamentos = agendamentos.filter(
-            Q(area__nome_area__icontains=search_query)  # Filtra apenas pelo nome da área
+            Q(area__nome_area__icontains=search_query) |  # Filtra pelo nome da área
+            Q(condominio__nome_condominio__icontains=search_query)  # Filtra pelo nome do condomínio
         )
 
     context = {
@@ -84,4 +92,3 @@ def listar_agendamento_horarios(request):
         'search_query': search_query  # Passa o termo de busca para o template
     }
     return render(request, 'horarioagendamento.html', context)
-
