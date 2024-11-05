@@ -58,7 +58,7 @@
             {% for agendamento in agendamentos %}
                 <tr>
                     <td>{{ agendamento.condominio }}</td>
-                    <td>{{ agendamento.area }}</td>
+                    <td>{{ agendamento.area.nome_area }}</td>  <!-- Exibe apenas o nome da área -->
                     <td>{{ agendamento.horario_inicio }}</td>
                     <td>{{ agendamento.horario_fim }}</td>
                     <td>

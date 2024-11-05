@@ -4,22 +4,29 @@ from .forms import AgendamentoHorariosForm, AgendamentoForm
 from django.db.models import Q
 
 def adicionar_horario_agendamento(request):
-    condominios = Condominios.objects.filter(status=1)  # Obtém os condomínios ativos
-    areas = []  # Inicializa a lista de áreas
+    # Obtém os condomínios ativos
+    condominios = Condominios.objects.filter(status=1)
+    areas = []  # Inicializa a lista de áreas vazia
 
     # Verifica se um condomínio foi selecionado
     condominio_id = request.POST.get('condominio') or request.GET.get('condominio_id')
     if condominio_id:
-        areas = Areas.objects.filter(condominio_id=condominio_id)  # Filtra áreas pelo condomínio
+        areas = Areas.objects.filter(condominio_id=condominio_id)  # Filtra áreas pelo condomínio selecionado
 
     if request.method == 'POST':
         form = AgendamentoHorariosForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Cria o agendamento com commit=False para definir o status manualmente
+            agendamento = form.save(commit=False)
+            agendamento.status = 1  # Define o status como 1
+            agendamento.save()  # Salva o agendamento no banco
             return redirect('listar_agendamento_horarios')
+        else:
+            print("Formulário inválido:", form.errors)  # Log de erro para depuração
     else:
         form = AgendamentoHorariosForm()
 
+    # Renderiza o template com o formulário e dados do condomínio/área
     return render(request, 'adicionar_horario_agendamento.html', {
         'form': form,
         'condominios': condominios,
@@ -27,25 +34,28 @@ def adicionar_horario_agendamento(request):
         'selected_condominio': condominio_id,  # Passa o condomínio selecionado para o template
     })
 
-
 def editar_horario_agendamento(request, id):
     agendamento = get_object_or_404(Agendamentos, id=id)
 
+    # Obtém os condomínios ativos
+    condominios = Condominios.objects.filter(status=1)
+
+    # Obtém as áreas do condomínio associado ao agendamento
+    areas = Areas.objects.filter(condominio=agendamento.condominio)
+
     if request.method == 'POST':
-        form = AgendamentoForm(request.POST, instance=agendamento)
+        form = AgendamentoHorariosForm(request.POST, instance=agendamento)
         if form.is_valid():
             form.save()
             return redirect('listar_agendamento_horarios')  # Redireciona após salvar
     else:
-        form = AgendamentoForm(instance=agendamento)
-
-    condominios = Condominios.objects.filter(status=1)  # Filtra os condomínios ativos
-    areas = Areas.objects.all()  # Ajuste conforme sua lógica de áreas
+        form = AgendamentoHorariosForm(instance=agendamento)
 
     return render(request, 'editar_horario_agendamento.html', {
         'form': form,
         'condominios': condominios,
-        'areas': areas,
+        'selected_condominio': agendamento.condominio.id,  # Passa o ID do condomínio selecionado
+        'agendamento': agendamento  # Passa a instância do agendamento para o template
     })
 
 
@@ -66,8 +76,7 @@ def listar_agendamento_horarios(request):
     agendamentos = AgendamentoHorarios.objects.all()
     if search_query:
         agendamentos = agendamentos.filter(
-            Q(condominio__nome_condominio__icontains=search_query) |  # Nome do condomínio
-            Q(area__nome_area__icontains=search_query)  # Nome da área
+            Q(area__nome_area__icontains=search_query)  # Filtra apenas pelo nome da área
         )
 
     context = {
@@ -75,3 +84,4 @@ def listar_agendamento_horarios(request):
         'search_query': search_query  # Passa o termo de busca para o template
     }
     return render(request, 'horarioagendamento.html', context)
+

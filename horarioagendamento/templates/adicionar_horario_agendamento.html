@@ -31,43 +31,44 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Adicionar Horário de Agendamento</h2> <!-- Título centralizado -->
 
-    <form method="post" id="agendamento-form">
-        {% csrf_token %}
+<form method="post" id="agendamento-form">
+    {% csrf_token %}
 
-        <div class="form-group">
-            <label for="condominio">Condomínio:</label>
-            <select id="condominio" name="condominio" class="form-control" onchange="this.form.submit();">
-                <option value="">Selecione um condomínio</option>
-                {% for condominio in condominios %}
-                    <option value="{{ condominio.id }}" {% if selected_condominio == condominio.id|stringformat:"d" %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
-                {% endfor %}
-            </select>
-        </div>
+    <div class="form-group">
+        <label for="condominio">Condomínio:</label>
+        <select id="condominio" name="condominio" class="form-control" onchange="this.form.submit();">
+            <option value="">Selecione um condomínio</option>
+            {% for condominio in condominios %}
+                <option value="{{ condominio.id }}" {% if selected_condominio == condominio.id|stringformat:"d" %}selected{% endif %}>{{ condominio.nome_condominio }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-        <div class="form-group">
-            <label for="area">Área:</label>
-            <select id="area" name="area" class="form-control">
-                <option value="">Selecione uma área</option>
-                {% for area in areas %}
-                    <option value="{{ area.id }}">{{ area.nome_area }}</option>
-                {% endfor %}
-            </select>
-        </div>
+    <div class="form-group">
+        <label for="area">Área:</label>
+        <select id="area" name="area" class="form-control">
+            <option value="">Selecione uma área</option>
+            {% for area in areas %}
+                <option value="{{ area.id }}">{{ area.nome_area }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <br>
+
+    <!-- Campos do formulário de agendamento -->
+    {{ form.horario_inicio.label_tag }}
+    {{ form.horario_inicio }}
+    {{ form.horario_fim.label_tag }}
+    {{ form.horario_fim }}
+
+    <!-- Campo oculto para status -->
+    <input type="hidden" name="status" value="1"> <!-- Adicione este campo -->
+
+    <div class="form-group">
         <br>
-
-        <!-- Campos do formulário de agendamento -->
-        {{ form.horario_inicio.label_tag }}
-        {{ form.horario_inicio }}
-        {{ form.horario_fim.label_tag }}
-        {{ form.horario_fim }}
-        {{ form.status.label_tag }}
-        {{ form.status }}
-
-        <div class="form-group">
-            <br>
-            <button type="submit" class="btn btn-primary">Adicionar Horário Agendamento</button>
-        </div>
-    </form>
+        <button type="submit" class="btn btn-primary">Adicionar Horário Agendamento</button>
+    </div>
+</form>
 </div>
 {% endblock %}
 
