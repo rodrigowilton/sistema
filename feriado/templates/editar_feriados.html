@@ -35,6 +35,11 @@
         {% csrf_token %}
         {{ form.as_p }}  <!-- Exibe os campos do formulário do feriado -->
 
+        <div class="col-md-12">
+            <h3>Pesquisar Condomínios</h3>
+            <input type="text" id="search-condominios" class="form-control mb-2" placeholder="Pesquisar Condomínios">
+        </div>
+
         <div class="row">
             <!-- Condomínios Liberados -->
             <div class="col-md-6">
@@ -85,12 +90,15 @@
     const liberadosList = document.getElementById('liberados-list');
     const bloqueadosList = document.getElementById('bloqueados-list');
     const bloqueadosIdsInput = document.getElementById('bloqueados-ids');
+    const searchInput = document.getElementById('search-condominios');
 
+    // Função para atualizar os ids dos condomínios bloqueados
     function updateBloqueadosIds() {
         const bloqueadosIds = Array.from(bloqueadosList.children).map(item => item.dataset.id);
         bloqueadosIdsInput.value = bloqueadosIds.join(',');
     }
 
+    // Movendo itens entre as listas
     document.getElementById('move-to-bloqueados').addEventListener('click', function() {
         const selectedItems = Array.from(liberadosList.querySelectorAll('.condominio-item.selected'));
         selectedItems.forEach(item => {
@@ -109,6 +117,7 @@
         updateBloqueadosIds();
     });
 
+    // Função para alternar seleção dos itens
     function toggleSelection(event) {
         if (event.target.tagName === 'LI') {
             event.target.classList.toggle('selected');
@@ -117,6 +126,28 @@
 
     liberadosList.addEventListener('click', toggleSelection);
     bloqueadosList.addEventListener('click', toggleSelection);
+
+    // Função para filtrar os condomínios com base na pesquisa
+    searchInput.addEventListener('input', function() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        // Filtra e exibe os itens de ambas as listas
+        filterList(liberadosList, searchTerm);
+        filterList(bloqueadosList, searchTerm);
+    });
+
+    // Função para filtrar a lista com base no termo de pesquisa
+    function filterList(list, searchTerm) {
+        const items = list.querySelectorAll('.condominio-item');
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
 
     updateBloqueadosIds();
 </script>
@@ -128,18 +159,22 @@
         border: 1px solid #ccc; /* Adiciona uma borda para visualização */
         padding: 10px; /* Espaçamento interno */
     }
+
     .lista-condominios {
         list-style-type: none; /* Remove os marcadores da lista */
         padding: 0; /* Remove o padding padrão da lista */
     }
+
     .lista-condominios li {
         padding: 5px 0; /* Espaçamento entre os itens */
         cursor: pointer; /* Muda o cursor para indicar que a linha é clicável */
     }
+
     .lista-condominios li.selected {
         background-color: #007bff; /* Cor de fundo para itens selecionados */
         color: white; /* Cor do texto para itens selecionados */
     }
+
     .text-center {
         margin: 20px 0; /* Espaçamento entre botões */
     }
