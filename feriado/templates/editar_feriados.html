@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="{% url 'menu_agd' %}" style="display: flex; flex-direction: column; align-items: center;">
+                    <a class="nav-link text-center" href="{% url 'listar_feriados' %}" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
@@ -26,6 +26,7 @@
 <br>
 <br>
 {% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <h2>Editar Feriado</h2>
@@ -35,13 +36,14 @@
         {{ form.as_p }}  <!-- Exibe os campos do formulário do feriado -->
 
         <div class="row">
+            <!-- Condomínios Liberados -->
             <div class="col-md-6">
-                <h3>Condomínios Libereados</h3>
+                <h3>Condomínios Liberados</h3>
                 <div class="container-condominios">
-                    <strong>Total de <span id="total-pendentes">{{ condominios.count }}</span> condomínios</strong>
+                    <strong>Total de <span id="total-liberados">{{ condominios_liberados.count }}</span> condomínios</strong>
                     <div class="lista-condominios">
-                        <ul id="pendentes-list">
-                            {% for condominio in condominios %}
+                        <ul id="liberados-list">
+                            {% for condominio in condominios_liberados %}
                             <li class="condominio-item" data-id="{{ condominio.id }}">
                                 {{ condominio.nome_condominio }}
                             </li>
@@ -51,13 +53,18 @@
                 </div>
             </div>
 
+            <!-- Condomínios Bloqueados -->
             <div class="col-md-6">
                 <h3>Condomínios Bloqueados</h3>
                 <div class="container-condominios">
-                    <strong>Total de <span id="total-selecionados">0</span> condomínios selecionados</strong>
+                    <strong>Total de <span id="total-bloqueados">{{ condominios_bloqueados.count }}</span> condomínios</strong>
                     <div class="lista-condominios">
-                        <ul id="selected-condominios">
-                            <!-- Os condomínios selecionados serão exibidos aqui -->
+                        <ul id="bloqueados-list">
+                            {% for condominio in condominios_bloqueados %}
+                            <li class="condominio-item" data-id="{{ condominio.id }}">
+                                {{ condominio.nome_condominio }}
+                            </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -65,69 +72,53 @@
         </div>
 
         <div class="text-center mt-3">
-            <button type="button" id="move-to-selected" class="btn btn-success"> > </button>
-            <button type="button" id="move-to-pendentes" class="btn btn-danger"> < </button>
+            <button type="button" id="move-to-bloqueados" class="btn btn-success"> > </button>
+            <button type="button" id="move-to-liberados" class="btn btn-danger"> < </button>
         </div>
 
+        <input type="hidden" name="bloqueados_ids" id="bloqueados-ids">
         <button type="submit" class="btn btn-primary mt-3">Salvar alterações</button>
     </form>
 </div>
 
 <script>
-    // JavaScript para gerenciar a seleção e movimentação de condomínios
-    const pendentesList = document.getElementById('pendentes-list');
-    const selectedContainer = document.getElementById('selected-condominios');
-    const totalPendentes = document.getElementById('total-pendentes');
-    const totalSelecionados = document.getElementById('total-selecionados');
+    const liberadosList = document.getElementById('liberados-list');
+    const bloqueadosList = document.getElementById('bloqueados-list');
+    const bloqueadosIdsInput = document.getElementById('bloqueados-ids');
 
-    // Atualiza total de condomínios selecionados
-    function updateTotals() {
-        totalPendentes.textContent = pendentesList.children.length;
-        totalSelecionados.textContent = selectedContainer.children.length;
+    function updateBloqueadosIds() {
+        const bloqueadosIds = Array.from(bloqueadosList.children).map(item => item.dataset.id);
+        bloqueadosIdsInput.value = bloqueadosIds.join(',');
     }
 
-    // Mover os condomínios selecionados para a lista de condomínios selecionados
-    document.getElementById('move-to-selected').addEventListener('click', function() {
-        const selectedItems = Array.from(pendentesList.querySelectorAll('.condominio-item.selected'));
+    document.getElementById('move-to-bloqueados').addEventListener('click', function() {
+        const selectedItems = Array.from(liberadosList.querySelectorAll('.condominio-item.selected'));
         selectedItems.forEach(item => {
-            const newItem = document.createElement('li');
-            newItem.textContent = item.textContent; // O nome do condomínio
-            newItem.classList.add('condominio-item'); // Adiciona a classe para seleção
-            newItem.dataset.id = item.dataset.id; // Armazena o ID do condomínio
-
-            selectedContainer.appendChild(newItem);
-            item.remove(); // Remove da lista pendente
+            item.classList.remove('selected');
+            bloqueadosList.appendChild(item);
         });
-        updateTotals();
+        updateBloqueadosIds();
     });
 
-    // Mover os condomínios selecionados de volta para a lista de condomínios pendentes
-    document.getElementById('move-to-pendentes').addEventListener('click', function() {
-        const selectedItems = Array.from(selectedContainer.querySelectorAll('.condominio-item.selected'));
+    document.getElementById('move-to-liberados').addEventListener('click', function() {
+        const selectedItems = Array.from(bloqueadosList.querySelectorAll('.condominio-item.selected'));
         selectedItems.forEach(item => {
-            const newItem = document.createElement('li');
-            newItem.textContent = item.textContent; // O nome do condomínio
-            newItem.classList.add('condominio-item'); // Adiciona a classe para seleção
-            newItem.dataset.id = item.dataset.id; // Armazena o ID do condomínio
-
-            pendentesList.appendChild(newItem);
-            item.remove(); // Remove da lista selecionada
+            item.classList.remove('selected');
+            liberadosList.appendChild(item);
         });
-        updateTotals();
+        updateBloqueadosIds();
     });
 
-    // Permite a seleção ao clicar na linha
     function toggleSelection(event) {
         if (event.target.tagName === 'LI') {
             event.target.classList.toggle('selected');
         }
     }
 
-    pendentesList.addEventListener('click', toggleSelection);
-    selectedContainer.addEventListener('click', toggleSelection);
+    liberadosList.addEventListener('click', toggleSelection);
+    bloqueadosList.addEventListener('click', toggleSelection);
 
-    // Atualizar totais inicialmente
-    updateTotals();
+    updateBloqueadosIds();
 </script>
 
 <style>

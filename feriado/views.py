@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from app.models import Feriados, Condominios
+from app.models import Feriados, Condominios, CondominiosFeriados
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.db.models import Q
-from .forms import FeriadoForm  # Supondo que você tenha um formulário para Feriados
+from .forms import FeriadoForm
+from django.contrib import messages
 
 
 
@@ -28,22 +29,53 @@ def adicionar_feriados(request):
 
     return render(request, 'adicionar_feriados.html')
 
+
 def editar_feriados(request, feriado_id):
-    feriado = get_object_or_404(Feriados, id=feriado_id)  # Obtém o feriado pelo ID
-    condominios = Condominios.objects.all()  # Obtém todos os condomínios
+    feriado = get_object_or_404(Feriados, pk=feriado_id)
 
     if request.method == 'POST':
+        # Formulário para o feriado
         form = FeriadoForm(request.POST, instance=feriado)
+
+        # Recupera os IDs dos condomínios bloqueados como uma lista de inteiros
+        bloqueados_ids = request.POST.get('bloqueados_ids', '')
+        bloqueados_ids = [int(id.strip()) for id in bloqueados_ids.split(',') if id.strip().isdigit()]
+
         if form.is_valid():
-            form.save()  # Salva as alterações
-            return redirect('listar_feriados')  # Redireciona após salvar
+            form.save()
+
+            # Limpa os registros antigos de bloqueio para evitar duplicação
+            CondominiosFeriados.objects.filter(feriado=feriado).delete()
+
+            # Cria novos registros de condomínios bloqueados
+            for condominio_id in bloqueados_ids:
+                CondominiosFeriados.objects.create(
+                    condominio_id=condominio_id,
+                    feriado=feriado,
+                    status=1  # Status 1 para bloqueado
+                )
+
+            messages.success(request, "Feriado atualizado com sucesso!")
+            return redirect('listar_feriados')
+
     else:
         form = FeriadoForm(instance=feriado)
 
+        # IDs dos condomínios bloqueados
+        bloqueados_ids = list(
+            CondominiosFeriados.objects.filter(feriado=feriado).values_list('condominio_id', flat=True)
+        )
+
+    # Carrega os condomínios liberados e bloqueados
+    condominios_liberados = Condominios.objects.exclude(id__in=bloqueados_ids)
+    condominios_bloqueados = Condominios.objects.filter(id__in=bloqueados_ids)
+
+    # Passa os dados para o template
     context = {
         'form': form,
-        'feriado': feriado,
-        'condominios': condominios,
+        'condominios_liberados': condominios_liberados,
+        'condominios_bloqueados': condominios_bloqueados,
+        'bloqueados_ids': bloqueados_ids,
     }
     return render(request, 'editar_feriados.html', context)
 
