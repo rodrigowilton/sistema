@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="{% url 'listar_feriados' %}" style="display: flex; flex-direction: column; align-items: center;">
+                    <a class="nav-link text-center" href="{% url 'menu_agd' %}" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
@@ -24,18 +24,16 @@
 <div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
 <br>
 <br>
-<br>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Editar Feriado</h2>
+    <h2 style="text-align: center;">Editar Feriado</h2>
 
-    <form method="post">
+    <form method="post" class="bg-light p-2 rounded shadow-sm mb-5">
         {% csrf_token %}
-        {{ form.as_p }}  <!-- Exibe os campos do formulário do feriado -->
+        {{ form.as_p }}
 
-        <div class="col-md-12">
+        <div class="col-md-12 mb-3">
             <h3>Pesquisar Condomínios</h3>
             <input type="text" id="search-condominios" class="form-control mb-2" placeholder="Pesquisar Condomínios">
         </div>
@@ -43,69 +41,54 @@
         <div class="row">
             <!-- Condomínios Liberados -->
             <div class="col-md-6">
-                <h6 style="background-color: green; color: white; width: 100%; padding: 10px 0; text-align: center;">
-                    <strong>Condomínios Liberados</strong>
-                </h6>
+                <h6 class="text-center text-white bg-success p-2"><strong>Condomínios Liberados</strong></h6>
                 <div class="container-condominios">
                     <strong>Total de <span id="total-liberados">{{ condominios_liberados.count }}</span> condomínios</strong>
-                    <div class="lista-condominios">
-                        <ul id="liberados-list">
-                            {% for condominio in condominios_liberados %}
-                            <li class="condominio-item" data-id="{{ condominio.id }}">
-                                {{ condominio.nome_condominio }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <ul id="liberados-list" class="lista-condominios">
+                        {% for condominio in condominios_liberados %}
+                            <li class="condominio-item" data-id="{{ condominio.id }}">{{ condominio.nome_condominio }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
 
             <!-- Condomínios Bloqueados -->
             <div class="col-md-6">
-                <h6 style="background-color: red; color: white; width: 100%; padding: 10px 0; text-align: center;">
-                    <strong>Condomínios Bloqueados</strong>
-                </h6>
+                <h6 class="text-center text-white bg-danger p-2"><strong>Condomínios Bloqueados</strong></h6>
                 <div class="container-condominios">
                     <strong>Total de <span id="total-bloqueados">{{ condominios_bloqueados.count }}</span> condomínios</strong>
-                    <div class="lista-condominios">
-                        <ul id="bloqueados-list">
-                            {% for condominio in condominios_bloqueados %}
-                            <li class="condominio-item" data-id="{{ condominio.id }}">
-                                {{ condominio.nome_condominio }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <ul id="bloqueados-list" class="lista-condominios">
+                        {% for condominio in condominios_bloqueados %}
+                            <li class="condominio-item" data-id="{{ condominio.id }}">{{ condominio.nome_condominio }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
 
         <div class="text-center mt-3">
-            <button type="button" id="move-to-bloqueados" class="btn btn-success"> > </button>
-            <button type="button" id="move-to-liberados" class="btn btn-danger"> < </button>
+            <button type="button" id="move-to-bloqueados" class="btn btn-success mx-2"> &gt; </button>
+            <button type="button" id="move-to-liberados" class="btn btn-danger mx-2"> &lt; </button>
         </div>
 
         <input type="hidden" name="bloqueados_ids" id="bloqueados-ids">
-        <button type="submit" class="btn btn-primary mt-3">Salvar alterações</button>
+            <button type="submit" class="btn btn-primary">Salvar alterações</button>
     </form>
-</div>
 
 <script>
+    // Funções e eventos do JavaScript
     const liberadosList = document.getElementById('liberados-list');
     const bloqueadosList = document.getElementById('bloqueados-list');
     const bloqueadosIdsInput = document.getElementById('bloqueados-ids');
     const searchInput = document.getElementById('search-condominios');
 
-    // Função para atualizar os ids dos condomínios bloqueados
     function updateBloqueadosIds() {
         const bloqueadosIds = Array.from(bloqueadosList.children).map(item => item.dataset.id);
         bloqueadosIdsInput.value = bloqueadosIds.join(',');
     }
 
-    // Movendo itens entre as listas
     document.getElementById('move-to-bloqueados').addEventListener('click', function() {
-        const selectedItems = Array.from(liberadosList.querySelectorAll('.condominio-item.selected'));
-        selectedItems.forEach(item => {
+        Array.from(liberadosList.querySelectorAll('.condominio-item.selected')).forEach(item => {
             item.classList.remove('selected');
             bloqueadosList.appendChild(item);
         });
@@ -113,15 +96,13 @@
     });
 
     document.getElementById('move-to-liberados').addEventListener('click', function() {
-        const selectedItems = Array.from(bloqueadosList.querySelectorAll('.condominio-item.selected'));
-        selectedItems.forEach(item => {
+        Array.from(bloqueadosList.querySelectorAll('.condominio-item.selected')).forEach(item => {
             item.classList.remove('selected');
             liberadosList.appendChild(item);
         });
         updateBloqueadosIds();
     });
 
-    // Função para alternar seleção dos itens
     function toggleSelection(event) {
         if (event.target.tagName === 'LI') {
             event.target.classList.toggle('selected');
@@ -131,25 +112,15 @@
     liberadosList.addEventListener('click', toggleSelection);
     bloqueadosList.addEventListener('click', toggleSelection);
 
-    // Função para filtrar os condomínios com base na pesquisa
     searchInput.addEventListener('input', function() {
         const searchTerm = searchInput.value.toLowerCase();
-
-        // Filtra e exibe os itens de ambas as listas
         filterList(liberadosList, searchTerm);
         filterList(bloqueadosList, searchTerm);
     });
 
-    // Função para filtrar a lista com base no termo de pesquisa
     function filterList(list, searchTerm) {
-        const items = list.querySelectorAll('.condominio-item');
-        items.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            if (text.includes(searchTerm)) {
-                item.style.display = '';
-            } else {
-                item.style.display = 'none';
-            }
+        Array.from(list.querySelectorAll('.condominio-item')).forEach(item => {
+            item.style.display = item.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
         });
     }
 
@@ -158,29 +129,30 @@
 
 <style>
     .container-condominios {
-        height: 300px; /* Define uma altura fixa para os containers */
-        overflow-y: auto; /* Adiciona barra de rolagem vertical */
-        border: 1px solid #ccc; /* Adiciona uma borda para visualização */
-        padding: 10px; /* Espaçamento interno */
+        height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
     }
 
     .lista-condominios {
-        list-style-type: none; /* Remove os marcadores da lista */
-        padding: 0; /* Remove o padding padrão da lista */
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
     }
 
     .lista-condominios li {
-        padding: 5px 0; /* Espaçamento entre os itens */
-        cursor: pointer; /* Muda o cursor para indicar que a linha é clicável */
+        padding: 5px 0;
+        cursor: pointer;
     }
 
     .lista-condominios li.selected {
-        background-color: #007bff; /* Cor de fundo para itens selecionados */
-        color: white; /* Cor do texto para itens selecionados */
+        background-color: #007bff;
+        color: white;
     }
 
-    .text-center {
-        margin: 20px 0; /* Espaçamento entre botões */
+    .text-center .btn {
+        margin: 0 10px;
     }
 </style>
 {% endblock %}
