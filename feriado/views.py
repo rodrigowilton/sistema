@@ -1,11 +1,11 @@
+from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from app.models import Feriados, Condominios, CondominiosFeriados
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, ProtectedError
 from .forms import FeriadoForm
 from django.contrib import messages
-
 
 
 # View para adicionar feriados
@@ -82,11 +82,22 @@ def editar_feriados(request, feriado_id):
 # View para deletar feriados
 @require_http_methods(["GET", "POST"])
 def deletar_feriados(request, feriado_id):
-    feriado = get_object_or_404(Feriados, id=feriado_id)
+    feriado = get_object_or_404(Feriados, pk=feriado_id)
 
-    if request.method == "POST":
-        feriado.delete()
-        return redirect('listar_feriados')
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                # Exclui os registros associados na tabela CondominiosFeriados
+                CondominiosFeriados.objects.filter(feriado=feriado).delete()
+                # Exclui o feriado
+                feriado.delete()
+
+            messages.success(request, "Feriado deletado com sucesso!")
+            return redirect('listar_feriados')
+
+        except ProtectedError:
+            messages.error(request, "Não é possível deletar o feriado pois ele está em uso.")
+            return redirect('listar_feriados')
 
     return render(request, 'deletar_feriados.html', {'feriado': feriado})
 

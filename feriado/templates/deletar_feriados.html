@@ -26,16 +26,25 @@
 <br>
 <br>
 {% endblock %}
-{% block title %}Deletar Feriado{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Deletar Feriado</h2>
-    <p>Você tem certeza que deseja deletar o feriado "{{ feriado.nome }}"?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
-        <a href="{% url 'listar_feriados' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
+<div class="d-flex justify-content-center align-items-center ">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h2 class="text-center">Confirmar Deletar Feriado</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-center">Você tem certeza de que deseja deletar o feriado: {{ feriado.nome }}?</p>
+                <div class="d-flex justify-content-center mt-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
+
