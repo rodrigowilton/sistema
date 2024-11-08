@@ -1,0 +1,40 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#" style="margin-right: 120px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 20px;">
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav d-flex ">
+                <li class="nav-item ">
+                    <a class="nav-link custom-nav-link" href="{% url 'lista_agendamento' %}">
+                        <img src="{% static 'img/voltar.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
+                        <span>Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+<h2 class="text-center">{% if form.instance.pk %}Editar Agendamento{% else %}Criar Agendamento{% endif %}</h2>
+<form method="post" class="bg-light p-3 rounded shadow-sm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary mt-3">
+        {% if form.instance.pk %}Salvar Alterações{% else %}Criar Agendamento{% endif %}
+    </button>
+</form>
+<a href="{% url 'lista_agendamento' %}" class="btn btn-secondary mt-3">Voltar à Lista</a>
+{% endblock %}

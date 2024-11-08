@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'areasparalelas',
     'horarioagendamento',
     'feriado',
+    'agendamento',
 
 ]
 

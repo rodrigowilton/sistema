@@ -1,0 +1,180 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#" style="margin-right: 120px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 20px;">
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav d-flex">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'lista_agendamento' %}">
+                        <img src="{% static 'img/voltar.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
+                        <span>Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Lista de Agendamentos</h2>
+
+    <!-- Filtro de busca em 2 colunas -->
+    <form method="get" action="{% url 'lista_agendamento' %}" class="mb-3">
+        <div class="row">
+            <!-- Primeira coluna -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="condominio">Condomínio:</label>
+                    <select name="condominio" id="condominio" class="form-control">
+                        <option value="Todos">Todos</option>
+                        {% for condominio in condominios %}
+                            <option value="{{ condominio.id }}" {% if filters.condominio_id == condominio.id|stringformat:"s" %}selected{% endif %}>{{ condominio.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="apartamento">Apartamento:</label>
+                    <select name="apartamento" id="apartamento" class="form-control">
+                        <option value="Todos">Todos</option>
+                        {% for apartamento in apartamentos %}
+                            <option value="{{ apartamento.id }}" {% if filters.apartamento_id == apartamento.id|stringformat:"s" %}selected{% endif %}>{{ apartamento.nome_apartamento }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="adm">Adm:</label>
+                    <select name="adm" id="adm" class="form-control">
+                        <option value="Todos">Todos</option>
+                        <option value="1" {% if filters.adm == "1" %}selected{% endif %}>Informar</option>
+                        <option value="2" {% if filters.adm == "2" %}selected{% endif %}>Ciente</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="data_inicio">Data Início:</label>
+                    <input type="date" name="data_inicio" id="data_inicio" class="form-control" value="{{ filters.data_inicio }}">
+                </div>
+            </div>
+
+            <!-- Segunda coluna -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="mudanca">Mudança:</label>
+                    <select name="mudanca" id="mudanca" class="form-control">
+                        <option value="Todos">Todos</option>
+                        <option value="0" {% if filters.mudanca == "0" %}selected{% endif %}>0t</option>
+                        <option value="8" {% if filters.mudanca == "8" %}selected{% endif %}>8t</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="zelador">Zelador:</label>
+                    <select name="zelador" id="zelador" class="form-control">
+                        <option value="Todos">Todos</option>
+                        <option value="1" {% if filters.zelador == "1" %}selected{% endif %}>Informar</option>
+                        <option value="2" {% if filters.zelador == "2" %}selected{% endif %}>Ciente</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status:</label>
+                    <select name="status" id="status" class="form-control">
+                        <option value="Todos">Todos</option>
+                        <option value="1" {% if filters.status == "1" %}selected{% endif %}>Pendente</option>
+                        <option value="2" {% if filters.status == "2" %}selected{% endif %}>Aprovado</option>
+                        <option value="3" {% if filters.status == "3" %}selected{% endif %}>Cancelado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="data_fim">Data Fim:</label>
+                    <input type="date" name="data_fim" id="data_fim" class="form-control" value="{{ filters.data_fim }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+
+    <!-- Informações de paginação -->
+    <p>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}, Total: {{ total_agendamentos }}</p>
+
+    <!-- Tabela de agendamentos -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Condomínio</th>
+                <th>Área</th>
+                <th>Andar</th>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>APTO</th>
+                <th>Lista</th>
+                <th>Adm.</th>
+                <th>Zelador</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agendamento in page_obj %}
+            <tr>
+                <td>{{ agendamento.condominio.nome }}</td>
+                <td>{{ agendamento.area.nome_area }}</td>
+                <td>{{ agendamento.area.andar }}</td>
+                <td>{{ agendamento.data_inicio|date:"d/m/Y" }}</td>
+                <td>{{ agendamento.hora_inicio }} a {{ agendamento.hora_fim }}</td>
+                <td>{{ agendamento.apartamento.nome_apartamento }}</td>
+                <td>{{ agendamento.mudanca }}t</td>
+                <td>{{ agendamento.adm|yesno:"Informar,Ciente" }}</td>
+                <td>{{ agendamento.zelador|yesno:"Informar,Ciente" }}</td>
+                <td>{{ agendamento.status_display }}</td>  <!-- Exibindo o status convertendo para texto -->
+                <td>
+                    <a href="{% url 'editar_agendamento' agendamento.id %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'deletar_agendamento' agendamento.id %}" class="btn btn-sm btn-danger">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="11" class="text-center">Nenhum agendamento encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; primeira</a>
+                <a href="?page={{ page_obj.previous_page_number }}">anterior</a>
+            {% endif %}
+            <span class="current">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">próxima</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}
