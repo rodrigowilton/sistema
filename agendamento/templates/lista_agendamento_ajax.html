@@ -1,0 +1,26 @@
+<tbody>
+    {% for agendamento in page_obj %}
+        <tr>
+            <td>{{ agendamento.nome_condominio }}</td>
+            <td>{{ agendamento.area.nome_area }}</td>
+            <td>{{ agendamento.andar }}</td>
+            <td>{{ agendamento.data_inicio|date:"d/m/Y" }}</td>
+            <td>{{ agendamento.hora_inicio|time:"H:i" }} a {{ agendamento.hora_fim|time:"H:i" }}</td>
+            <td>{{ agendamento.apartamento.nome_apartamento }}</td>
+            <td>{{ agendamento.lista }}</td>
+            <td>{{ agendamento.adm }}</td>
+            <td>{{ agendamento.status }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="9">Nenhum agendamento encontrado</td>
+        </tr>
+    {% endfor %}
+</tbody>
+<div class="pagination-container">
+    {% for i in page_obj.paginator.page_range %}
+        <span class="page-item {% if page_obj.number == i %}active{% endif %}">
+            <a href="?page={{ i }}{{ request.GET.urlencode|slice:":50" }}" class="page-link">{{ i }}</a>
+        </span>
+    {% endfor %}
+</div>

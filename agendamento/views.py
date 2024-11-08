@@ -7,88 +7,62 @@ from django.db.models import Q
 from app.models import Agendamentos, Condominios, Apartamentos
 from datetime import datetime
 
+from django.core.paginator import Paginator
 
 def lista_agendamento(request):
-    # Coleta os valores dos filtros do formulário
-    condominio_id = request.GET.get('condominio')
-    apartamento_id = request.GET.get('apartamento')
-    adm = request.GET.get('adm')
-    zelador = request.GET.get('zelador')
-    status = request.GET.get('status')
-    data_inicio = request.GET.get('data_inicio')
-    data_fim = request.GET.get('data_fim')
-    mudanca = request.GET.get('mudanca')
-
-    # Dicionário para mapear os valores do status
-    STATUS_CHOICES = {
-        1: 'Agendado',
-        2: 'Concluído',
-        3: 'Cancelado',
-        4: 'Pendente',
+    # Filtros obtidos da requisição GET
+    filtros = {
+        'condominio': request.GET.get('condominio', 'Todos'),  # Ajuste para o campo condominio
+        'apartamento': request.GET.get('apartamento', 'Todos'),
+        'adm': request.GET.get('adm', 'Todos'),
+        'mudanca': request.GET.get('mudanca', 'Todos'),
+        'zelador': request.GET.get('zelador', 'Todos'),
+        'status': request.GET.get('status', 'Todos'),
+        'data_inicio': request.GET.get('data_inicio', ''),
+        'data_fim': request.GET.get('data_fim', ''),
     }
 
-    # Obtém o mês e ano atuais
-    hoje = datetime.now()
-    ano_atual = hoje.year
-    mes_atual = hoje.month
+    # Lista de condomínios com status ativo
+    condominios = Condominios.objects.filter(status=1)
 
-    # Inicializa a queryset com todos os agendamentos
+    # Filtra apartamentos baseados no condomínio selecionado (se aplicável)
+    if filtros['condominio'] != 'Todos':
+        apartamentos = Apartamentos.objects.filter(condominio_id=filtros['condominio'])
+    else:
+        apartamentos = Apartamentos.objects.all()
+
+    # Aplica os filtros nos agendamentos
     agendamentos = Agendamentos.objects.all()
+    if filtros['condominio'] != 'Todos':
+        agendamentos = agendamentos.filter(condominio_id=filtros['condominio'])
+    if filtros['apartamento'] != 'Todos':
+        agendamentos = agendamentos.filter(apartamento_id=filtros['apartamento'])
+    if filtros['adm'] != 'Todos':
+        agendamentos = agendamentos.filter(adm=filtros['adm'])
+    if filtros['mudanca'] != 'Todos':
+        agendamentos = agendamentos.filter(mudanca=filtros['mudanca'])
+    if filtros['zelador'] != 'Todos':
+        agendamentos = agendamentos.filter(zelador=filtros['zelador'])
+    if filtros['status'] != 'Todos':
+        agendamentos = agendamentos.filter(status=filtros['status'])
+    if filtros['data_inicio']:
+        agendamentos = agendamentos.filter(data_inicio__gte=filtros['data_inicio'])
+    if filtros['data_fim']:
+        agendamentos = agendamentos.filter(data_fim__lte=filtros['data_fim'])
 
-    # Aplica o filtro para mostrar apenas os agendamentos do mês atual
-    agendamentos = agendamentos.filter(data_inicio__year=ano_atual, data_inicio__month=mes_atual)
-
-    # Aplica filtros adicionais de acordo com os parâmetros preenchidos
-    if condominio_id and condominio_id != "Todos":
-        agendamentos = agendamentos.filter(condominio_id=condominio_id)
-    if apartamento_id and apartamento_id != "Todos":
-        agendamentos = agendamentos.filter(apartamento_id=apartamento_id)
-    if adm and adm != "Todos":
-        agendamentos = agendamentos.filter(adm=adm)
-    if zelador and zelador != "Todos":
-        agendamentos = agendamentos.filter(zelador=zelador)
-    if status and status != "Todos":
-        agendamentos = agendamentos.filter(status=status)
-    if data_inicio:
-        agendamentos = agendamentos.filter(data_inicio__gte=data_inicio)
-    if data_fim:
-        agendamentos = agendamentos.filter(data_fim__lte=data_fim)
-    if mudanca and mudanca != "Todos":
-        agendamentos = agendamentos.filter(mudanca=mudanca)
-
-    # Ordena os agendamentos por data de criação
-    agendamentos = agendamentos.order_by('created')
-
-    # Aplica a conversão do status para o nome legível
-    for agendamento in agendamentos:
-        agendamento.status_display = STATUS_CHOICES.get(agendamento.status, 'Desconhecido')
-
-    # Paginação com 10 agendamentos por página
-    paginator = Paginator(agendamentos, 10)
+    # Paginação
+    paginator = Paginator(agendamentos, 10)  # 10 itens por página
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Dados para os campos de filtro (exibidos no dropdown)
-    condominios = Condominios.objects.all()
-    apartamentos = Apartamentos.objects.all()
-
-    context = {
+    # Renderiza o template com os dados e filtros aplicados
+    return render(request, 'lista_agendamento.html', {
         'page_obj': page_obj,
-        'total_agendamentos': agendamentos.count(),
+        'filtros': filtros,
         'condominios': condominios,
-        'apartamentos': apartamentos,
-        'filters': {
-            'condominio_id': condominio_id,
-            'apartamento_id': apartamento_id,
-            'adm': adm,
-            'zelador': zelador,
-            'status': status,
-            'data_inicio': data_inicio,
-            'data_fim': data_fim,
-            'mudanca': mudanca
-        }
-    }
-    return render(request, 'lista_agendamento.html', context)
+        'apartamentos': apartamentos
+    })
+
 
 def criar_agendamento(request):
     if request.method == 'POST':

@@ -33,92 +33,85 @@
     <h2 class="text-center">Lista de Agendamentos</h2>
 
     <!-- Filtro de busca em 2 colunas -->
-    <form method="get" action="{% url 'lista_agendamento' %}" class="mb-3">
+    <form id="agendamento-form" method="get" action="{% url 'lista_agendamento' %}" class="mb-3">
         <div class="row">
-            <!-- Primeira coluna -->
             <div class="col-md-6">
+                <!-- Filtros da primeira coluna -->
                 <div class="form-group">
-                    <label for="condominio">Condomínio:</label>
+                    <label for="condominio">Condomínio:</label><br>
                     <select name="condominio" id="condominio" class="form-control">
-                        <option value="Todos">Todos</option>
+                        <option value="Todos" {% if filtros.condominio == 'Todos' %}selected{% endif %}>Todos</option>
                         {% for condominio in condominios %}
-                            <option value="{{ condominio.id }}" {% if filters.condominio_id == condominio.id|stringformat:"s" %}selected{% endif %}>{{ condominio.nome }}</option>
+                            <option value="{{ condominio.id }}" {% if filtros.condominio == condominio.id|stringformat:"s" %}selected{% endif %}>
+                                {{ condominio.nome_condominio }}
+                            </option>
                         {% endfor %}
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="apartamento">Apartamento:</label>
                     <select name="apartamento" id="apartamento" class="form-control">
                         <option value="Todos">Todos</option>
                         {% for apartamento in apartamentos %}
-                            <option value="{{ apartamento.id }}" {% if filters.apartamento_id == apartamento.id|stringformat:"s" %}selected{% endif %}>{{ apartamento.nome_apartamento }}</option>
+                            <option value="{{ apartamento.id }}" {% if filtros.apartamento == apartamento.id|stringformat:"s" %}selected{% endif %}>{{ apartamento.nome_apartamento }}</option>
+                        {% empty %}
+                            <option value="">Nenhum apartamento encontrado</option>
                         {% endfor %}
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="adm">Adm:</label>
                     <select name="adm" id="adm" class="form-control">
                         <option value="Todos">Todos</option>
-                        <option value="1" {% if filters.adm == "1" %}selected{% endif %}>Informar</option>
-                        <option value="2" {% if filters.adm == "2" %}selected{% endif %}>Ciente</option>
+                        <option value="1" {% if filtros.adm == "1" %}selected{% endif %}>Informar</option>
+                        <option value="2" {% if filtros.adm == "2" %}selected{% endif %}>Ciente</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="data_inicio">Data Início:</label>
-                    <input type="date" name="data_inicio" id="data_inicio" class="form-control" value="{{ filters.data_inicio }}">
+                    <input type="date" name="data_inicio" id="data_inicio" class="form-control" value="{{ filtros.data_inicio }}">
                 </div>
             </div>
-
-            <!-- Segunda coluna -->
             <div class="col-md-6">
+                <!-- Filtros da segunda coluna -->
                 <div class="form-group">
                     <label for="mudanca">Mudança:</label>
                     <select name="mudanca" id="mudanca" class="form-control">
                         <option value="Todos">Todos</option>
-                        <option value="0" {% if filters.mudanca == "0" %}selected{% endif %}>0t</option>
-                        <option value="8" {% if filters.mudanca == "8" %}selected{% endif %}>8t</option>
+                        <option value="0" {% if filtros.mudanca == "0" %}selected{% endif %}>0t</option>
+                        <option value="8" {% if filtros.mudanca == "8" %}selected{% endif %}>8t</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="zelador">Zelador:</label>
                     <select name="zelador" id="zelador" class="form-control">
                         <option value="Todos">Todos</option>
-                        <option value="1" {% if filters.zelador == "1" %}selected{% endif %}>Informar</option>
-                        <option value="2" {% if filters.zelador == "2" %}selected{% endif %}>Ciente</option>
+                        <option value="1" {% if filtros.zelador == "1" %}selected{% endif %}>Informar</option>
+                        <option value="2" {% if filtros.zelador == "2" %}selected{% endif %}>Ciente</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="status">Status:</label>
                     <select name="status" id="status" class="form-control">
                         <option value="Todos">Todos</option>
-                        <option value="1" {% if filters.status == "1" %}selected{% endif %}>Pendente</option>
-                        <option value="2" {% if filters.status == "2" %}selected{% endif %}>Aprovado</option>
-                        <option value="3" {% if filters.status == "3" %}selected{% endif %}>Cancelado</option>
+                        <option value="1" {% if filtros.status == "1" %}selected{% endif %}>Pendente</option>
+                        <option value="2" {% if filtros.status == "2" %}selected{% endif %}>Aprovado</option>
+                        <option value="3" {% if filtros.status == "3" %}selected{% endif %}>Cancelado</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="data_fim">Data Fim:</label>
-                    <input type="date" name="data_fim" id="data_fim" class="form-control" value="{{ filters.data_fim }}">
+                    <input type="date" name="data_fim" id="data_fim" class="form-control" value="{{ filtros.data_fim }}">
                 </div>
             </div>
         </div>
-
-        <div class="mt-3">
-            <button type="submit" class="btn btn-primary">Buscar</button>
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
         </div>
     </form>
 
-    <!-- Informações de paginação -->
-    <p>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}, Total: {{ total_agendamentos }}</p>
-
-    <!-- Tabela de agendamentos -->
-    <table class="table table-striped">
+    <!-- Tabela de Agendamentos -->
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Condomínio</th>
@@ -136,46 +129,38 @@
         </thead>
         <tbody>
             {% for agendamento in page_obj %}
-            <tr>
-                <td>{{ agendamento.condominio.nome }}</td>
-                <td>{{ agendamento.area.nome_area }}</td>
-                <td>{{ agendamento.area.andar }}</td>
-                <td>{{ agendamento.data_inicio|date:"d/m/Y" }}</td>
-                <td>{{ agendamento.hora_inicio }} a {{ agendamento.hora_fim }}</td>
-                <td>{{ agendamento.apartamento.nome_apartamento }}</td>
-                <td>{{ agendamento.mudanca }}t</td>
-                <td>{{ agendamento.adm|yesno:"Informar,Ciente" }}</td>
-                <td>{{ agendamento.zelador|yesno:"Informar,Ciente" }}</td>
-                <td>{{ agendamento.status_display }}</td>  <!-- Exibindo o status convertendo para texto -->
-                <td>
-                    <a href="{% url 'editar_agendamento' agendamento.id %}">
-                      <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
-                    <a href="{% url 'deletar_agendamento' agendamento.id %}">
-                      <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
-
-                </td>
-            </tr>
+                <tr>
+                    <td>{{ agendamento.condominio.nome_condominio }}</td>
+                    <td>{{ agendamento.area.nome_area }}</td>
+                    <td>{{ agendamento.area.andar }}</td>
+                    <td>{{ agendamento.data_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ agendamento.hora_inicio|time:"H:i" }} a {{ agendamento.hora_fim|time:"H:i" }}</td>
+                    <td>{{ agendamento.apartamento.nome_apartamento }}</td>
+                    <td>{{ agendamento.lista }}</td>
+                    <td>{{ agendamento.adm }}</td>
+                    <td>{{ agendamento.zelador }}</td>
+                    <td>{{ agendamento.get_status_display }}</td>
+                    <td><a href="{% url 'editar_agendamento' agendamento.id %}">Editar</a> | <a href="{% url 'deletar_agendamento' agendamento.id %}">Deletar</a></td>
+                </tr>
             {% empty %}
-            <tr>
-                <td colspan="11" class="text-center">Nenhum agendamento encontrado.</td>
-            </tr>
+                <tr>
+                    <td colspan="10">Nenhum agendamento encontrado.</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
 
     <!-- Paginação -->
-    <div class="pagination">
-        <span class="step-links">
+    <div class="pagination-container">
+        <span class="pagination-links">
             {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; primeira</a>
-                <a href="?page={{ page_obj.previous_page_number }}">anterior</a>
+                <a href="?page=1">Primeira</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
             {% endif %}
-            <span class="current">
-                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-            </span>
+            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">próxima</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Última</a>
             {% endif %}
         </span>
     </div>
