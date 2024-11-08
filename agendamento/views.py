@@ -5,14 +5,8 @@ from .forms import AgendamentoForm
 from django.core.paginator import Paginator
 from django.db.models import Q
 from app.models import Agendamentos, Condominios, Apartamentos
+from datetime import datetime
 
-# Dicionário de mapeamento de status
-STATUS_CHOICES = {
-    1: 'Pendente',
-    2: 'Aprovado',
-    3: 'Cancelado',
-    4: 'Concluído',  # Caso haja mais status, adicione-os aqui
-}
 
 def lista_agendamento(request):
     # Coleta os valores dos filtros do formulário
@@ -25,10 +19,26 @@ def lista_agendamento(request):
     data_fim = request.GET.get('data_fim')
     mudanca = request.GET.get('mudanca')
 
+    # Dicionário para mapear os valores do status
+    STATUS_CHOICES = {
+        1: 'Agendado',
+        2: 'Concluído',
+        3: 'Cancelado',
+        4: 'Pendente',
+    }
+
+    # Obtém o mês e ano atuais
+    hoje = datetime.now()
+    ano_atual = hoje.year
+    mes_atual = hoje.month
+
     # Inicializa a queryset com todos os agendamentos
     agendamentos = Agendamentos.objects.all()
 
-    # Aplica filtros de acordo com os parâmetros preenchidos
+    # Aplica o filtro para mostrar apenas os agendamentos do mês atual
+    agendamentos = agendamentos.filter(data_inicio__year=ano_atual, data_inicio__month=mes_atual)
+
+    # Aplica filtros adicionais de acordo com os parâmetros preenchidos
     if condominio_id and condominio_id != "Todos":
         agendamentos = agendamentos.filter(condominio_id=condominio_id)
     if apartamento_id and apartamento_id != "Todos":
@@ -45,6 +55,9 @@ def lista_agendamento(request):
         agendamentos = agendamentos.filter(data_fim__lte=data_fim)
     if mudanca and mudanca != "Todos":
         agendamentos = agendamentos.filter(mudanca=mudanca)
+
+    # Ordena os agendamentos por data de criação
+    agendamentos = agendamentos.order_by('created')
 
     # Aplica a conversão do status para o nome legível
     for agendamento in agendamentos:
@@ -76,8 +89,6 @@ def lista_agendamento(request):
         }
     }
     return render(request, 'lista_agendamento.html', context)
-
-
 
 def criar_agendamento(request):
     if request.method == 'POST':

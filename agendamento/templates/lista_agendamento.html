@@ -148,8 +148,11 @@
                 <td>{{ agendamento.zelador|yesno:"Informar,Ciente" }}</td>
                 <td>{{ agendamento.status_display }}</td>  <!-- Exibindo o status convertendo para texto -->
                 <td>
-                    <a href="{% url 'editar_agendamento' agendamento.id %}" class="btn btn-sm btn-warning">Editar</a>
-                    <a href="{% url 'deletar_agendamento' agendamento.id %}" class="btn btn-sm btn-danger">Excluir</a>
+                    <a href="{% url 'editar_agendamento' agendamento.id %}">
+                      <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
+                    <a href="{% url 'deletar_agendamento' agendamento.id %}">
+                      <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
+
                 </td>
             </tr>
             {% empty %}
