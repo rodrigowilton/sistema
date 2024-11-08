@@ -78,8 +78,8 @@
                     <label for="mudanca">Mudança:</label>
                     <select name="mudanca" id="mudanca" class="form-control">
                         <option value="Todos">Todos</option>
-                        <option value="0" {% if filtros.mudanca == "0" %}selected{% endif %}>0t</option>
-                        <option value="8" {% if filtros.mudanca == "8" %}selected{% endif %}>8t</option>
+                        <option value="1" {% if filtros.mudanca == "1" %}selected{% endif %}>Entrada</option>
+                        <option value="2" {% if filtros.mudanca == "2" %}selected{% endif %}>Saída</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -134,13 +134,71 @@
                     <td>{{ agendamento.area.nome_area }}</td>
                     <td>{{ agendamento.area.andar }}</td>
                     <td>{{ agendamento.data_inicio|date:"d/m/Y" }}</td>
-                    <td>{{ agendamento.hora_inicio|time:"H:i" }} a {{ agendamento.hora_fim|time:"H:i" }}</td>
+                    <td>{{ agendamento.hora_inicio }} a {{ agendamento.hora_fim }}</td>
                     <td>{{ agendamento.apartamento.nome_apartamento }}</td>
-                    <td>{{ agendamento.lista }}</td>
-                    <td>{{ agendamento.adm }}</td>
-                    <td>{{ agendamento.zelador }}</td>
-                    <td>{{ agendamento.get_status_display }}</td>
-                    <td><a href="{% url 'editar_agendamento' agendamento.id %}">Editar</a> | <a href="{% url 'deletar_agendamento' agendamento.id %}">Deletar</a></td>
+                    <td>{{ agendamento.outrostext }}</td>
+                    <td style=" text-align: center;
+
+                                {% if agendamento.adm == 1 %}
+                                    background-color: orange; color: white;
+                                {% elif agendamento.adm == 2 %}
+                                    background-color: green; color: white;
+                                {% else %}
+                                    background-color: red; color: white;
+                                {% endif %}
+                    ">
+                        {% if agendamento.adm == 1 %}
+                            Informar
+                        {% elif agendamento.adm == 2 %}
+                            Ciente
+                        {% else %}
+                            Não Definido
+                        {% endif %}
+                    </td>
+                    <td style=" text-align: center;
+
+                                {% if agendamento.zelador == 1 %}
+                                    background-color: orange; color: white;
+                                {% elif agendamento.zelador == 2 %}
+                                    background-color: green; color: white;
+                                {% else %}
+                                    background-color: red; color: white;
+                                {% endif %}
+                    ">
+                        {% if agendamento.zelador == 1 %}
+                            Informar
+                        {% elif agendamento.zelador == 2 %}
+                            Ciente
+                        {% else %}
+                            Não Definido
+                        {% endif %}
+                    </td>
+
+                    <td style=" text-align: center;
+
+                                {% if agendamento.status == 1 %}
+                                    background-color: orange; color: white;
+                                {% elif agendamento.status == 2 %}
+                                    background-color: green; color: white;
+                                {% else %}
+                                    background-color: red; color: white;
+                                {% endif %}
+                    ">
+                        {% if agendamento.status == 1 %}
+                            Pendente
+                        {% elif agendamento.status == 2 %}
+                            Aprovado
+                        {% elif agendamento.status == 3 %}
+                            Cancelado
+                        {% else %}
+                            Não Definido
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url 'editar_agendamento' agendamento.id %}">
+                        <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
+                        <a href="{% url 'deletar_agendamento' agendamento.id %}">
+                        <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
+                    </td>
                 </tr>
             {% empty %}
                 <tr>
