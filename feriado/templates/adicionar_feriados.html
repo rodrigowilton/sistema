@@ -25,12 +25,14 @@
 <br>
 <br>
 <br>
+<br>
+<br>
 {% endblock %}
 {% block title %}Adicionar Feriado{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h2>Adicionar Feriado</h2>
+    <h2 class="text-center mb-4">Adicionar Feriado</h2>
     <form method="post">
         {% csrf_token %}
         <div class="mb-3">
@@ -40,10 +42,6 @@
         <div class="mb-3">
             <label for="data" class="form-label">Data (dd/mm)</label>
             <input type="text" class="form-control" id="data" name="data" required>
-        </div>
-        <div class="mb-3">
-            <label for="sinc_acessos" class="form-label">Sincronização de Acessos</label>
-            <input type="number" class="form-control" id="sinc_acessos" name="sinc_acessos" value="0">
         </div>
         <div class="mb-3">
             <label for="status" class="form-label">Status</label>
