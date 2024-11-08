@@ -7,8 +7,6 @@ from django.db.models import Q
 from app.models import Agendamentos, Condominios, Apartamentos
 from datetime import datetime
 
-from django.core.paginator import Paginator
-
 def lista_agendamento(request):
     # Filtros obtidos da requisição GET
     filtros = {
