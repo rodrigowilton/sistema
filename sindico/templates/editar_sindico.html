@@ -30,19 +30,21 @@
     <form method="POST" class="bg-light p-4 rounded shadow-sm">
         {% csrf_token %}
 
-        <!-- Condomínio -->
-        <div class="form-group">
-            <label for="condominio" class="font-weight-bold">Condomínio</label>
-            <input type="text" id="condominio" name="condominio" class="form-control" value="{{ sindico.condominio.nome_condominio }}" disabled>
-        </div>
+		<!-- Condomínio -->
+		<div class="form-group">
+			<label for="condominio" class="font-weight-bold">Condomínio</label>
+			<input type="text" id="condominio" name="condominio" class="form-control" value="{{ sindico.condominio.nome_condominio }}" disabled>
+			<input type="hidden" name="condominio_id" value="{{ sindico.condominio.id }}">
+		</div>
+
         <br>
 
-		<!-- Apartamento -->
-		<div class="form-group">
-			<label for="apartamento" class="font-weight-bold">Apartamento</label>
-			<input type="text" id="apartamento" name="apartamento" class="form-control" value="{{ sindico.pessoa.apartamento.nome_apartamento }}" disabled>
-			<input type="hidden" name="apartamento_id" value="{{ sindico.pessoa.apartamento.id }}">
-		</div>
+        <!-- Apartamento -->
+        <div class="form-group">
+            <label for="apartamento" class="font-weight-bold">Apartamento</label>
+            <input type="text" id="apartamento" name="apartamento" class="form-control" value="{{ sindico.pessoa.apartamento.nome_apartamento }}" disabled>
+            <input type="hidden" name="apartamento_id" value="{{ sindico.pessoa.apartamento.id }}">
+        </div>
 
         <!-- Pessoa -->
         <div class="form-group">
@@ -94,22 +96,22 @@
         </div>
         <br>
 
-        <!-- Email Permissão -->
+        <!-- Permissão Sim/Não -->
         <div class="form-group">
-            <label for="email_permissao" class="font-weight-bold">Email Permissão</label>
-            <input type="email" id="email_permissao" name="email_permissao" class="form-control" value="{{ sindico.email_permissao }}">
+            <label class="font-weight-bold">Email Permissão</label>
+            <div>
+                <label>
+                    <input type="radio" name="email_permissao" value="1" {% if sindico.email_permissao == 1 %}checked{% endif %}> Sim
+                </label>
+                <label>
+                    <input type="radio" name="email_permissao" value="2" {% if sindico.email_permissao == 2 %}checked{% endif %}> Não
+                </label>
+            </div>
         </div>
         <br>
 
-        <!-- Permissão Sim/Não -->
-        <div class="form-group">
-            <label for="permissao" class="font-weight-bold">Permissão</label>
-            <select id="permissao" name="permissao" class="form-control" style="font-size: 18px;">
-                <option value="Sim" {% if sindico.permissao == 'Sim' %}selected{% endif %}>Sim</option>
-                <option value="Não" {% if sindico.permissao == 'Não' %}selected{% endif %}>Não</option>
-            </select>
-        </div>
-        <br>
+        <!-- Campo oculto para o status -->
+        <input type="hidden" name="status" value="1">
 
         <button type="submit" class="btn btn-primary">Atualizar Síndico</button>
     </form>
