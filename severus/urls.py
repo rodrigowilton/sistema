@@ -39,4 +39,5 @@ urlpatterns = [
     path("horarioagendamento/", include("horarioagendamento.urls")),
     path("feriado/", include("feriado.urls")),
     path("agendamento/", include("agendamento.urls")),
+    path("sindico/", include("sindico.urls")),
 ]

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'horarioagendamento',
     'feriado',
     'agendamento',
+    'sindico',
 
 ]
 

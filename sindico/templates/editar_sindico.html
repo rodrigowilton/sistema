@@ -1,0 +1,7 @@
+<h1>Editar Síndico</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Atualizar</button>
+</form>
+<a href="{% url 'lista_sindicos' %}">Voltar para a lista</a>

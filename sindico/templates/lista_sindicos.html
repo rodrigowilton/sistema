@@ -1,0 +1,69 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_srv' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
+{% endblock %}
+
+{% block content %}
+<div class="form-group custom-form-group">
+    <br>
+    <label for="searchbar"><b>Buscar Síndicos:</b></label>
+    <input type="text" class="form-control" placeholder="Buscar sindico..." id="searchbar" onkeyup="search()" name="searchbar">
+</div>
+<br>
+
+<div class="table-responsive">
+    <h2 class="text-center">Lista de Síndicos</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Ramal</th>
+                <th>Condomínio</th>
+                <th>Apartamento</th>
+                <th>Pessoa</th>
+                <th>Tipo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sindico in sindicos %}
+            <tr>
+                <td>{{ sindico.condominio.ramal_condominio }}</td>
+                <td>{{ sindico.condominio.nome_condominio }}</td>
+                <td>{{ sindico.pessoa.apartamento }}</td>
+                <td>{{ sindico.pessoa.nome_pessoa }}</td>
+                <td>{{ sindico.tipos_sindico.nome_tipos_sindico }}</td>
+                <td>
+                    <a href="{% url 'editar_sindico' sindico.id %}">Editar</a>
+                    <a href="{% url 'deletar_sindico' sindico.id %}">Deletar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'criar_sindico' %}">Adicionar Síndico</a>
+{% endblock%}
