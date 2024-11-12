@@ -1,9 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from app.models import Sindicos
 from .forms import SindicoForm
-
+from app.models import Sindicos, Apartamentos, Pessoas, TiposSindicos
+from django.contrib import messages
 
 @login_required
 def lista_sindicos(request):
@@ -21,8 +20,15 @@ def criar_sindico(request):
         form = SindicoForm()
     return render(request, 'criar_sindico.html', {'form': form})
 
+
 def editar_sindico(request, sindico_id):
     sindico = get_object_or_404(Sindicos, id=sindico_id)
+
+    # Obtendo os dados necessários para os dropdowns
+    apartamentos = Apartamentos.objects.filter(condominio=sindico.condominio)
+    pessoas = Pessoas.objects.all()
+    tipos_sindico = TiposSindicos.objects.all()
+
     if request.method == 'POST':
         form = SindicoForm(request.POST, instance=sindico)
         if form.is_valid():
@@ -31,7 +37,15 @@ def editar_sindico(request, sindico_id):
             return redirect('lista_sindicos')
     else:
         form = SindicoForm(instance=sindico)
-    return render(request, 'editar_sindico.html', {'form': form, 'sindico': sindico})
+
+    # Passando os dados de apartamentos, pessoas e tipos de síndico para o template
+    return render(request, 'editar_sindico.html', {
+        'form': form,
+        'sindico': sindico,
+        'apartamentos': apartamentos,
+        'pessoas': pessoas,
+        'tipos_sindico': tipos_sindico
+    })
 
 def deletar_sindico(request, sindico_id):
     sindico = get_object_or_404(Sindicos, id=sindico_id)
