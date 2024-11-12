@@ -54,12 +54,16 @@
             <tr>
                 <td>{{ sindico.condominio.ramal_condominio }}</td>
                 <td>{{ sindico.condominio.nome_condominio }}</td>
-                <td>{{ sindico.pessoa.apartamento }}</td>
+                <td>{{ sindico.pessoa.apartamento.nome_apartamento }}</td>
                 <td>{{ sindico.pessoa.nome_pessoa }}</td>
                 <td>{{ sindico.tipos_sindico.nome_tipos_sindico }}</td>
                 <td>
-                    <a href="{% url 'editar_sindico' sindico.id %}">Editar</a>
-                    <a href="{% url 'deletar_sindico' sindico.id %}">Deletar</a>
+                    <a href="{% url 'editar_sindico' sindico.id %}">
+                        <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
+
+                    <a href="{% url 'deletar_sindico' sindico.id %}">
+                        <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
+
                 </td>
             </tr>
             {% endfor %}
