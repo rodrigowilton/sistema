@@ -100,7 +100,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tattica',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': '29104130',
         'HOST': 'localhost',
         'PORT': '3306'
     }

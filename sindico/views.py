@@ -22,11 +22,19 @@ def criar_sindico(request):
 
 
 def editar_sindico(request, sindico_id):
+    # Obtendo o síndico pelo ID
     sindico = get_object_or_404(Sindicos, id=sindico_id)
 
-    # Obtendo os dados necessários para os dropdowns
-    apartamentos = Apartamentos.objects.filter(condominio=sindico.condominio)
-    pessoas = Pessoas.objects.all()
+    # Filtrando os apartamentos que pertencem ao mesmo condomínio e que têm moradores
+    apartamentos = Apartamentos.objects.filter(
+        condominio=sindico.condominio,
+        pessoas__isnull=False  # Filtra apartamentos que têm pelo menos uma pessoa
+    ).distinct()
+
+    # Filtrando as pessoas que moram no mesmo apartamento da pessoa associada ao síndico
+    moradores_apartamento = Pessoas.objects.filter(apartamento=sindico.pessoa.apartamento) if sindico.pessoa else Pessoas.objects.none()
+
+    # Obtendo os tipos de síndico para o dropdown
     tipos_sindico = TiposSindicos.objects.all()
 
     if request.method == 'POST':
@@ -38,14 +46,15 @@ def editar_sindico(request, sindico_id):
     else:
         form = SindicoForm(instance=sindico)
 
-    # Passando os dados de apartamentos, pessoas e tipos de síndico para o template
+    # Passando os dados para o template
     return render(request, 'editar_sindico.html', {
         'form': form,
         'sindico': sindico,
-        'apartamentos': apartamentos,
-        'pessoas': pessoas,
-        'tipos_sindico': tipos_sindico
+        'apartamentos': apartamentos,  # Apenas apartamentos povoados
+        'pessoas': moradores_apartamento,  # Apenas moradores do apartamento do síndico
+        'tipos_sindico': tipos_sindico,
     })
+
 
 def deletar_sindico(request, sindico_id):
     sindico = get_object_or_404(Sindicos, id=sindico_id)
