@@ -24,34 +24,52 @@ def criar_sindico(request):
 def editar_sindico(request, sindico_id):
     # Obtendo o síndico pelo ID
     sindico = get_object_or_404(Sindicos, id=sindico_id)
-
+    
     # Filtrando os apartamentos que pertencem ao mesmo condomínio e que têm moradores
     apartamentos = Apartamentos.objects.filter(
         condominio=sindico.condominio,
-        pessoas__isnull=False  # Filtra apartamentos que têm pelo menos uma pessoa
-    ).distinct()
-
-    # Filtrando as pessoas que moram no mesmo apartamento da pessoa associada ao síndico
-    moradores_apartamento = Pessoas.objects.filter(apartamento=sindico.pessoa.apartamento) if sindico.pessoa else Pessoas.objects.none()
-
+        status=1  # Garantir que estamos pegando apenas apartamentos ativos
+    )
+    
+    # Inicializando uma lista de pessoas vazia
+    pessoas = Pessoas.objects.none()
+    
+    # Verificando se o síndico tem um apartamento associado e, se sim, buscando as pessoas desse apartamento
+    if sindico.pessoa:
+        pessoas = Pessoas.objects.filter(apartamento=sindico.pessoa.apartamento)
+    
     # Obtendo os tipos de síndico para o dropdown
     tipos_sindico = TiposSindicos.objects.all()
-
+    
+    # Verificando se o método da requisição é POST
     if request.method == 'POST':
         form = SindicoForm(request.POST, instance=sindico)
+        apartamento_id = request.POST.get('apartamento_id')  # Pegando o apartamento_id do formulário
+        
+        if apartamento_id:
+            apartamento = Apartamentos.objects.get(id=apartamento_id)
+            sindico.apartamento = apartamento  # Atualizando o apartamento do síndico
+        
         if form.is_valid():
             form.save()
             messages.success(request, 'Síndico atualizado com sucesso.')
             return redirect('lista_sindicos')
     else:
+        # No GET, assegure que o queryset de apartamentos está sendo passado corretamente
         form = SindicoForm(instance=sindico)
-
+        form.fields['apartamento'].queryset = apartamentos  # Atualiza o queryset de apartamentos no formulário
+        
+        # Definir o valor inicial do campo 'apartamento' com o apartamento do síndico
+        if sindico.pessoa and sindico.pessoa.apartamento:
+            form.fields[
+                'apartamento'].initial = sindico.pessoa.apartamento.id  # Definindo o ID do apartamento como inicial
+    
     # Passando os dados para o template
     return render(request, 'editar_sindico.html', {
         'form': form,
         'sindico': sindico,
         'apartamentos': apartamentos,  # Apenas apartamentos povoados
-        'pessoas': moradores_apartamento,  # Apenas moradores do apartamento do síndico
+        'pessoas': pessoas,  # Apenas moradores do apartamento do síndico
         'tipos_sindico': tipos_sindico,
     })
 

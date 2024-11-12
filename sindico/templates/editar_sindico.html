@@ -37,16 +37,12 @@
         </div>
         <br>
 
-        <!-- Apartamento -->
-        <div class="form-group">
-            <label for="apartamento" class="font-weight-bold">Apartamento</label>
-            <select id="apartamento" name="apartamento" class="form-control" style="font-size: 18px;">
-                {% for apartamento in apartamentos %}
-                    <option value="{{ apartamento.id }}" {% if sindico.apartamento.id == apartamento.id %}selected{% endif %}>{{ apartamento.nome_apartamento }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <br>
+		<!-- Apartamento -->
+		<div class="form-group">
+			<label for="apartamento" class="font-weight-bold">Apartamento</label>
+			<input type="text" id="apartamento" name="apartamento" class="form-control" value="{{ sindico.pessoa.apartamento.nome_apartamento }}" disabled>
+			<input type="hidden" name="apartamento_id" value="{{ sindico.pessoa.apartamento.id }}">
+		</div>
 
         <!-- Pessoa -->
         <div class="form-group">
