@@ -1,39 +1,49 @@
 {% extends 'base_login.html' %}
-
 {% load static %}
 
 {% block menu %}
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'lista_funcionarios' %}">Lista de Funcionários</a>
+                    <a class="nav-link text-center" href="{% url 'menu_srv' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+<br>
+<br>
+<br>
 {% endblock %}
-
 {% block content %}
-    <h2 class="text-center">Lista de Funcionários</h2>
-    <table class="table table-bordered">
-        <thead>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+
+	<div class="d-flex justify-content-center align-items-center mb-4">
+		<h2 class="mb-0">Funcionários</h2>
+		<a href="{% url 'adicionar_feriados' %}" class="btn btn-link p-0" style="text-decoration: none;">
+			<img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 20px; height: 20px; margin-left: 60px;">
+		</a>
+	</div>
+    <table class="table table-striped">
+		<thead class="thead-dark">
             <tr>
                 <th>Ramal</th>
                 <th>Condomínio</th>
                 <th>Tipo</th>
                 <th>Nome do Funcionário</th>
-                <th>Telefone 1</th>
-                <th>Telefone 2</th>
-                <th>E-mail</th>
+                <th style="width: 150px;">Telefone 1</th>
+                <th style="width: 150px;">Telefone 2</th>
+                <th style="width: 100px;">E-mail</th>
                 <th>Seg a Sex</th>
                 <th>Sab</th>
                 <th>Ações</th>
@@ -42,21 +52,26 @@
         <tbody>
             {% for funcionario in funcionarios %}
             <tr>
-                <td>{{ funcionario.id }}</td>  <!-- Ramal -->
+                <td>{{ funcionario.condominio.ramal_condominio }}</td>  <!-- Ramal -->
                 <td>{{ funcionario.condominio.nome_condominio }}</td>  <!-- Condomínio -->
 				<td>{{ funcionario.tipos_condominios_funcionario.nome_tipo_funcionario }}</td>  <!-- Tipo -->
                 <td>{{ funcionario.nome_condominios_funcionario }}</td>  <!-- Nome do Funcionário -->
                 <td>{{ funcionario.telefone1 }}</td>  <!-- Telefone 1 -->
                 <td>{{ funcionario.telefone2 }}</td>  <!-- Telefone 2 -->
-                <td>{{ funcionario.email }}</td>  <!-- E-mail -->
+				<td style="width: 150px;">{{ funcionario.email|default_if_none:'' }}</td>  <!-- E-mail -->
                 <td>{{ funcionario.hora_inicio }}</td>  <!-- Seg a Sex -->
                 <td>{{ funcionario.hora_inicio_sab }}</td>  <!-- Sab -->
                 <td>
-                    <a href="{% url 'editar_funcionario' funcionario.id %}" class="btn btn-primary">Editar</a>
-                    <a href="{% url 'deletar_funcionario' funcionario.id %}" class="btn btn-danger">Deletar</a>
+                    <a href="{% url 'editar_funcionario' funcionario.id %}">
+						<img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
+
+                    <a href="{% url 'deletar_funcionario' funcionario.id %}">
+						<img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
+
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% endblock %}

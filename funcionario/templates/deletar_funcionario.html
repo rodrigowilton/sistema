@@ -19,12 +19,14 @@
             </ul>
         </div>
     </div>
+	<br>
+<br>
 </nav>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center">Deletar Funcionário: {{ funcionario.nome_funcionario }}</h2>
+	<h2 class="text-center">Deletar Funcionário: {{ funcionario.nome_funcionario }}</h2>
     <p class="text-center">Você tem certeza que deseja deletar este funcionário?</p>
     <form method="post">
         {% csrf_token %}
