@@ -1,0 +1,109 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
+{% endblock %}
+
+{% block content %}
+    <br>
+    <h2 style="text-align: center;">Adicionar Funcionário</h2><br>
+
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <!-- Primeira coluna -->
+                <div class="col-md-6">
+                    <label><strong>Condomínio:</strong></label>
+                    <select name="condominio" class="form-control" required>
+                        <option value="">Selecione um Condomínio</option>
+                        {% for condominio in condominios %}
+                            <option value="{{ condominio.id }}">{{ condominio.nome }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label><strong>Tipo de Funcionário:</strong></label>
+                    <select name="tipo_funcionario" class="form-control" required>
+                        <option value="">Selecione um Tipo</option>
+                        {% for tipo in tipos_funcionario %}
+                            <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label><strong>Nome do Funcionário:</strong></label>
+                    <input type="text" name="nome_funcionario" class="form-control" required>
+
+                    <label><strong>Telefone 1:</strong></label>
+                    <input type="text" name="telefone1" id="telefone1" class="form-control" required>
+
+                    <label><strong>Telefone 2:</strong></label>
+                    <input type="text" name="telefone2" id="telefone2" class="form-control">
+
+                    <label><strong>Email:</strong></label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+
+                <!-- Segunda coluna -->
+                <div class="col-md-6">
+                    <label><strong>Hora Início:</strong></label>
+                    <input type="time" name="hora_inicio" class="form-control" required>
+
+                    <label><strong>Hora Fim:</strong></label>
+                    <input type="time" name="hora_fim" class="form-control" required>
+
+                    <label><strong>Hora Início (Sábado):</strong></label>
+                    <input type="time" name="hora_inicio_sab" class="form-control" required>
+
+                    <label><strong>Hora Fim (Sábado):</strong></label>
+                    <input type="time" name="hora_fim_sab" class="form-control" required>
+
+                    <label><strong>Observação:</strong></label>
+                    <textarea name="observacao" class="form-control" rows="4"></textarea>
+
+                    <br>
+
+                </div>
+            </div>
+			<div class="form-group">
+				<br>
+				<button type="submit" class="btn btn-primary ">Cadastrar</button>
+			</div>
+        </form>
+    </div>
+
+    <!-- Inclua jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Inclua o jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Aplica a máscara para os campos de telefone
+            $('#telefone1').mask('(00) 0 0000-0000');
+            $('#telefone2').mask('(00) 0 0000-0000');
+        });
+    </script>
+{% endblock %}
