@@ -5,6 +5,7 @@ from django.db.utils import IntegrityError
 from app.models import Sindicos, Apartamentos, Condominios, TiposSindicos, Pessoas  # Importe o modelo Condominios aqui
 from .forms import SindicoForm
 from django.http import JsonResponse
+from django.views import View  # Adicione esta linha para importar a classe View
 
 @login_required
 def lista_sindicos(request):
@@ -132,12 +133,43 @@ def editar_sindico(request, sindico_id):
     })
 
 
+def consultar_sindico(request, sindico_id):
+	# Obtém o objeto "sindico" com base no id
+	sindico = get_object_or_404(Sindicos, id=sindico_id)
+	
+	# Obtém todas as pessoas e tipos de síndico para preencher os campos do formulário
+	pessoas = Pessoas.objects.all()  # Modifique para filtrar conforme necessário
+	tipos_sindico = TiposSindicos.objects.all()  # Modifique conforme o modelo
+	
+	if request.method == 'POST':
+		# Caso o formulário tenha sido enviado, atualize os dados
+		sindico.pessoa = get_object_or_404(Pessoas, id=request.POST.get('pessoa'))
+		sindico.tipos_sindico = get_object_or_404(TiposSindicos, id=request.POST.get('tipos_sindico'))
+		sindico.email_sindico = request.POST.get('email_sindico')
+		sindico.data_inicio = request.POST.get('data_inicio')
+		sindico.data_fim = request.POST.get('data_fim')
+		sindico.descricao = request.POST.get('descricao')
+		sindico.email_permissao = request.POST.get('email_permissao')
+		sindico.save()
+	
+	# Redirecionar ou exibir uma mensagem de sucesso
+	# Exemplo: return redirect('success_page') ou exibir uma mensagem de sucesso
+	
+	return render(request, 'consultar_sindico.html', {
+		'sindico': sindico,
+		'pessoas': pessoas,
+		'tipos_sindico': tipos_sindico,
+	})
 
-def deletar_sindico(request, sindico_id):
-    sindico = get_object_or_404(Sindicos, id=sindico_id)
-    sindico.delete()
-    messages.success(request, 'Síndico deletado com sucesso.')
-    return redirect('lista_sindicos')
-from django.shortcuts import render
 
-# Create your views here.
+class DeletarSindico(View):
+    def get(self, request, pk):
+        # Corrija para usar 'pk' em vez de 'sindico_id'
+        sindico = get_object_or_404(Sindicos, pk=pk)  # Buscar o síndico pelo pk
+        return render(request, 'deletar_sindico.html', {'sindico': sindico})
+
+    def post(self, request, pk):
+        sindico = get_object_or_404(Sindicos, pk=pk)  # Buscar o síndico novamente
+        sindico.status = 2  # Mudar o status para 2 (por exemplo, "desativado")
+        sindico.save()
+        return redirect('lista_sindicos')  # Redireciona para a lista de síndicos

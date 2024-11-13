@@ -16,7 +16,6 @@
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
-
                 </li>
             </ul>
         </div>
@@ -32,12 +31,11 @@
 <div class="form-group custom-form-group">
     <br>
     <label for="searchbar"><b>Buscar Síndicos:</b></label>
-    <input type="text" class="form-control" placeholder="Buscar sindico..." id="searchbar" onkeyup="search()" name="searchbar">
+    <input type="text" class="form-control" placeholder="Buscar síndico..." id="searchbar" onkeyup="search()" name="searchbar">
 </div>
 <br>
 
 <div class="d-flex justify-content-center align-items-center mb-4">
-
     <h2 class="text-center">Lista de Síndicos</h2>
     <a href="{% url 'criar_sindico' %}" class="btn btn-link p-0" style="text-decoration: none;">
         <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 20px; height: 20px; margin-left: 60px;">
@@ -66,14 +64,20 @@
                 <td>
                     <a href="{% url 'editar_sindico' sindico.id %}">
                         <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px; margin-right: 5px;">
-
+                    </a>
+                    <a href="{% url 'consultar_sindico' sindico.id %}">
+                        <img src="{% static 'img/pesquisar.png' %}" alt="Consultar" style="width: 20px; height: 20px; margin-right: 5px;">
+                    </a>
                     <a href="{% url 'deletar_sindico' sindico.id %}">
                         <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px; margin-right: 5px;">
+                    </a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
+
 <script>
     function search() {
         let input = document.getElementById('searchbar').value.toLowerCase();
