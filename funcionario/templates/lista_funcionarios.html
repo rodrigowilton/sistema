@@ -1,0 +1,80 @@
+{% extends 'base_login.html' %}
+
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'lista_funcionarios' %}">Lista de Funcionários</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Lista de Funcionários</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Ramal</th>
+                <th>Condomínio</th>
+                <th>Tipo</th>
+                <th>Nome do Funcionário</th>
+                <th>Telefone 1</th>
+                <th>Telefone 2</th>
+                <th>E-mail</th>
+                <th>Seg a Sex</th>
+                <th>Sab</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for funcionario in page_obj %}
+            <tr>
+                <td>{{ funcionario.id }}</td>
+                <td>{{ funcionario.empresa.nome_fantasia }}</td>
+                <td>{{ funcionario.tipos_funcionario.nome_tipos_funcionario }}</td>
+                <td>{{ funcionario.nome_funcionario }}</td>
+                <td>{{ funcionario.telefone }}</td>
+                <td>{{ funcionario.celular }}</td>
+                <td>{{ funcionario.email }}</td>
+                <td>-</td>  <!-- Se necessário, adicione lógica para horários -->
+                <td>-</td>  <!-- Se necessário, adicione lógica para horários -->
+                <td>
+                    <a href="{% url 'editar_funcionario' funcionario.id %}" class="btn btn-primary">Editar</a>
+                    <a href="{% url 'deletar_funcionario' funcionario.id %}" class="btn btn-danger">Deletar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Paginação -->
+    <div class="pagination">
+        <span class="page-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; Primeiro</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+
+            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Próximo</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Último &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

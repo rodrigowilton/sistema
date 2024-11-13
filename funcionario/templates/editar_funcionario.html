@@ -1,0 +1,81 @@
+{% extends 'base_login.html' %}
+
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'lista_funcionarios' %}">Lista de Funcionários</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Editar Funcionário</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="empresa" class="form-label">Empresa</label>
+            {{ form.empresa }}
+        </div>
+        <div class="mb-3">
+            <label for="tipos_funcionario" class="form-label">Tipo de Funcionário</label>
+            {{ form.tipos_funcionario }}
+        </div>
+        <div class="mb-3">
+            <label for="nome_funcionario" class="form-label">Nome do Funcionário</label>
+            {{ form.nome_funcionario }}
+        </div>
+        <div class="mb-3">
+            <label for="cargo" class="form-label">Cargo</label>
+            {{ form.cargo }}
+        </div>
+        <div class="mb-3">
+            <label for="cpf" class="form-label">CPF</label>
+            {{ form.cpf }}
+        </div>
+        <div class="mb-3">
+            <label for="rg" class="form-label">RG</label>
+            {{ form.rg }}
+        </div>
+        <div class="mb-3">
+            <label for="telefone" class="form-label">Telefone</label>
+            {{ form.telefone }}
+        </div>
+        <div class="mb-3">
+            <label for="celular" class="form-label">Celular</label>
+            {{ form.celular }}
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">E-mail</label>
+            {{ form.email }}
+        </div>
+        <div class="mb-3">
+            <label for="imagem_prestador" class="form-label">Imagem do Prestador</label>
+            {{ form.imagem_prestador }}
+        </div>
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            {{ form.status }}
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'lista_funcionarios' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
