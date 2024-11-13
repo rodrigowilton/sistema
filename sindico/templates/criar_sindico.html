@@ -21,6 +21,8 @@
         </div>
     </div>
 </nav>
+<br>
+<br>
 {% endblock %}
 
 {% block content %}
@@ -60,15 +62,15 @@
         </div>
         <br>
 
-        <!-- Tipo de Síndico -->
-        <div class="form-group">
-            <label for="tipos_sindico" class="font-weight-bold">Tipo de Síndico</label>
-            <select id="tipos_sindico" name="tipos_sindico" class="form-control" style="font-size: 18px;">
-                {% for tipo in tipos_sindico %}
-                    <option value="{{ tipo.id }}">{{ tipo.nome_tipos_sindico }}</option>
-                {% endfor %}
-            </select>
-        </div>
+<!-- Tipo de Síndico -->
+<div class="form-group">
+    <label for="tipos_sindico" class="font-weight-bold">Tipo de Síndico</label>
+    <select id="tipos_sindico" name="tipos_sindico" class="form-control" style="font-size: 18px;">
+        {% for tipo in tipos_sindico %}
+            <option value="{{ tipo.id }}">{{ tipo.nome_tipos_sindico }}</option>
+        {% endfor %}
+    </select>
+</div>
         <br>
 
         <!-- Email Síndico -->
@@ -128,19 +130,26 @@ document.addEventListener("DOMContentLoaded", function() {
         var apartamentoSelect = document.getElementById('apartamento');
         var pessoaSelect = document.getElementById('pessoa');
 
+        // Exibe uma mensagem de "Carregando..." no campo de apartamentos enquanto busca os dados
         apartamentoSelect.innerHTML = '<option value="">Carregando...</option>';
+        // Desativa a seleção de pessoas até que um apartamento seja escolhido
         pessoaSelect.innerHTML = '<option value="">Selecione um apartamento primeiro</option>';
 
+        // Verifica se um condomínio foi selecionado
         if (condominioId) {
-            fetch(`/sindico/get_apartamentos/${condominioId}/`)
-                .then(response => response.json())
+            fetch(`/sindico/get_apartamentos/${condominioId}/`)  // Faz a requisição para obter os apartamentos do condomínio
+                .then(response => response.json())  // Converte a resposta em JSON
                 .then(data => {
+                    // Limpa as opções de apartamentos e adiciona a primeira opção "Selecione um apartamento"
                     apartamentoSelect.innerHTML = '<option value="">Selecione um apartamento</option>';
+
+                    // Preenche o campo de apartamentos com as opções retornadas pela API
                     data.forEach(function(apartamento) {
                         apartamentoSelect.innerHTML += `<option value="${apartamento.id}">${apartamento.nome_apartamento}</option>`;
                     });
                 });
         } else {
+            // Caso nenhum condomínio tenha sido selecionado, exibe uma opção padrão
             apartamentoSelect.innerHTML = '<option value="">Selecione um condomínio primeiro</option>';
         }
     });
@@ -150,21 +159,28 @@ document.addEventListener("DOMContentLoaded", function() {
         var apartamentoId = this.value;
         var pessoaSelect = document.getElementById('pessoa');
 
+        // Exibe uma mensagem de "Carregando..." enquanto busca as pessoas do apartamento
         pessoaSelect.innerHTML = '<option value="">Carregando...</option>';
 
+        // Verifica se um apartamento foi selecionado
         if (apartamentoId) {
-            fetch(`/sindico/get_pessoas/${apartamentoId}/`)
-                .then(response => response.json())
+            fetch(`/sindico/get_pessoas/${apartamentoId}/`)  // Faz a requisição para obter as pessoas do apartamento
+                .then(response => response.json())  // Converte a resposta em JSON
                 .then(data => {
+                    // Limpa as opções de pessoas e adiciona a primeira opção "Selecione uma pessoa"
                     pessoaSelect.innerHTML = '<option value="">Selecione uma pessoa</option>';
+
+                    // Preenche o campo de pessoas com as opções retornadas pela API
                     data.forEach(function(pessoa) {
                         pessoaSelect.innerHTML += `<option value="${pessoa.id}">${pessoa.nome_pessoa}</option>`;
                     });
                 });
         } else {
+            // Caso nenhum apartamento tenha sido selecionado, exibe uma opção padrão
             pessoaSelect.innerHTML = '<option value="">Selecione um apartamento primeiro</option>';
         }
     });
 });
 </script>
+
 {% endblock %}

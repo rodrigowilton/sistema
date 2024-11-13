@@ -11,23 +11,41 @@ def lista_sindicos(request):
     sindicos = Sindicos.objects.filter(status=1, condominio__status=1).order_by('condominio__nome_condominio')
     return render(request, 'lista_sindicos.html', {'sindicos': sindicos})
 
+
 def criar_sindico(request):
-    if request.method == 'POST':
-        form = SindicoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Síndico criado com sucesso.')
-            return redirect('lista_sindicos')
-    else:
-        form = SindicoForm()
+	if request.method == 'POST':
+		form = SindicoForm(request.POST)
+		
+		# Filtra os tipos de síndico ativos (status=1)
+		tipos_sindico = TiposSindicos.objects.filter(status=1)
+		
+		# Atualiza o queryset de apartamentos com base no condomínio selecionado
+		condominio_id = request.POST.get('condominio')
+		if condominio_id:
+			form.fields['apartamento'].queryset = Apartamentos.objects.filter(condominio_id=condominio_id, status=1)
+		
+		if form.is_valid():
+			form.save()
+			messages.success(request, 'Síndico criado com sucesso.')
+			return redirect('lista_sindicos')
+		else:
+			messages.error(request, 'Houve um erro no cadastro. Verifique os dados e tente novamente.')
+	
+	else:
+		form = SindicoForm()
+	
+	# Filtra os condomínios ativos
+	condominios = Condominios.objects.filter(status=1)
+	
+	# Filtra os tipos de síndico ativos (status=1)
+	tipos_sindico = TiposSindicos.objects.filter(status=1)
+	
+	return render(request, 'criar_sindico.html', {
+		'form': form,
+		'condominios': condominios,
+		'tipos_sindico': tipos_sindico  # Adiciona tipos_sindico no contexto
+	})
 
-    # Carregar todos os condomínios ativos
-    condominios = Condominios.objects.filter(status=1)
-
-    return render(request, 'criar_sindico.html', {
-        'form': form,
-        'condominios': condominios
-    })
 
 # Endpoint para buscar apartamentos pelo condomínio selecionado
 def get_apartamentos_por_condominio(request, condominio_id):
