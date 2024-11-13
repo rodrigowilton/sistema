@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.db.utils import IntegrityError
 from app.models import Sindicos, Apartamentos, Condominios, TiposSindicos, Pessoas  # Importe o modelo Condominios aqui
 from .forms import SindicoForm
+from django.http import JsonResponse
 
 @login_required
 def lista_sindicos(request):
@@ -19,7 +20,23 @@ def criar_sindico(request):
             return redirect('lista_sindicos')
     else:
         form = SindicoForm()
-    return render(request, 'criar_sindico.html', {'form': form})
+
+    # Carregar todos os condomínios ativos
+    condominios = Condominios.objects.filter(status=1)
+
+    return render(request, 'criar_sindico.html', {
+        'form': form,
+        'condominios': condominios
+    })
+
+# Endpoint para buscar apartamentos pelo condomínio selecionado
+def get_apartamentos_por_condominio(request, condominio_id):
+    apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id).values('id', 'nome_apartamento')
+    return JsonResponse(list(apartamentos), safe=False)
+
+def get_pessoas_por_apartamento(request, apartamento_id):
+    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id).values('id', 'nome_pessoa')
+    return JsonResponse(list(pessoas), safe=False)
 
 def editar_sindico(request, sindico_id):
     sindico = get_object_or_404(Sindicos, id=sindico_id)

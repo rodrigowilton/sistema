@@ -71,7 +71,7 @@
         <!-- Email Síndico -->
         <div class="form-group">
             <label for="email_sindico" class="font-weight-bold">Email Síndico</label>
-            <input type="email" id="email_sindico" name="email_sindico" class="form-control" value="{{ sindico.email_sindico }}">
+            <input type="email" id="email_sindico" name="email_sindico" class="form-control" value="{{ sindico.email_sindico|default:'' }}">
         </div>
         <br>
 

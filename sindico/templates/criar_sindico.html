@@ -1,7 +1,170 @@
-<h1>Criar Síndico</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
-<a href="{% url 'lista_sindicos' %}">Voltar para a lista</a>
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'lista_sindicos' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Voltar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Criar Síndico</h2>
+
+    <form method="POST" class="bg-light p-4 rounded shadow-sm">
+        {% csrf_token %}
+
+        <!-- Condomínio -->
+        <div class="form-group">
+            <label for="condominio" class="font-weight-bold">Condomínio</label>
+            <select id="condominio" name="condominio" class="form-control">
+                <option value="">Selecione um condomínio</option>
+                {% for condominio in condominios %}
+                    <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br>
+
+        <!-- Apartamento -->
+        <div class="form-group">
+            <label for="apartamento" class="font-weight-bold">Apartamento</label>
+            <select id="apartamento" name="apartamento" class="form-control">
+                <option value="">Selecione um condomínio primeiro</option>
+            </select>
+        </div>
+        <br>
+
+        <!-- Pessoa -->
+        <div class="form-group">
+            <label for="pessoa" class="font-weight-bold">Pessoa</label>
+            <select id="pessoa" name="pessoa" class="form-control">
+                <option value="">Selecione um apartamento primeiro</option>
+            </select>
+        </div>
+        <br>
+
+        <!-- Tipo de Síndico -->
+        <div class="form-group">
+            <label for="tipos_sindico" class="font-weight-bold">Tipo de Síndico</label>
+            <select id="tipos_sindico" name="tipos_sindico" class="form-control" style="font-size: 18px;">
+                {% for tipo in tipos_sindico %}
+                    <option value="{{ tipo.id }}">{{ tipo.nome_tipos_sindico }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br>
+
+        <!-- Email Síndico -->
+        <div class="form-group">
+            <label for="email_sindico" class="font-weight-bold">Email Síndico</label>
+            <input type="email" id="email_sindico" name="email_sindico" class="form-control" value="">
+        </div>
+        <br>
+
+        <!-- Data Início -->
+        <div class="form-group">
+            <label for="data_inicio" class="font-weight-bold">Data Início</label>
+            <input type="date" id="data_inicio" name="data_inicio" class="form-control">
+        </div>
+        <br>
+
+        <!-- Data Fim -->
+        <div class="form-group">
+            <label for="data_fim" class="font-weight-bold">Data Fim</label>
+            <input type="date" id="data_fim" name="data_fim" class="form-control">
+        </div>
+        <br>
+
+        <!-- Descrição -->
+        <div class="form-group">
+            <label for="descricao" class="font-weight-bold">Descrição</label>
+            <textarea id="descricao" name="descricao" class="form-control" rows="4"></textarea>
+        </div>
+        <br>
+
+        <!-- Permissão Sim/Não -->
+        <div class="form-group">
+            <label class="font-weight-bold">Email Permissão</label>
+            <div>
+                <label>
+                    <input type="radio" name="email_permissao" value="1"> Sim
+                </label>
+                <label>
+                    <input type="radio" name="email_permissao" value="2"> Não
+                </label>
+            </div>
+        </div>
+        <br>
+
+        <!-- Campo oculto para o status -->
+        <input type="hidden" name="status" value="1">
+
+        <button type="submit" class="btn btn-primary">Salvar Síndico</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Atualiza os apartamentos ao selecionar um condomínio
+    document.getElementById('condominio').addEventListener('change', function() {
+        var condominioId = this.value;
+        var apartamentoSelect = document.getElementById('apartamento');
+        var pessoaSelect = document.getElementById('pessoa');
+
+        apartamentoSelect.innerHTML = '<option value="">Carregando...</option>';
+        pessoaSelect.innerHTML = '<option value="">Selecione um apartamento primeiro</option>';
+
+        if (condominioId) {
+            fetch(`/sindico/get_apartamentos/${condominioId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    apartamentoSelect.innerHTML = '<option value="">Selecione um apartamento</option>';
+                    data.forEach(function(apartamento) {
+                        apartamentoSelect.innerHTML += `<option value="${apartamento.id}">${apartamento.nome_apartamento}</option>`;
+                    });
+                });
+        } else {
+            apartamentoSelect.innerHTML = '<option value="">Selecione um condomínio primeiro</option>';
+        }
+    });
+
+    // Atualiza as pessoas ao selecionar um apartamento
+    document.getElementById('apartamento').addEventListener('change', function() {
+        var apartamentoId = this.value;
+        var pessoaSelect = document.getElementById('pessoa');
+
+        pessoaSelect.innerHTML = '<option value="">Carregando...</option>';
+
+        if (apartamentoId) {
+            fetch(`/sindico/get_pessoas/${apartamentoId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    pessoaSelect.innerHTML = '<option value="">Selecione uma pessoa</option>';
+                    data.forEach(function(pessoa) {
+                        pessoaSelect.innerHTML += `<option value="${pessoa.id}">${pessoa.nome_pessoa}</option>`;
+                    });
+                });
+        } else {
+            pessoaSelect.innerHTML = '<option value="">Selecione um apartamento primeiro</option>';
+        }
+    });
+});
+</script>
+{% endblock %}
