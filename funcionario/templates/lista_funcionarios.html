@@ -23,7 +23,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
     <h2 class="text-center">Lista de Funcionários</h2>
     <table class="table table-bordered">
         <thead>
@@ -41,17 +40,17 @@
             </tr>
         </thead>
         <tbody>
-            {% for funcionario in page_obj %}
+            {% for funcionario in funcionarios %}
             <tr>
-                <td>{{ funcionario.id }}</td>
-                <td>{{ funcionario.empresa.nome_fantasia }}</td>
-                <td>{{ funcionario.tipos_funcionario.nome_tipos_funcionario }}</td>
-                <td>{{ funcionario.nome_funcionario }}</td>
-                <td>{{ funcionario.telefone }}</td>
-                <td>{{ funcionario.celular }}</td>
-                <td>{{ funcionario.email }}</td>
-                <td>-</td>  <!-- Se necessário, adicione lógica para horários -->
-                <td>-</td>  <!-- Se necessário, adicione lógica para horários -->
+                <td>{{ funcionario.id }}</td>  <!-- Ramal -->
+                <td>{{ funcionario.condominio.nome_condominio }}</td>  <!-- Condomínio -->
+				<td>{{ funcionario.tipos_condominios_funcionario.nome_tipo_funcionario }}</td>  <!-- Tipo -->
+                <td>{{ funcionario.nome_condominios_funcionario }}</td>  <!-- Nome do Funcionário -->
+                <td>{{ funcionario.telefone1 }}</td>  <!-- Telefone 1 -->
+                <td>{{ funcionario.telefone2 }}</td>  <!-- Telefone 2 -->
+                <td>{{ funcionario.email }}</td>  <!-- E-mail -->
+                <td>{{ funcionario.hora_inicio }}</td>  <!-- Seg a Sex -->
+                <td>{{ funcionario.hora_inicio_sab }}</td>  <!-- Sab -->
                 <td>
                     <a href="{% url 'editar_funcionario' funcionario.id %}" class="btn btn-primary">Editar</a>
                     <a href="{% url 'deletar_funcionario' funcionario.id %}" class="btn btn-danger">Deletar</a>
@@ -60,21 +59,4 @@
             {% endfor %}
         </tbody>
     </table>
-    <!-- Paginação -->
-    <div class="pagination">
-        <span class="page-links">
-            {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; Primeiro</a>
-                <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
-            {% endif %}
-
-            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">Próximo</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">Último &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
-</div>
 {% endblock %}

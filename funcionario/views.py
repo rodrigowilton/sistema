@@ -1,19 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from app.models import Funcionarios
-from django.core.paginator import Paginator
+from app.models import Funcionarios, CondominiosFuncionarios
 from .forms import FuncionarioForm
 
+def lista_funcionarios(request):
+    funcionarios = CondominiosFuncionarios.objects.select_related('tipos_condominios_funcionario', 'condominio').all()
+    return render(request, 'lista_funcionarios.html', {'funcionarios': funcionarios})
 
-def list_funcionarios(request):
-	funcionarios = Funcionarios.objects.filter(status=1).select_related('empresa', 'tipos_funcionario')
-	
-	paginator = Paginator(funcionarios, 20)  # Exibe 20 funcionários por página
-	page_number = request.GET.get('page')  # Pega o número da página atual
-	page_obj = paginator.get_page(page_number)
-	
-	return render(request, 'lista_funcionarios.html', {'page_obj': page_obj})
 
-from .forms import FuncionarioForm  # Supondo que você tenha um formulário para o modelo Funcionarios
 
 def editar_funcionario(request, id):
     funcionario = get_object_or_404(Funcionarios, id=id)
