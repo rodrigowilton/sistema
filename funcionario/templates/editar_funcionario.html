@@ -1,81 +1,117 @@
 {% extends 'base_login.html' %}
-
 {% load static %}
 
 {% block menu %}
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'lista_funcionarios' %}">Lista de Funcionários</a>
+                    <a class="nav-link text-center" href="{% url 'lista_funcionarios' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br><br><br>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center">Editar Funcionário</h2>
+    <br>
+    <h2 style="text-align: center;">Editar Funcionário</h2><br>
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="empresa" class="form-label">Empresa</label>
-            {{ form.empresa }}
-        </div>
-        <div class="mb-3">
-            <label for="tipos_funcionario" class="form-label">Tipo de Funcionário</label>
-            {{ form.tipos_funcionario }}
-        </div>
-        <div class="mb-3">
-            <label for="nome_funcionario" class="form-label">Nome do Funcionário</label>
-            {{ form.nome_funcionario }}
-        </div>
-        <div class="mb-3">
-            <label for="cargo" class="form-label">Cargo</label>
-            {{ form.cargo }}
-        </div>
-        <div class="mb-3">
-            <label for="cpf" class="form-label">CPF</label>
-            {{ form.cpf }}
-        </div>
-        <div class="mb-3">
-            <label for="rg" class="form-label">RG</label>
-            {{ form.rg }}
-        </div>
-        <div class="mb-3">
-            <label for="telefone" class="form-label">Telefone</label>
-            {{ form.telefone }}
-        </div>
-        <div class="mb-3">
-            <label for="celular" class="form-label">Celular</label>
-            {{ form.celular }}
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">E-mail</label>
-            {{ form.email }}
-        </div>
-        <div class="mb-3">
-            <label for="imagem_prestador" class="form-label">Imagem do Prestador</label>
-            {{ form.imagem_prestador }}
-        </div>
-        <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
-            {{ form.status }}
-        </div>
-        <div class="mb-3">
-            <button type="submit" class="btn btn-primary">Salvar</button>
-            <a href="{% url 'lista_funcionarios' %}" class="btn btn-secondary">Cancelar</a>
-        </div>
-    </form>
-</div>
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <!-- Primeira coluna -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label><strong>Condomínio:</strong></label>
+                        <input type="text" class="form-control" value="{{ funcionario.condominio.nome_condominio }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Tipo de Funcionário:</strong></label>
+                        <select name="tipos_condominios_funcionario" class="form-control">
+                            <option value="{{ form.tipos_condominios_funcionario.value }}">{{ funcionario.tipos_condominios_funcionario }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>Nome do Funcionário:</strong></label>
+                        <input type="text" class="form-control" value="{{ funcionario.nome_condominios_funcionario  }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Telefone 1:</strong></label>
+                        <input type="text" id="telefone1" class="form-control" value="{{ funcionario.telefone1 }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Telefone 2:</strong></label>
+                        <input type="text" id="telefone2" class="form-control" value="{{ funcionario.telefone2 }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Email:</strong></label>
+                        <input type="email" class="form-control" value="{{ funcionario.email }}">
+                    </div>
+                </div>
+
+                <!-- Segunda coluna -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label><strong>Hora Início:</strong></label>
+                        <input type="time" class="form-control" value="{{ funcionario.hora_inicio }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Hora Fim:</strong></label>
+                        <input type="time" class="form-control" value="{{ funcionario.hora_fim }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Hora Início (Sábado):</strong></label>
+                        <input type="time" class="form-control" value="{{ funcionario.hora_inicio_sab }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Hora Fim (Sábado):</strong></label>
+                        <input type="time" class="form-control" value="{{ funcionario.hora_fim_sab }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Observação:</strong></label>
+                        <textarea class="form-control" rows="3">{{ funcionario.observacao }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-center mt-4">
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Inclua jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Inclua o jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Aplica a máscara para os campos de telefone
+            $('#telefone1').mask('(00) 0 0000-0000');
+            $('#telefone2').mask('(00) 0 0000-0000');
+        });
+    </script>
 {% endblock %}

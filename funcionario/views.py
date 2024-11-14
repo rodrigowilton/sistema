@@ -45,23 +45,19 @@ def adicionar_funcionario(request):
                   {'form': form, 'condominios': condominios, 'tipos_funcionario': tipos_funcionario})
 
 @login_required
-def editar_funcionario(request, funcionario_id):
-    try:
-        funcionario = CondominiosFuncionarios.objects.get(id=funcionario_id)
-    except CondominiosFuncionarios.DoesNotExist:
-        messages.error(request, "Funcionário não encontrado.")
-        return redirect('lista_funcionarios')
+def editar_funcionario(request, id):
+    # Obtém a instância correta de CondominiosFuncionarios com o id fornecido
+    funcionario = get_object_or_404(CondominiosFuncionarios, id=id)
+
+    if request.method == 'POST':
+        # Passa a instância correta de CondominiosFuncionarios ao formulário para salvar
+        form = FuncionarioForm(request.POST, instance=funcionario)
+        if form.is_valid():
+            form.save()  # Salva os dados na instância de CondominiosFuncionarios
+            return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários
     else:
-        if request.method == 'POST':
-            form = FuncionarioForm(request.POST, instance=funcionario)
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Funcionário atualizado com sucesso.")
-                return redirect('lista_funcionarios')
-            else:
-                messages.error(request, "Erro ao atualizar funcionário. Verifique os campos.")
-        else:
-            form = FuncionarioForm(instance=funcionario)
+        # Carrega o formulário com os dados de CondominiosFuncionarios
+        form = FuncionarioForm(instance=funcionario)
 
     return render(request, 'editar_funcionario.html', {'form': form, 'funcionario': funcionario})
 
