@@ -41,7 +41,7 @@
                     <select name="condominio" class="form-control" required>
                         <option value="">Selecione um Condomínio</option>
                         {% for condominio in condominios %}
-                            <option value="{{ condominio.id }}">{{ condominio.nome }}</option>
+                            <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
                         {% endfor %}
                     </select>
 
@@ -49,9 +49,10 @@
                     <select name="tipo_funcionario" class="form-control" required>
                         <option value="">Selecione um Tipo</option>
                         {% for tipo in tipos_funcionario %}
-                            <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                            <option value="{{ tipo.id }}">{{ tipo.nome_tipos_funcionario }}</option>
                         {% endfor %}
                     </select>
+
 
                     <label><strong>Nome do Funcionário:</strong></label>
                     <input type="text" name="nome_funcionario" class="form-control" required>

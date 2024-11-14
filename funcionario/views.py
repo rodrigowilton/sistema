@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from app.models import Funcionarios, CondominiosFuncionarios, Condominios
+from app.models import Funcionarios, CondominiosFuncionarios, Condominios, TiposFuncionarios
 from .forms import FuncionarioForm
 
 @login_required
@@ -19,15 +19,20 @@ def verificar_condominio_existe(request):
 
 @login_required
 def adicionar_funcionario(request):
+    # Filtra todos os condomínios com status = 1
+    condominios = Condominios.objects.filter(status=1)
+    tipos_funcionario = TiposFuncionarios.objects.all()
+
     if request.method == 'POST':
         form = FuncionarioForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários após adicionar
+            form.save()  # Salva os dados do formulário
+            return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários
     else:
-        form = FuncionarioForm()
-    
-    return render(request, 'adicionar_funcionario.html', {'form': form})
+        form = FuncionarioForm()  # Cria um formulário vazio para GET
+
+    # Passa os condomínios, tipos de funcionários e o formulário para o template
+    return render(request, 'adicionar_funcionario.html', {'form': form, 'condominios': condominios, 'tipos_funcionario': tipos_funcionario})
 
 
 @login_required
