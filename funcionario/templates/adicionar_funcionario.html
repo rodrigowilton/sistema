@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="javascript:history.back()" style="display: flex; flex-direction: column; align-items: center;">
+                    <a class="nav-link text-center" href="{% url 'lista_funcionarios' %}" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
@@ -53,9 +53,11 @@
                         {% endfor %}
                     </select>
 
+                    <input type="hidden" name="tipos_condominios_funcionario" value="{{ tipos_funcionario.first.id }}" />  <!-- Pega o primeiro tipo como valor por padrão -->
+                    <input type="hidden" name="status" value="1" />
 
                     <label><strong>Nome do Funcionário:</strong></label>
-                    <input type="text" name="nome_funcionario" class="form-control" required>
+                    <input type="text" name="nome_condominios_funcionario" class="form-control" required>
 
                     <label><strong>Telefone 1:</strong></label>
                     <input type="text" name="telefone1" id="telefone1" class="form-control" required>
@@ -64,7 +66,7 @@
                     <input type="text" name="telefone2" id="telefone2" class="form-control">
 
                     <label><strong>Email:</strong></label>
-                    <input type="email" name="email" class="form-control" required>
+                    <input type="email" name="email" class="form-control">
                 </div>
 
                 <!-- Segunda coluna -->
@@ -76,10 +78,10 @@
                     <input type="time" name="hora_fim" class="form-control" required>
 
                     <label><strong>Hora Início (Sábado):</strong></label>
-                    <input type="time" name="hora_inicio_sab" class="form-control" required>
+                    <input type="time" name="hora_inicio_sab" class="form-control">
 
                     <label><strong>Hora Fim (Sábado):</strong></label>
-                    <input type="time" name="hora_fim_sab" class="form-control" required>
+                    <input type="time" name="hora_fim_sab" class="form-control">
 
                     <label><strong>Observação:</strong></label>
                     <textarea name="observacao" class="form-control" rows="4"></textarea>

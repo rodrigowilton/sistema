@@ -25,24 +25,31 @@ def adicionar_funcionario(request):
 
     if request.method == 'POST':
         form = FuncionarioForm(request.POST)
+
+        # Depuração: Imprimir os dados recebidos no POST
+        print("Dados recebidos no POST:", request.POST)
+
         if form.is_valid():
             form.save()  # Salva os dados do formulário
             return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários
+        else:
+            # Depuração: Se o formulário não for válido, imprime os erros
+            print("Erros do formulário:", form.errors)
     else:
         form = FuncionarioForm()  # Cria um formulário vazio para GET
 
     # Passa os condomínios, tipos de funcionários e o formulário para o template
-    return render(request, 'adicionar_funcionario.html', {'form': form, 'condominios': condominios, 'tipos_funcionario': tipos_funcionario})
+    return render(request, 'adicionar_funcionario.html',
+                  {'form': form, 'condominios': condominios, 'tipos_funcionario': tipos_funcionario})
 
 
 @login_required
-def editar_funcionario(request, id):
-    funcionario = get_object_or_404(Funcionarios, id=id)
-    if request.method == 'POST':
-        form = FuncionarioForm(request.POST, instance=funcionario)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_funcionarios')
+def editar_funcionario(request, funcionario_id):
+    try:
+        funcionario = CondominiosFuncionarios.objects.get(id=funcionario_id)
+    except CondominiosFuncionarios.DoesNotExist:
+        # Mostra uma mensagem de erro apropriada ou redireciona
+        return redirect('lista_funcionarios')
     else:
         form = FuncionarioForm(instance=funcionario)
     return render(request, 'editar_funcionario.html', {'form': form, 'funcionario': funcionario})
