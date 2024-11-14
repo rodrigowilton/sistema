@@ -2,15 +2,12 @@ from http.client import HTTPResponse
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Condominios
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from .models import AuthUser, AuthGroup, AuthPermission, AuthUserGroups, AuthUserUserPermissions, AuthGroupPermissions
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
 
@@ -68,7 +65,7 @@ def register(request):
             #     group = Group.objects.get(name=user_group)
             #     user.groups.add(group)
 
-            messages.success(request, _("Cadastro realizado com sucesso. Você pode fazer login agora."))
+            messages.success(request, ("Cadastro realizado com sucesso. Você pode fazer login agora."))
             return redirect('configuracao')
         except Exception as e:
             messages.error(request, str(e))

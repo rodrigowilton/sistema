@@ -71,8 +71,8 @@
             <td>{{ funcionario.telefone1|default_if_none:'' }}</td>
             <td>{{ funcionario.telefone2|default_if_none:'' }}</td>
             <td style="width: 150px;">{{ funcionario.email|default_if_none:'' }}</td>
-            <td>{{ funcionario.hora_inicio|default_if_none:'' }}</td>
-            <td>{{ funcionario.hora_inicio_sab|default_if_none:'' }}</td>
+            <td>{{ funcionario.hora_inicio|default_if_none:'' }} - {{ funcionario.hora_fim|default_if_none:'' }}</td>
+            <td>{{ funcionario.hora_inicio_sab|default_if_none:'' }} - {{ funcionario.hora_fim_sab|default_if_none:'' }}</td>
             <td>
                 <a href="{% url 'editar_funcionario' funcionario.id %}">
                     <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px;">

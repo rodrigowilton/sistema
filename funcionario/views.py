@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
@@ -6,8 +7,12 @@ from .forms import FuncionarioForm
 
 @login_required
 def lista_funcionarios(request):
-    funcionarios = CondominiosFuncionarios.objects.select_related('tipos_condominios_funcionario', 'condominio').all()
-    return render(request, 'lista_funcionarios.html', {'funcionarios': funcionarios})
+    try:
+        funcionarios = CondominiosFuncionarios.objects.select_related('tipos_condominios_funcionario', 'condominio').all()
+        return render(request, 'lista_funcionarios.html', {'funcionarios': funcionarios})
+    except Exception as e:
+        messages.error(request, f"Ocorreu um erro ao carregar a lista de funcionários: {str(e)}")
+        return redirect('home')  # Redireciona para uma página de fallback
 
 @login_required
 def verificar_condominio_existe(request):
@@ -15,7 +20,6 @@ def verificar_condominio_existe(request):
         nome_condominio = request.GET.get('nome_condominio', '').strip()
         existe = Condominios.objects.filter(nome_condominio__iexact=nome_condominio).exists()
         return JsonResponse({'existe': existe})
-
 
 @login_required
 def adicionar_funcionario(request):
@@ -26,15 +30,13 @@ def adicionar_funcionario(request):
     if request.method == 'POST':
         form = FuncionarioForm(request.POST)
 
-        # Depuração: Imprimir os dados recebidos no POST
-        print("Dados recebidos no POST:", request.POST)
-
         if form.is_valid():
             form.save()  # Salva os dados do formulário
+            messages.success(request, "Cadastro realizado com sucesso.")
             return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários
         else:
-            # Depuração: Se o formulário não for válido, imprime os erros
-            print("Erros do formulário:", form.errors)
+            messages.error(request, "Ocorreu um erro ao tentar cadastrar o funcionário. Verifique os campos.")
+
     else:
         form = FuncionarioForm()  # Cria um formulário vazio para GET
 
@@ -42,16 +44,25 @@ def adicionar_funcionario(request):
     return render(request, 'adicionar_funcionario.html',
                   {'form': form, 'condominios': condominios, 'tipos_funcionario': tipos_funcionario})
 
-
 @login_required
 def editar_funcionario(request, funcionario_id):
     try:
         funcionario = CondominiosFuncionarios.objects.get(id=funcionario_id)
     except CondominiosFuncionarios.DoesNotExist:
-        # Mostra uma mensagem de erro apropriada ou redireciona
+        messages.error(request, "Funcionário não encontrado.")
         return redirect('lista_funcionarios')
     else:
-        form = FuncionarioForm(instance=funcionario)
+        if request.method == 'POST':
+            form = FuncionarioForm(request.POST, instance=funcionario)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Funcionário atualizado com sucesso.")
+                return redirect('lista_funcionarios')
+            else:
+                messages.error(request, "Erro ao atualizar funcionário. Verifique os campos.")
+        else:
+            form = FuncionarioForm(instance=funcionario)
+
     return render(request, 'editar_funcionario.html', {'form': form, 'funcionario': funcionario})
 
 @login_required
@@ -59,5 +70,8 @@ def deletar_funcionario(request, id):
     funcionario = get_object_or_404(Funcionarios, id=id)
     if request.method == 'POST':
         funcionario.delete()
+        messages.success(request, "Funcionário deletado com sucesso.")
         return redirect('lista_funcionarios')
+    else:
+        messages.warning(request, "Ação de exclusão não foi confirmada.")
     return render(request, 'deletar_funcionario.html', {'funcionario': funcionario})
