@@ -52,6 +52,7 @@ def editar_funcionario(request, id):
     if request.method == 'POST':
         # Passa a instância correta de CondominiosFuncionarios ao formulário para salvar
         form = FuncionarioForm(request.POST, instance=funcionario)
+        print(form)
         if form.is_valid():
             form.save()  # Salva os dados na instância de CondominiosFuncionarios
             return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários

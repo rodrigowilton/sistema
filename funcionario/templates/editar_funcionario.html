@@ -37,33 +37,39 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label><strong>Condomínio:</strong></label>
-                        <input type="text" class="form-control" value="{{ funcionario.condominio.nome_condominio }}" readonly>
+                        <input type="text" class="form-control" value="{{ funcionario.condominio }}" readonly>
                     </div>
 
                     <div class="form-group">
                         <label><strong>Tipo de Funcionário:</strong></label>
                         <select name="tipos_condominios_funcionario" class="form-control">
-                            <option value="{{ form.tipos_condominios_funcionario.value }}">{{ funcionario.tipos_condominios_funcionario }}</option>
+                            <option value="{{ funcionario.tipos_condominios_funcionario.id }}" selected>{{ funcionario.tipos_condominios_funcionario }}</option>
+                            {% for tipo in tipos_funcionario %}
+                                <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                            {% endfor %}
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label><strong>Nome do Funcionário:</strong></label>
-                        <input type="text" class="form-control" value="{{ funcionario.nome_condominios_funcionario  }}">
                     </div>
 
                     <div class="form-group">
+                        <label><strong>Nome do Funcionário:</strong></label>
+                        <input type="text" name="nome_funcionario" class="form-control" value="{{ funcionario.nome_condominios_funcionario }}">
+                    </div>
+
+                    <input type="hidden" name="status" value="1" />
+
+                    <div class="form-group">
                         <label><strong>Telefone 1:</strong></label>
-                        <input type="text" id="telefone1" class="form-control" value="{{ funcionario.telefone1 }}">
+                        <input type="text" id="telefone1" name="telefone1" class="form-control" value="{{ funcionario.telefone1 }}">
                     </div>
 
                     <div class="form-group">
                         <label><strong>Telefone 2:</strong></label>
-                        <input type="text" id="telefone2" class="form-control" value="{{ funcionario.telefone2 }}">
+                        <input type="text" id="telefone2" name="telefone2" class="form-control" value="{{ funcionario.telefone2 }}">
                     </div>
 
                     <div class="form-group">
                         <label><strong>Email:</strong></label>
-                        <input type="email" class="form-control" value="{{ funcionario.email }}">
+                        <input type="email" name="email" class="form-control" value="{{ funcionario.email }}">
                     </div>
                 </div>
 
@@ -71,27 +77,27 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label><strong>Hora Início:</strong></label>
-                        <input type="time" class="form-control" value="{{ funcionario.hora_inicio }}">
+                        <input type="time" name="hora_inicio" class="form-control" value="{{ funcionario.hora_inicio }}">
                     </div>
 
                     <div class="form-group">
                         <label><strong>Hora Fim:</strong></label>
-                        <input type="time" class="form-control" value="{{ funcionario.hora_fim }}">
+                        <input type="time" name="hora_fim" class="form-control" value="{ funcionario.hora_fim }}">
                     </div>
 
                     <div class="form-group">
                         <label><strong>Hora Início (Sábado):</strong></label>
-                        <input type="time" class="form-control" value="{{ funcionario.hora_inicio_sab }}">
+                        <input type="time" name="hora_inicio_sab" class="form-control" value="{{ funcionario.hora_inicio_sab }}">
                     </div>
 
                     <div class="form-group">
                         <label><strong>Hora Fim (Sábado):</strong></label>
-                        <input type="time" class="form-control" value="{{ funcionario.hora_fim_sab }}">
+                        <input type="time" name="hora_fim_sab" class="form-control" value="{{ funcionario.hora_fim_sab }}">
                     </div>
 
                     <div class="form-group">
                         <label><strong>Observação:</strong></label>
-                        <textarea class="form-control" rows="3">{{ funcionario.observacao }}</textarea>
+                        <textarea name="observacao" class="form-control" rows="3">{{ funcionario.observacao }}</textarea>
                     </div>
                 </div>
             </div>
