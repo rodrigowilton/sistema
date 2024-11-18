@@ -30,7 +30,7 @@ def lista_empresas(request):
     return render(request, 'lista_empresas.html', context)
 
 
-def adicionar_empresas(request):
+def adicionar_empresa(request):
     if request.method == 'POST':
         form = EmpresaForm(request.POST)
         if form.is_valid():
@@ -39,7 +39,7 @@ def adicionar_empresas(request):
             return redirect('lista_empresas')
     else:
         form = EmpresaForm()
-    return render(request, 'adicionar_empresas.html', {'form': form})
+    return render(request, 'adicionar_empresa.html', {'form': form})
 
 def editar_empresas(request, pk):
     empresa = get_object_or_404(Empresas, pk=pk)
