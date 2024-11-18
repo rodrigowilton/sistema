@@ -4,6 +4,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from app.models import Funcionarios, CondominiosFuncionarios, Condominios, TiposFuncionarios
 from .forms import FuncionarioForm
+from django.http import HttpResponse
+
 
 @login_required
 def lista_funcionarios(request):
@@ -44,23 +46,34 @@ def adicionar_funcionario(request):
     return render(request, 'adicionar_funcionario.html',
                   {'form': form, 'condominios': condominios, 'tipos_funcionario': tipos_funcionario})
 
+
 @login_required
 def editar_funcionario(request, id):
-    # Obtém a instância correta de CondominiosFuncionarios com o id fornecido
-    funcionario = get_object_or_404(CondominiosFuncionarios, id=id)
+    # Busca a instância do funcionário pelo ID
+    funcionario = get_object_or_404(CondominiosFuncionarios, pk=id)
 
-    if request.method == 'POST':
-        # Passa a instância correta de CondominiosFuncionarios ao formulário para salvar
-        form = FuncionarioForm(request.POST, instance=funcionario)
-        print(form)
+    # Quando o método é POST, o formulário é enviado
+    if request.method == "POST":
+        print("POST Data:", request.POST)  # Debug: mostra os dados do POST
+
+        form = FuncionarioForm(request.POST, instance=funcionario)  # Passa a instância do funcionário
         if form.is_valid():
-            form.save()  # Salva os dados na instância de CondominiosFuncionarios
-            return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários
+            try:
+                form.save()  # Salva as alterações
+                messages.success(request, "Funcionário atualizado com sucesso.")
+                return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários
+            except Exception as e:
+                messages.error(request, f"Erro ao salvar funcionário: {str(e)}")  # Exibe erro para o usuário
+                return redirect('editar_funcionario', id=id)  # Redireciona de volta para a edição
+        else:
+            messages.error(request, f"Erro no formulário: {form.errors}")  # Exibe os erros do formulário
+            print(form.errors)
+
     else:
-        # Carrega o formulário com os dados de CondominiosFuncionarios
-        form = FuncionarioForm(instance=funcionario)
+        form = FuncionarioForm(instance=funcionario)  # Preenche o formulário com os dados do funcionário
 
     return render(request, 'editar_funcionario.html', {'form': form, 'funcionario': funcionario})
+
 
 @login_required
 def deletar_funcionario(request, id):
