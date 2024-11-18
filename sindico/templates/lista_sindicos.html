@@ -29,9 +29,8 @@
 
 {% block content %}
 <div class="form-group custom-form-group">
-    <br>
-    <label for="searchbar"><b>Buscar Síndicos:</b></label>
-    <input type="text" class="form-control" placeholder="Buscar síndico..." id="searchbar" onkeyup="search()" name="searchbar">
+    <label for="searchbar"><b>Buscar condomínio:</b></label>
+    <input type="text" class="form-control" placeholder="Buscar condomínio..." id="searchbar" onkeyup="search()" name="searchbar">
 </div>
 <br>
 
@@ -81,12 +80,11 @@
 <script>
     function search() {
         let input = document.getElementById('searchbar').value.toLowerCase();
-        let rows = document.querySelectorAll('.table-responsive tbody tr');
+        let rows = document.querySelectorAll('tbody tr');
 
         rows.forEach(row => {
-            let pessoaNome = row.querySelector('td:nth-child(4)').textContent.toLowerCase();  // Verifica o nome da pessoa
-
-            if (pessoaNome.includes(input)) {
+            let condominioNome = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            if (condominioNome.includes(input)) {
                 row.style.display = "";
             } else {
                 row.style.display = "none";
