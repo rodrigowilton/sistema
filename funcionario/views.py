@@ -77,11 +77,12 @@ def editar_funcionario(request, id):
 
 @login_required
 def deletar_funcionario(request, id):
-    funcionario = get_object_or_404(Funcionarios, id=id)
+    funcionario = get_object_or_404(CondominiosFuncionarios, id=id)  # Aqui o id está correto
+
     if request.method == 'POST':
         funcionario.delete()
         messages.success(request, "Funcionário deletado com sucesso.")
-        return redirect('lista_funcionarios')
-    else:
-        messages.warning(request, "Ação de exclusão não foi confirmada.")
+        return redirect('lista_funcionarios')  # Redireciona para a lista de funcionários
+
+
     return render(request, 'deletar_funcionario.html', {'funcionario': funcionario})

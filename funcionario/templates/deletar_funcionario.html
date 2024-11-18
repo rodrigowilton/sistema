@@ -1,37 +1,49 @@
 {% extends 'base_login.html' %}
-
 {% load static %}
 
 {% block menu %}
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px;">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link custom-nav-link" href="{% url 'lista_funcionarios' %}">Lista de Funcionários</a>
+                    <a class="nav-link text-center" href="{% url 'lista_funcionarios' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="Voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
-	<br>
-<br>
 </nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br><br><br>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-	<h2 class="text-center">Deletar Funcionário: {{ funcionario.nome_funcionario }}</h2>
-    <p class="text-center">Você tem certeza que deseja deletar este funcionário?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
-        <a href="{% url 'lista_funcionarios' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
+<br><br><br>
+
+<div class="d-flex justify-content-center align-items-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h2 class="text-center">Deletar Funcionário: {{ funcionario.nome_condominios_funcionario }}</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-center">Você tem certeza que deseja deletar este funcionário?</p>
+                <div class="d-flex justfy-content-center mt-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
