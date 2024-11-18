@@ -1,0 +1,60 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_srv' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+		<br>
+	<br>
+	<br>
+	<br>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h2>Lista de Empresas</h2>
+<a href="{% url 'adicionar_empresas' %}" class="btn btn-primary">Adicionar Empresa</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome Fantasia</th>
+            <th>Razão Social</th>
+            <th>CNPJ</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for empresa in empresas %}
+        <tr>
+            <td>{{ empresa.nome_fantasia }}</td>
+            <td>{{ empresa.razao_social }}</td>
+            <td>{{ empresa.cnpj }}</td>
+            <td>{{ empresa.email }}</td>
+            <td>{{ empresa.get_status_display }}</td>
+            <td>
+                <a href="{% url 'editar_empresas' empresa.id %}" class="btn btn-warning">Editar</a>
+                <a href="{% url 'deletar_empresas' empresa.id %}" class="btn btn-danger">Deletar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'agendamento',
     'sindico',
     'funcionario',
+    'empresa',
 
 ]
 
