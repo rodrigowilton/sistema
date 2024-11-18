@@ -38,16 +38,29 @@ def lista_empresas(request):
     return render(request, 'lista_empresas.html', context)
 
 
-
 def adicionar_empresa(request):
     if request.method == 'POST':
         form = EmpresaForm(request.POST)
+
+        # Depuração: Exibe os dados recebidos no POST
+        print("Dados recebidos no POST:", request.POST)
+
         if form.is_valid():
-            form.save()
+            # Depuração: Verifica os dados do formulário antes de salvar
+            print("Formulário válido, salvando dados...")
+            empresa = form.save()
+
+            # Depuração: Confirmação de que a empresa foi salva
+            print("Empresa salva com sucesso:", empresa)
+
             messages.success(request, 'Empresa adicionada com sucesso!')
             return redirect('lista_empresas')
+        else:
+            # Depuração: Exibe os erros do formulário
+            print("Erros no formulário:", form.errors)
     else:
         form = EmpresaForm()
+
     return render(request, 'adicionar_empresa.html', {'form': form})
 
 def editar_empresas(request, pk):
