@@ -1,21 +1,25 @@
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import EmpresaForm
 from app.models import Empresas, EmpresasServicosEmpresas
 
-
 @login_required
 def lista_empresas(request):
-    # Busca todas as empresas ativas e seus serviços associados
-    empresas = Empresas.objects.filter(status=1).prefetch_related(
-        'empresasservicosempresas_set__empresas_servico'
-    )
+    search_query = request.GET.get('searchbar', '').strip()
 
-    # Organiza as informações em um contexto
+    if search_query:
+        empresas = Empresas.objects.filter(status=1, nome_fantasia__icontains=search_query).prefetch_related(
+            'empresasservicosempresas_set__empresas_servico'
+        )
+    else:
+        empresas = Empresas.objects.filter(status=1).prefetch_related(
+            'empresasservicosempresas_set__empresas_servico'
+        )
+
     empresas_context = []
     for empresa in empresas:
-        # Lista de serviços associados à empresa
         servicos = empresa.empresasservicosempresas_set.all()
         nomes_servicos = ", ".join([s.empresas_servico.nome_tipos_empresa for s in servicos])
 
@@ -24,10 +28,15 @@ def lista_empresas(request):
             'servicos': nomes_servicos,
         })
 
+    # Verificação manual se a requisição é AJAX
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'empresas': empresas_context})
+
     context = {
         'empresas_context': empresas_context,
     }
     return render(request, 'lista_empresas.html', context)
+
 
 
 def adicionar_empresa(request):

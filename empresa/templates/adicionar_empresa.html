@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="{% url 'menu_srv' %}" style="display: flex; flex-direction: column; align-items: center;">
+                    <a class="nav-link text-center" href="{% url 'lista_empresas' %}" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
@@ -20,21 +20,72 @@
             </ul>
         </div>
     </div>
-		<br>
-	<br>
-	<br>
-	<br>
 </nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
 {% endblock %}
 
-    {% block content %}
-<br><br><br>
-    <h2>Adicionar Empresa</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Salvar</button>
-    </form>
+{% block content %}
+    <br>
+    <h2 style="text-align: center;">Adicionar Empresa</h2><br>
+
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <!-- Primeira coluna -->
+                <div class="col-md-6">
+                    <label><strong>Razão Social:</strong></label>
+                    <input type="text" name="razao_social" class="form-control">
+
+                    <label><strong>Nome Fantasia:</strong></label>
+                    <input type="text" name="nome_fantasia" class="form-control" required>
+
+                    <label><strong>CNPJ:</strong></label>
+                    <input type="text" name="cnpj" id="cnpj" class="form-control">
+
+                    <label><strong>Telefone:</strong></label>
+                    <input type="text" name="telefone" id="telefone" class="form-control">
+
+                    <label><strong>Celular:</strong></label>
+                    <input type="text" name="celular" id="celular" class="form-control">
+
+                    <label><strong>Email:</strong></label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+
+                <!-- Segunda coluna -->
+                <div class="col-md-6">
+                    <label><strong>Cep:</strong></label>
+                    <input type="text" name="cep" id="cep" class="form-control">
+
+                    <label><strong>Logradouro:</strong></label>
+                    <input type="text" name="logradouro" id="logradouro" class="form-control">
+
+                    <label><strong>Número:</strong></label>
+                    <input type="text" name="numero" class="form-control">
+
+                    <label><strong>Complemento:</strong></label>
+                    <input type="text" name="complemento" class="form-control">
+
+                    <label><strong>Bairro:</strong></label>
+                    <input type="text" name="bairro" id="bairro" class="form-control">
+
+                    <label><strong>Cidade:</strong></label>
+                    <input type="text" name="cidade" id="cidade" class="form-control">
+
+                    <label><strong>Estado (UF):</strong></label>
+                    <input type="text" name="uf" id="uf" class="form-control">
+                </div>
+            </div>
+			<div class="form-group">
+				<br>
+				<button type="submit" class="btn btn-primary">Cadastrar</button>
+			</div>
+        </form>
+    </div>
 
     <!-- Inclua jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -43,43 +94,32 @@
 
     <script>
         $(document).ready(function() {
-            // Aplica a máscara para os campos de telefone
-            $('#telefone1').mask('(00) 0 0000-0000');
-            $('#telefone2').mask('(00) 0 0000-0000');
+            // Aplica a máscara para CNPJ e telefones
+            $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
+            $('#cep').mask('00000-000');
+            $('#telefone').mask('(00) 0000-0000');
+            $('#celular').mask('(00) 0 0000-0000');
+
+            // Busca o endereço via API ViaCEP
+            $('#cep').on('blur', function() {
+                var cep = $(this).val().replace(/\D/g, '');
+                if (cep.length === 8) {
+                    $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, function(data) {
+                        if (!('erro' in data)) {
+                            $('#logradouro').val(data.logradouro);
+                            $('#bairro').val(data.bairro);
+                            $('#cidade').val(data.localidade);
+                            $('#uf').val(data.uf);
+                        } else {
+                            alert('CEP não encontrado!');
+                        }
+                    }).fail(function() {
+                        alert('Erro ao buscar o CEP!');
+                    });
+                } else {
+                    alert('CEP inválido!');
+                }
+            });
         });
-            // Código existente para máscara e CEP aqui...
-    $(document).ready(function(){
-        $('#id_cep').mask('00000-000'); // Máscara para CEP
-        $('#id_cnpj').mask('00.000.000/0000-00'); // Máscara para CNPJ
-        $('#id_telefone').mask('(00) 0 0000-0000'); // Máscara para telefone
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const cepField = document.getElementById('id_cep');
-
-        // Quando o campo CEP perder o foco, faz a requisição para a API ViaCEP
-        cepField.addEventListener('blur', function() {
-            const cep = cepField.value.replace(/\D/g, '');
-
-            if (cep.length === 8) { // Verifica se o CEP tem 8 dígitos
-                fetch(`https://viacep.com.br/ws/${cep}/json/`) // Corrigido: uso de crases para interpolação
-                .then(response => response.json())
-                .then(data => {
-                    if (!('erro' in data)) {
-                        document.getElementById('id_logradouro').value = data.logradouro;
-                        document.getElementById('id_bairro').value = data.bairro;
-                        document.getElementById('id_cidade').value = data.localidade;
-                        document.getElementById('id_uf').value = data.uf;
-                    } else {
-                        alert('CEP não encontrado.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao buscar o CEP:', error);
-                    alert('Erro ao buscar o CEP.');
-                });
-            }
-        });
-    });
     </script>
 {% endblock %}
