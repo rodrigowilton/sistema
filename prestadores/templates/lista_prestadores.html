@@ -21,15 +21,25 @@
         </div>
     </div>
 </nav>
+
 {% endblock %}
 
 {% block content %}
-<h2>Lista de Prestadores</h2>
-<a href="{% url 'adicionar_prestador' %}" class="btn btn-primary">Adicionar Prestador</a>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <h2 class="mb-0">Lista de Prestadores</h2>
+    <a href="{% url 'adicionar_prestador' %}" class="btn btn-link p-0" style="text-decoration: none;">
+        <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 20px; height: 20px; margin-left: 60px;">
+    </a>
+</div>
 
 <div class="form-group custom-form-group">
     <label for="searchbar"><b>Buscar condomínio:</b></label>
-    <input type="text" class="form-control" placeholder="Buscar condomínio..." id="searchbar" onkeyup="search()" name="searchbar">
+    <input type="text" class="form-control" placeholder="Buscar condomínio..." id="searchbar" onkeyup="search()" name="searchbar"><br>
 </div>
 
 <table class="table">
