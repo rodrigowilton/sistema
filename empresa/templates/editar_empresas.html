@@ -20,17 +20,123 @@
             </ul>
         </div>
     </div>
-		<br>
-	<br>
-	<br>
-	<br>
+    <br><br><br><br>
 </nav>
 {% endblock %}
+
 {% block content %}
-<h2>Editar Empresa</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Salvar Alterações</button>
-</form>
+<br><br><br>
+<div class="container">
+    <h2>Editar Empresa</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Preencher campos com os valores atuais da empresa -->
+        <div class="row">
+            <!-- Primeira coluna -->
+            <div class="col-md-6">
+                <label><strong>Razão Social:</strong></label>
+                <input type="text" name="razao_social" class="form-control" value="{{ empresa.razao_social }}">
+
+                <label><strong>Nome Fantasia:</strong></label>
+                <input type="text" name="nome_fantasia" class="form-control" value="{{ empresa.nome_fantasia }}" required>
+
+                <label><strong>CNPJ:</strong></label>
+                <input type="text" name="cnpj" id="cnpj" class="form-control" value="{{ empresa.cnpj }}">
+
+                <label><strong>Telefone:</strong></label>
+                <input type="text" name="telefone" id="telefone" class="form-control" value="{{ empresa.telefone }}">
+
+                <label><strong>Celular:</strong></label>
+                <input type="text" name="celular" id="celular" class="form-control" value="{{ empresa.celular }}">
+
+                <label><strong>Email:</strong></label>
+                <input type="email" name="email" class="form-control" value="{{ empresa.email }}">
+            </div>
+
+            <!-- Segunda coluna -->
+            <div class="col-md-6">
+                <label><strong>Cep:</strong></label>
+                <input type="text" name="cep" id="cep" class="form-control" value="{{ empresa.cep }}">
+
+                <label><strong>Logradouro:</strong></label>
+                <input type="text" name="logradouro" id="logradouro" class="form-control" value="{{ empresa.logradouro }}">
+
+                <label><strong>Número:</strong></label>
+                <input type="text" name="numero" class="form-control" value="{{ empresa.numero }}">
+
+                <label><strong>Complemento:</strong></label>
+                <input type="text" name="complemento" class="form-control" value="{{ empresa.complemento }}">
+
+                <label><strong>Bairro:</strong></label>
+                <input type="text" name="bairro" id="bairro" class="form-control" value="{{ empresa.bairro }}">
+
+                <label><strong>Cidade:</strong></label>
+                <input type="text" name="cidade" id="cidade" class="form-control" value="{{ empresa.cidade }}">
+
+                <label><strong>Estado (UF):</strong></label>
+                <input type="text" name="uf" id="uf" class="form-control" value="{{ empresa.uf }}">
+            </div>
+        </div>
+
+        <!-- Dropdown para selecionar tipo de empresa -->
+        <label><strong>Selecione o Tipo de Empresa:</strong></label>
+        <select name="tipo_empresa" id="tipo_empresa" class="form-control">
+            {% for empresa in empresas_servicos %}
+                <option value="{{ empresa.id }}" data-nome="{{ empresa.nome_tipos_empresa }}"
+                {% if empresa.id == empresa.tipo_empresa.id %} selected {% endif %}>
+                    {{ empresa.nome_tipos_empresa }}
+                </option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <!-- Campo oculto para status -->
+        <input type="hidden" name="status" value="1">
+
+        <div class="form-group">
+            <br>
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        </div>
+    </form>
+</div>
 {% endblock %}
+
+<!-- Inclua jQuery e a máscara de CNPJ, Telefone, e Celular -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+        $(document).ready(function() {
+            // Máscara para CNPJ e telefone
+            $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
+            $('#telefone').mask('(00) 0000-0000');
+            $('#celular').mask('(00) 0 0000-0000');
+
+            // Adiciona o item selecionado ao campo oculto e exibe no campo de texto
+            $('#tipo_empresa').change(function() {
+                var selectedOption = $(this).find(':selected');
+                var nomeEmpresa = selectedOption.data('nome');
+                var empresaId = selectedOption.val();
+
+                // Pega o valor atual dos itens selecionados
+                var selectedItems = $('#itens_selecionados_input').val();
+
+                // Se já houver itens selecionados, adiciona uma vírgula
+                if (selectedItems) {
+                    selectedItems += ',' + empresaId + ':' + nomeEmpresa;
+                } else {
+                    selectedItems = empresaId + ':' + nomeEmpresa;
+                }
+
+                // Atualiza o campo de input oculto com os itens selecionados
+                $('#itens_selecionados_input').val(selectedItems);
+
+                // Atualiza o campo de texto para mostrar os itens selecionados
+                var itensTexto = selectedItems.split(',').map(function(item) {
+                    return item.split(':')[1];  // Extrai o nome do tipo de empresa
+                }).join(', ');
+
+                // Exibe os itens no campo de texto
+                $('#itens_selecionados_texto').val(itensTexto);
+            });
+        });
+    </script>
