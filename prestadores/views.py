@@ -4,6 +4,7 @@ from django.contrib import messages
 from app.models import (EmpresasServicosEmpresas, EmpresasServicos, Empresas, Condominios,
                         PrestadoresAcessos, Funcionarios,CondominiosFuncionarios)
 from django.http import JsonResponse
+import logging
 
 
 def lista_prestadores(request):
@@ -20,66 +21,60 @@ def lista_prestadores(request):
     })
 
 
+logger = logging.getLogger(__name__)
+
+
 def adicionar_prestador(request):
-    """Adiciona um novo prestador."""
     if request.method == 'POST':
-        empresa_id = request.POST.get('empresa')
-        servico_id = request.POST.get('servico')
-        condominio_id = request.POST.get('condominio')
-
-        # Verifica se todos os campos obrigatórios foram preenchidos
-        if not empresa_id or not servico_id or not condominio_id:
-            messages.error(request, "Todos os campos devem ser preenchidos.")
-            return redirect('adicionar_prestador')
-
         try:
-            # Tenta obter os objetos correspondentes
-            empresa = get_object_or_404(Empresas, pk=empresa_id)
-            servico = get_object_or_404(EmpresasServicos, pk=servico_id)
+            condominio_id = request.POST.get('condominio')
+            servico_id = request.POST.get('servico')
+            empresa_id = request.POST.get('empresa')
+            funcionario_id = request.POST.get('funcionario')
+
+            if not (condominio_id and servico_id and empresa_id and funcionario_id):
+                raise ValueError("Todos os campos são obrigatórios!")
+
+            # Recuperando os objetos necessários
             condominio = get_object_or_404(Condominios, pk=condominio_id)
+            servico = get_object_or_404(EmpresasServicos, pk=servico_id)
+            empresa = get_object_or_404(Empresas, pk=empresa_id)
+            funcionario = get_object_or_404(Funcionarios, pk=funcionario_id)
 
-            # Imprime para depuração
-            print(f"Empresa: {empresa}, Serviço: {servico}, Condomínio: {condominio}")
-
-        except Exception as e:
-            # Caso ocorra algum erro ao buscar os dados
-            messages.error(request, f"Ocorreu um erro ao buscar os dados: {e}")
-            return redirect('adicionar_prestador')
-
-        try:
-            # Cria o prestador e tenta salvar
-            prestador = EmpresasServicosEmpresas(
+            # Selecionar o primeiro registro encontrado, sem validações adicionais
+            empresas_servicos_empresa = EmpresasServicosEmpresas.objects.filter(
                 empresa=empresa,
-                empresas_servico=servico,
-                status=1  # Ativo por padrão
-            )
-            prestador.save()
+                empresas_servico=servico
+            ).first()
 
-            # Imprime para depuração
-            print(f"Prestador {prestador} criado com sucesso!")
+            # Criar o registro de prestador
+            prestador_acesso = PrestadoresAcessos.objects.create(
+                condominio=condominio,
+                empresas_servicos_empresa=empresas_servicos_empresa,
+                funcionario=funcionario,
+                status=1  # Define o status padrão como ativo
+            )
 
             messages.success(request, "Prestador adicionado com sucesso!")
+            return redirect('lista_prestadores')
 
         except Exception as e:
-            # Caso ocorra algum erro ao salvar
-            messages.error(request, f"Ocorreu um erro ao salvar o prestador: {e}")
+            messages.error(request, f"Erro ao adicionar prestador: {e}")
             return redirect('adicionar_prestador')
 
-        # Imprime para depuração
-        print("Redirecionando para a lista de prestadores.")
-
-        return redirect('lista_prestadores')  # Redireciona para a lista de prestadores
-
-    # Preenche as opções de empresas, serviços e condomínios para o formulário
-    empresas = Empresas.objects.filter(status=1)
-    servicos = EmpresasServicos.objects.filter(status=1)
+    # Renderizando o formulário de adição
     condominios = Condominios.objects.filter(status=1)
+    servicos = EmpresasServicos.objects.filter(status=1)
+    empresas = Empresas.objects.filter(status=1)
+    funcionarios = Funcionarios.objects.filter(status=1)
 
     return render(request, 'adicionar_prestador.html', {
-        'empresas': empresas,
+        'condominios': condominios,
         'servicos': servicos,
-        'condominios': condominios
+        'empresas': empresas,
+        'funcionarios': funcionarios,
     })
+
 
 def carregar_empresas_por_servico(request):
     """Carrega as empresas relacionadas a um serviço selecionado."""
