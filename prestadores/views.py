@@ -20,7 +20,6 @@ def lista_prestadores(request):
     })
 
 
-
 def adicionar_prestador(request):
     """Adiciona um novo prestador."""
     if request.method == 'POST':
@@ -28,25 +27,59 @@ def adicionar_prestador(request):
         servico_id = request.POST.get('servico')
         condominio_id = request.POST.get('condominio')
 
-        empresa = get_object_or_404(Empresas, pk=empresa_id)
-        servico = get_object_or_404(EmpresasServicos, pk=servico_id)
-        condominio = get_object_or_404(Condominios, pk=condominio_id)
+        # Verifica se todos os campos obrigatórios foram preenchidos
+        if not empresa_id or not servico_id or not condominio_id:
+            messages.error(request, "Todos os campos devem ser preenchidos.")
+            return redirect('adicionar_prestador')
 
-        prestador = EmpresasServicosEmpresas(
-            empresa=empresa,
-            empresas_servico=servico,
-            status=1  # Ativo por padrão
-        )
-        prestador.save()
-        messages.success(request, "Prestador adicionado com sucesso!")
-        return redirect('lista_prestadores')
+        try:
+            # Tenta obter os objetos correspondentes
+            empresa = get_object_or_404(Empresas, pk=empresa_id)
+            servico = get_object_or_404(EmpresasServicos, pk=servico_id)
+            condominio = get_object_or_404(Condominios, pk=condominio_id)
 
+            # Imprime para depuração
+            print(f"Empresa: {empresa}, Serviço: {servico}, Condomínio: {condominio}")
+
+        except Exception as e:
+            # Caso ocorra algum erro ao buscar os dados
+            messages.error(request, f"Ocorreu um erro ao buscar os dados: {e}")
+            return redirect('adicionar_prestador')
+
+        try:
+            # Cria o prestador e tenta salvar
+            prestador = EmpresasServicosEmpresas(
+                empresa=empresa,
+                empresas_servico=servico,
+                status=1  # Ativo por padrão
+            )
+            prestador.save()
+
+            # Imprime para depuração
+            print(f"Prestador {prestador} criado com sucesso!")
+
+            messages.success(request, "Prestador adicionado com sucesso!")
+
+        except Exception as e:
+            # Caso ocorra algum erro ao salvar
+            messages.error(request, f"Ocorreu um erro ao salvar o prestador: {e}")
+            return redirect('adicionar_prestador')
+
+        # Imprime para depuração
+        print("Redirecionando para a lista de prestadores.")
+
+        return redirect('lista_prestadores')  # Redireciona para a lista de prestadores
+
+    # Preenche as opções de empresas, serviços e condomínios para o formulário
     empresas = Empresas.objects.filter(status=1)
     servicos = EmpresasServicos.objects.filter(status=1)
     condominios = Condominios.objects.filter(status=1)
-    return render(request, 'adicionar_prestador.html',
-                  {'empresas': empresas, 'servicos': servicos, 'condominios': condominios})
 
+    return render(request, 'adicionar_prestador.html', {
+        'empresas': empresas,
+        'servicos': servicos,
+        'condominios': condominios
+    })
 
 def carregar_empresas_por_servico(request):
     """Carrega as empresas relacionadas a um serviço selecionado."""

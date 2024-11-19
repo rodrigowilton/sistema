@@ -26,6 +26,12 @@
 {% block content %}
 <h2>Lista de Prestadores</h2>
 <a href="{% url 'adicionar_prestador' %}" class="btn btn-primary">Adicionar Prestador</a>
+
+<div class="form-group custom-form-group">
+    <label for="searchbar"><b>Buscar condomínio:</b></label>
+    <input type="text" class="form-control" placeholder="Buscar condomínio..." id="searchbar" onkeyup="search()" name="searchbar">
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -46,7 +52,7 @@
             <td>{{ prestador.empresas_servicos_empresa.empresa.nome_fantasia }}</td>
 
             <!-- Serviço -->
-            <td>{{ prestador.empresas_servicos_empresa.empresas_servico.nome_tipos_empresa }}</td> <!-- Nome do serviço -->
+            <td>{{ prestador.empresas_servicos_empresa.empresas_servico.nome_tipos_empresa }}</td>
 
             <!-- Funcionário -->
             <td>
@@ -69,4 +75,21 @@
         {% endfor %}
     </tbody>
 </table>
+
+<script>
+    function search() {
+        let input = document.getElementById('searchbar').value.toLowerCase();
+        let rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            let condominioNome = row.querySelector('td:nth-child(1)').textContent.toLowerCase();  // Modificado para buscar na primeira coluna
+            if (condominioNome.includes(input)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+</script>
+
 {% endblock %}
