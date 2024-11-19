@@ -74,8 +74,8 @@
             </td>
 
             <td>
-                <a href="{% url 'editar_prestador' prestador.id %}" class="btn btn-warning btn-sm">Editar</a>
-                <a href="{% url 'deletar_prestador' prestador.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                <a href="{% url 'editar_prestador' prestador.id %}?condominio_id={{ prestador.condominio.id }}">
+                    <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px;">
             </td>
         </tr>
         {% empty %}

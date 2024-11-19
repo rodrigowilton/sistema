@@ -98,25 +98,59 @@ def carregar_funcionarios_por_empresa(request):
 
 def editar_prestador(request, pk):
     """Edita os dados de um prestador."""
-    prestador = get_object_or_404(EmpresasServicosEmpresas, pk=pk)
+    prestador = get_object_or_404(PrestadoresAcessos, pk=pk)
 
     if request.method == 'POST':
-        empresa_id = request.POST.get('empresa')
-        servico_id = request.POST.get('servico')
-        condominio_id = request.POST.get('condominio')
+        try:
+            # Recuperando os dados do formulário
+            condominio_id = request.POST.get('condominio')
+            empresa_id = request.POST.get('empresa')
+            servico_id = request.POST.get('servico')
+            funcionario_id = request.POST.get('funcionario')
 
-        prestador.empresa = get_object_or_404(Empresas, pk=empresa_id)
-        prestador.empresas_servico = get_object_or_404(EmpresasServicos, pk=servico_id)
-        prestador.save()
+            # Validando se todos os campos foram preenchidos
+            if not (condominio_id and empresa_id and servico_id and funcionario_id):
+                raise ValueError("Todos os campos são obrigatórios!")
 
-        messages.success(request, "Prestador atualizado com sucesso!")
-        return redirect('lista_prestadores')
+            # Atualizando os relacionamentos
+            prestador.condominio = get_object_or_404(Condominios, pk=condominio_id)
 
+            # Busca a empresa vinculada ao serviço
+            empresas_servicos_empresa = EmpresasServicosEmpresas.objects.filter(
+                empresa_id=empresa_id,
+                empresas_servico_id=servico_id
+            ).first()
+
+            if not empresas_servicos_empresa:
+                raise ValueError("Não foi possível encontrar a relação entre empresa e serviço selecionados!")
+
+            prestador.empresas_servicos_empresa = empresas_servicos_empresa
+            prestador.funcionario = get_object_or_404(Funcionarios, pk=funcionario_id)
+
+            # Salvando as alterações no prestador
+            prestador.save()
+
+            messages.success(request, "Prestador atualizado com sucesso!")
+            return redirect('lista_prestadores')
+
+        except Exception as e:
+            messages.error(request, f"Erro ao atualizar prestador: {e}")
+            return redirect('editar_prestador', pk=pk)
+
+    # Carregando dados para o formulário de edição
+    condominios = Condominios.objects.filter(status=1)
     empresas = Empresas.objects.filter(status=1)
     servicos = EmpresasServicos.objects.filter(status=1)
-    condominios = Condominios.objects.filter(status=1)
-    return render(request, 'editar_prestador.html',
-                  {'prestador': prestador, 'empresas': empresas, 'servicos': servicos, 'condominios': condominios})
+    funcionarios = Funcionarios.objects.filter(status=1)
+
+    # Passando os dados de prestador para o template
+    return render(request, 'editar_prestador.html', {
+        'prestador': prestador,
+        'condominios': condominios,
+        'empresas': empresas,
+        'servicos': servicos,
+        'funcionarios': funcionarios,
+    })
 
 
 def deletar_prestador(request, pk):

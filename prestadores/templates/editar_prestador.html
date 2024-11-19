@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="{% url 'lista_servicoempresa' %}" style="display: flex; flex-direction: column; align-items: center;">
+                    <a class="nav-link text-center" href="{% url 'lista_prestadores' %}" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
@@ -22,12 +22,102 @@
     </div>
 </nav>
 {% endblock %}
+
 {% block content %}
-<h2>Editar Prestador</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Salvar</button>
-    <a href="{% url 'lista_prestadores' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+<br><br><br>
+<h2 style="text-align: center;">Editar Prestador</h2>
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="condominio">Condomínio</label>
+            <select name="condominio" id="condominio" class="form-control">
+                {% for condominio in condominios %}
+                    <option value="{{ condominio.id }}" {% if prestador.condominio.id == condominio.id %}selected{% endif %}>
+                        {{ condominio.nome_condominio }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="servico">Serviço</label>
+            <select name="servico" id="servico" class="form-control">
+                {% for servico in servicos %}
+                    <option value="{{ servico.id }}" {% if prestador.empresas_servicos_empresa.empresas_servico.id == servico.id %}selected{% endif %}>
+                        {{ servico.nome_tipos_empresa }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="empresa">Empresa</label>
+            <select name="empresa" id="empresa" class="form-control">
+                <option value="">Selecione um serviço primeiro</option>
+                {% if prestador.empresas_servicos_empresa %}
+                    <option value="{{ prestador.empresas_servicos_empresa.empresa.id }}" selected>
+                        {{ prestador.empresas_servicos_empresa.empresa.nome_fantasia }}
+                    </option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="funcionario">Funcionário</label>
+            <select name="funcionario" id="funcionario" class="form-control">
+                <option value="">Selecione uma empresa primeiro</option>
+                {% if prestador.funcionario %}
+                    <option value="{{ prestador.funcionario.id }}" selected>
+                        {{ prestador.funcionario.nome_funcionario }}
+                    </option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <br>
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Carregar empresas quando o serviço for selecionado
+    $('#servico').change(function() {
+        var servico_id = $(this).val();
+        if (servico_id) {
+            $.get("{% url 'carregar_empresas_por_servico' %}", {servico_id: servico_id}, function(data) {
+                $('#empresa').empty();
+                $('#empresa').append('<option value="">Selecione uma empresa</option>');
+                $.each(data.empresas, function(i, empresa) {
+                    $('#empresa').append('<option value="' + empresa.id + '">' + empresa.nome_fantasia + '</option>');
+                });
+            });
+        } else {
+            $('#empresa').empty();
+            $('#empresa').append('<option value="">Selecione um serviço primeiro</option>');
+        }
+    });
+
+    // Carregar funcionários quando a empresa for selecionada
+    $('#empresa').change(function() {
+        var empresa_id = $(this).val();
+        if (empresa_id) {
+            $.get("{% url 'carregar_funcionarios_por_empresa' %}", {empresa_id: empresa_id}, function(data) {
+                $('#funcionario').empty();
+                $('#funcionario').append('<option value="">Selecione um funcionário</option>');
+                $.each(data.funcionarios, function(i, funcionario) {
+                    $('#funcionario').append('<option value="' + funcionario.id + '">' + funcionario.nome_funcionario + '</option>');
+                });
+            });
+        } else {
+            $('#funcionario').empty();
+            $('#funcionario').append('<option value="">Selecione uma empresa primeiro</option>');
+        }
+    });
+});
+</script>
 {% endblock %}
