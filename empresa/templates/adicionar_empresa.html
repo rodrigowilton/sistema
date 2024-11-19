@@ -22,9 +22,7 @@
     </div>
 </nav>
 <div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
-<br>
-<br>
-<br>
+<br><br><br>
 {% endblock %}
 
 {% block content %}
@@ -81,6 +79,22 @@
                 </div>
             </div>
 
+            <!-- Dropdown para selecionar tipo de empresa -->
+            <label><strong>Selecione o Tipo de Empresa:</strong></label>
+            <select name="tipo_empresa" id="tipo_empresa" class="form-control">
+                {% for empresa in empresas_servicos %}
+                    <option value="{{ empresa.id }}" data-nome="{{ empresa.nome_tipos_empresa }}" class="empresa-option">{{ empresa.nome_tipos_empresa }}</option>
+                {% endfor %}
+            </select>
+            <br>
+
+            <!-- Campo de texto para exibir os itens selecionados -->
+            <label><strong>Itens Selecionados:</strong></label>
+            <input type="text" id="itens_selecionados_texto" class="form-control" readonly placeholder="Itens selecionados aparecerão aqui">
+
+            <!-- Input oculto para armazenar os itens selecionados -->
+            <input type="hidden" name="itens_selecionados" id="itens_selecionados_input">
+
             <!-- Campo oculto para status -->
             <input type="hidden" name="status" value="1">
 
@@ -93,36 +107,39 @@
 
     <!-- Inclua jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Inclua o jQuery Mask Plugin -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
     <script>
         $(document).ready(function() {
-            // Aplica a máscara para CNPJ e telefones
+            // Máscara para CNPJ e telefone
             $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
-            $('#cep').mask('00000-000');
             $('#telefone').mask('(00) 0000-0000');
             $('#celular').mask('(00) 0 0000-0000');
 
-            // Busca o endereço via API ViaCEP
-            $('#cep').on('blur', function() {
-                var cep = $(this).val().replace(/\D/g, '');
-                if (cep.length === 8) {
-                    $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, function(data) {
-                        if (!('erro' in data)) {
-                            $('#logradouro').val(data.logradouro);
-                            $('#bairro').val(data.bairro);
-                            $('#cidade').val(data.localidade);
-                            $('#uf').val(data.uf);
-                        } else {
-                            alert('CEP não encontrado!');
-                        }
-                    }).fail(function() {
-                        alert('Erro ao buscar o CEP!');
-                    });
+            // Adiciona o item selecionado ao campo oculto e exibe no campo de texto
+            $('#tipo_empresa').change(function() {
+                var selectedOption = $(this).find(':selected');
+                var nomeEmpresa = selectedOption.data('nome');
+                var empresaId = selectedOption.val();
+
+                // Pega o valor atual dos itens selecionados
+                var selectedItems = $('#itens_selecionados_input').val();
+
+                // Se já houver itens selecionados, adiciona uma vírgula
+                if (selectedItems) {
+                    selectedItems += ',' + empresaId + ':' + nomeEmpresa;
                 } else {
-                    alert('CEP inválido!');
+                    selectedItems = empresaId + ':' + nomeEmpresa;
                 }
+
+                // Atualiza o campo de input oculto com os itens selecionados
+                $('#itens_selecionados_input').val(selectedItems);
+
+                // Atualiza o campo de texto para mostrar os itens selecionados
+                var itensTexto = selectedItems.split(',').map(function(item) {
+                    return item.split(':')[1];  // Extrai o nome do tipo de empresa
+                }).join(', ');
+
+                // Exibe os itens no campo de texto
+                $('#itens_selecionados_texto').val(itensTexto);
             });
         });
     </script>

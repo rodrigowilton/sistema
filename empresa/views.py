@@ -3,7 +3,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import EmpresaForm
-from app.models import Empresas, EmpresasServicosEmpresas
+from app.models import Empresas, EmpresasServicosEmpresas, EmpresasServicos
+
 
 @login_required
 def lista_empresas(request):
@@ -39,6 +40,8 @@ def lista_empresas(request):
 
 
 def adicionar_empresa(request):
+    empresas_servicos = EmpresasServicos.objects.filter(status=1)
+
     if request.method == 'POST':
         form = EmpresaForm(request.POST)
 
@@ -61,7 +64,7 @@ def adicionar_empresa(request):
     else:
         form = EmpresaForm()
 
-    return render(request, 'adicionar_empresa.html', {'form': form})
+    return render(request, 'adicionar_empresa.html', {'form': form, 'empresas_servicos': empresas_servicos})
 
 def editar_empresas(request, pk):
     empresa = get_object_or_404(Empresas, pk=pk)
