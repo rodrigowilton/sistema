@@ -3,6 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from app.models import (EmpresasServicosEmpresas, EmpresasServicos, Empresas, Condominios,
                         PrestadoresAcessos, Funcionarios,CondominiosFuncionarios)
+from django.http import JsonResponse
+
 
 def lista_prestadores(request):
     # Certificando-se de que as relações estão sendo acessadas corretamente.
@@ -44,6 +46,26 @@ def adicionar_prestador(request):
     condominios = Condominios.objects.filter(status=1)
     return render(request, 'adicionar_prestador.html',
                   {'empresas': empresas, 'servicos': servicos, 'condominios': condominios})
+
+
+def carregar_empresas_por_servico(request):
+    """Carrega as empresas relacionadas a um serviço selecionado."""
+    servico_id = request.GET.get('servico_id')
+
+    # Filtrando as empresas relacionadas ao serviço selecionado através da tabela intermediária
+    empresas = Empresas.objects.filter(empresasservicosempresas__empresas_servico__id=servico_id, status=1)
+
+    # Criando a lista de empresas para retornar no JsonResponse
+    empresa_list = [{'id': empresa.id, 'nome_fantasia': empresa.nome_fantasia} for empresa in empresas]
+
+    return JsonResponse({'empresas': empresa_list})
+
+def carregar_funcionarios_por_empresa(request):
+    """Carrega os funcionários relacionados a uma empresa selecionada."""
+    empresa_id = request.GET.get('empresa_id')
+    funcionarios = Funcionarios.objects.filter(empresa_id=empresa_id, status=1)
+    funcionario_list = [{'id': funcionario.id, 'nome_funcionario': funcionario.nome_funcionario} for funcionario in funcionarios]
+    return JsonResponse({'funcionarios': funcionario_list})
 
 
 def editar_prestador(request, pk):
