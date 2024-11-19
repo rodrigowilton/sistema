@@ -1,0 +1,72 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_srv' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h2>Lista de Prestadores</h2>
+<a href="{% url 'adicionar_prestador' %}" class="btn btn-primary">Adicionar Prestador</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Condomínio</th>
+            <th>Empresa</th>
+            <th>Serviço</th>
+            <th>Funcionário</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for prestador in prestadores %}
+        <tr>
+            <!-- Condomínio -->
+            <td>{{ prestador.condominio.nome_condominio }}</td>
+
+            <!-- Empresa -->
+            <td>{{ prestador.empresas_servicos_empresa.empresa.nome_fantasia }}</td>
+
+            <!-- Serviço -->
+            <td>{{ prestador.empresas_servicos_empresa.empresas_servico.nome_tipos_empresa }}</td> <!-- Nome do serviço -->
+
+            <!-- Funcionário -->
+            <td>
+                {% if prestador.funcionario %}
+                    {{ prestador.funcionario.nome_funcionario }}
+                {% else %}
+                    Funcionário não atribuído
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'editar_prestador' prestador.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'deletar_prestador' prestador.id %}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">Nenhum prestador encontrado</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

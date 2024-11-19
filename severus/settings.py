@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'sindico',
     'funcionario',
     'empresa',
+    'prestadores',
     'servicoempresa',
 
 ]
