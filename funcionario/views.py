@@ -11,11 +11,16 @@ from django.utils.timezone import now
 @login_required
 def lista_funcionarios(request):
     try:
-        funcionarios = CondominiosFuncionarios.objects.select_related('tipos_condominios_funcionario', 'condominio').all()
+        # Filtra apenas os funcionários com status = 1
+        funcionarios = CondominiosFuncionarios.objects.filter(status=1).select_related(
+            'tipos_condominios_funcionario', 'condominio'
+        )
         return render(request, 'lista_funcionarios.html', {'funcionarios': funcionarios})
     except Exception as e:
+        # Mensagem de erro em caso de falha
         messages.error(request, f"Ocorreu um erro ao carregar a lista de funcionários: {str(e)}")
         return redirect('home')  # Redireciona para uma página de fallback
+
 
 @login_required
 def verificar_condominio_existe(request):
