@@ -1,0 +1,120 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% block content %}
+    <h2>Adicionar Controle de Acesso</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <!-- Colaborador -->
+        <label for="colaborador">Colaborador</label>
+        <select id="colaborador" name="colaborador">
+            <option value="">Selecione um Colaborador</option>
+            {% for colaborador in colaboradores %}
+                <option value="{{ colaborador.id }}">{{ colaborador.nome_funcionario }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Tipos de Controle de Acesso -->
+        <label for="tipos_controles_acesso">Tipos Controles Acesso</label>
+        <select id="tipos_controles_acesso" name="tipos_controles_acesso">
+            <option value="">Selecione...</option>
+            {% for tipo in tipos_controles_acesso %}
+                <option value="{{ tipo.id }}">{{ tipo.nome_tipo_controle_acesso }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Perfil do Solicitante -->
+        <label for="perfil_solicitante">Perfil Do Solicitante</label>
+        <select id="perfil_solicitante" name="perfil_solicitante">
+            <option value="">Selecione um perfil</option>
+            <option value="morador">Morador</option>
+            <option value="sindico">Síndico</option>
+            <option value="funcionario_condominio">Funcionário do Condomínio</option>
+            <option value="outros">Outros</option>
+        </select>
+
+        <!-- Condomínio -->
+        <label for="condominio">Condomínio</label>
+        <select id="condominio" name="condominio">
+            <option value="">Selecione um Condomínio</option>
+            {% for condominio in condominios %}
+                <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Apartamento e Pessoas Dinâmicos -->
+        <div id="apartamento_pessoas_fields"></div>
+
+        <!-- Execução -->
+        <label for="execucao">Execução</label>
+        <select id="execucao" name="execucao">
+            <option value="1">Remoto</option>
+            <option value="2">Presencial</option>
+        </select>
+
+        <!-- Pedido -->
+        <label for="pedido">Pedido</label>
+        <select id="pedido" name="pedido">
+            <option value="1">A receber por PagSeguro</option>
+            <option value="2">A receber por Transferência</option>
+            <option value="3">Pago em Dinheiro</option>
+        </select>
+
+        <!-- Quantidade -->
+        <label for="quantidade">Quantidade</label>
+        <input type="number" id="quantidade" name="quantidade" min="1" />
+
+        <!-- Descrição -->
+        <label for="descricao">Descrição para o Cliente</label>
+        <textarea id="descricao" name="descricao"></textarea>
+
+        <!-- Observação Interna -->
+        <label for="observacao_interna">Observação Interna</label>
+        <textarea id="observacao_interna" name="observacao_interna"></textarea>
+
+        <button type="submit">Salvar Controle de Acesso</button>
+    </form>
+
+    <script>
+        document.getElementById("condominio").addEventListener("change", function() {
+            var condominioId = this.value;
+            var perfilSolicitante = document.getElementById("perfil_solicitante").value;
+
+            if (perfilSolicitante === "morador" || perfilSolicitante === "sindico") {
+                fetch(`/carregar_apartamentos/${condominioId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var apartamentoSelect = "<label for='apartamento'>Apartamento</label><select id='apartamento' name='apartamento'>";
+                        apartamentoSelect += "<option value=''>Selecione um Apartamento</option>";
+                        data.apartamentos.forEach(function(apartamento) {
+                            apartamentoSelect += `<option value='${apartamento.id}'>${apartamento.nome}</option>`;
+                        });
+                        apartamentoSelect += "</select>";
+
+                        var pessoasSelect = "<label for='pessoa'>Pessoa</label><select id='pessoa' name='pessoa'>";
+                        pessoasSelect += "<option value=''>Selecione uma Pessoa</option>";
+                        data.pessoas.forEach(function(pessoa) {
+                            pessoasSelect += `<option value='${pessoa.id}'>${pessoa.nome}</option>`;
+                        });
+                        pessoasSelect += "</select>";
+
+                        document.getElementById("apartamento_pessoas_fields").innerHTML = apartamentoSelect + pessoasSelect;
+                    });
+            } else if (perfilSolicitante === "funcionario_condominio") {
+                fetch(`/carregar_funcionarios/${condominioId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var funcionarioSelect = "<label for='funcionario_condominio'>Funcionário</label><select id='funcionario_condominio' name='funcionario_condominio'>";
+                        funcionarioSelect += "<option value=''>Selecione um Funcionário</option>";
+                        data.funcionarios.forEach(function(funcionario) {
+                            funcionarioSelect += `<option value='${funcionario.id}'>${funcionario.nome}</option>`;
+                        });
+                        funcionarioSelect += "</select>";
+
+                        document.getElementById("apartamento_pessoas_fields").innerHTML = funcionarioSelect;
+                    });
+            }
+        });
+    </script>
+{% endblock %}
