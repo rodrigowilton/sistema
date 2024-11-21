@@ -27,7 +27,12 @@
 {% block content %}
 <br><br><br><br><br>
 
-<h2>Buscar Controles de Acessos</h2>
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <h2 class="mb-0">Controles de Acessos</h2>
+    <a href="{% url 'adicionar_controleacesso' %}" class="btn btn-link p-0" style="text-decoration: none;">
+        <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 20px; height: 20px; margin-left: 60px;">
+    </a>
+</div>
 <form method="get">
     <div class="row">
         <div class="col-md-3">
@@ -84,22 +89,22 @@
             <label for="data_fim">Data Fim</label>
             <input type="date" name="data_fim" id="data_fim" class="form-control">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3"><br>
             <label>&nbsp;</label>
             <button type="submit" class="btn btn-primary btn-block">Buscar</button>
         </div>
     </div>
+    <br>
 </form>
-
-<h3 class="mt-4">Controles de Acessos</h3>
-<p>Controles de Acessos de {{ data_inicio|default_if_none:"-" }} até {{ data_fim|default_if_none:"-" }}</p>
-
+<div class="container">
 {% if pendencias_existentes %}
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Atenção!</strong> Existem pendências a serem tratadas. Por favor, resolva-as o mais rápido possível.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 {% endif %}
+</div>
+
 
 <table class="table table-bordered table-striped">
     <thead>
