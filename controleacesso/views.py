@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from app.models import ControlesAcessos, TatticaFuncionarios, TiposControlesAcessos, Condominios, Apartamentos, Pessoas, Sindicos
+from app.models import (ControlesAcessos, TatticaFuncionarios, TiposControlesAcessos, Condominios,
+                        Apartamentos, Pessoas, Sindicos)
 from django.http import JsonResponse
 from controleacesso.forms import ControleAcessoForm
 

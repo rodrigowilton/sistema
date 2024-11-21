@@ -1,5 +1,7 @@
 {% extends 'base_login.html' %}
 {% load static %}
+{% load custom_tags %}
+
 
 {% block menu %}
 <nav class="navbar navbar-expand-lg">
@@ -49,7 +51,7 @@
             <select name="tipos" id="tipos" class="form-control">
                 <option value="">Todos</option>
                 {% for tipo in tipos_controles %}
-                <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                <option value="{{ tipo.id }}">{{ tipo.nome_tipos_controles_acesso }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -133,11 +135,26 @@
             <td>{{ controle.tipos_controles_acesso.nome_tipos_controles_acesso }}</td>
             <td>{{ controle.quantidade }}</td>
             <td>{{ controle.solicitante }}</td>
-            <td>{{ controle.realizador.nome }}</td>
+            <td>Tattica</td>
             <td>{{ controle.descricao }}</td>
             <td>{{ controle.pedido }}</td>
-            <td>{{ controle.valor }}</td>
-            <td>{{ controle.data_prazo|date:"d/m/Y" }}</td>
+            <td>
+                {% if controle.valor == None %}
+                    0,00
+                {% else %}
+                    {{controle.valor}}
+                {% endif %}
+            </td>
+            <td>
+                {% if controle.data_prazo %}
+                    {% if controle|is_vencido %}
+                        <span class="vencido">Vencido</span>
+                    {% else %}
+                        {{ controle.data_prazo|date:"d/m/Y" }}
+                    {% endif %}
+                {% endif %}
+            </td>
+
             <td>
                 {% if controle.status == 1 %}
                     <span class="status-pendente">Pendente</span>
@@ -145,36 +162,57 @@
                     <span class="status-entregar">A Entregar</span>
                 {% elif controle.status == 3 %}
                     <span class="status-resolvido">Resolvido</span>
+                {% else %}
+                    <span class="status-nao-determinado">Indeterminado</span> <!-- Novo caso para status não definido -->
                 {% endif %}
             </td>
+
+
         </tr>
         {% endfor %}
     </tbody>
 </table>
 <style>
-    .status-pendente {
-        background-color: red;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
+.vencido {
+    color: white;
+    background-color: #ffb884;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+}
 
-    .status-entregar {
-        background-color: green;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
+.status-pendente {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
 
-    .status-resolvido {
-        background-color: blue;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
+.status-entregar {
+    background-color: green;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-resolvido {
+    background-color: blue;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-nao-determinado {
+    background-color: gray;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
 </style>
 
 {% endblock %}
