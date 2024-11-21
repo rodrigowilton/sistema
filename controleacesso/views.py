@@ -42,6 +42,8 @@ def carregar_sindicos(request, condominio_id):
     sindicos_data = [{'id': s.id, 'nome': s.nome_sindico} for s in sindicos]
     return JsonResponse({'sindicos': sindicos_data})
 
+
+
 @login_required
 def lista_controleacesso(request):
     # Obtenha os filtros enviados pelo usuário
@@ -49,13 +51,14 @@ def lista_controleacesso(request):
     tipos = request.GET.get('tipos')
     execucao = request.GET.get('execucao')
     pedido = request.GET.get('pedido')
-    status = request.GET.get('status')
+    status = request.GET.get('status')  # O campo status será crucial aqui
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
 
     # Filtra os dados com base nos filtros selecionados
     controles = ControlesAcessos.objects.all()
 
+    # Aplica os filtros baseados nos parâmetros recebidos
     if condominio:
         controles = controles.filter(condominio_id=condominio)
     if tipos:
@@ -64,15 +67,19 @@ def lista_controleacesso(request):
         controles = controles.filter(execucao=execucao)
     if pedido:
         controles = controles.filter(pedido=pedido)
-    if status:
-        controles = controles.filter(status=status)
     if data_inicio:
         controles = controles.filter(created__gte=data_inicio)
     if data_fim:
         controles = controles.filter(created__lte=data_fim)
 
-    # Adiciona o filtro para mostrar apenas os pendentes
-    controles = controles.filter(status=1)  # 1 - Pendente
+    # Filtra status; padrão será mostrar apenas "pendentes" (status=1) caso não seja selecionado um status
+    if status:
+        controles = controles.filter(status=status)
+    else:
+        controles = controles.filter(status=1)  # Apenas pendentes por padrão
+
+    # Verifica se há pendências
+    pendencias_existentes = controles.filter(status=1).exists()
 
     # Para dropdowns de seleção
     condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
@@ -80,8 +87,11 @@ def lista_controleacesso(request):
 
     # Renderiza os dados no template
     context = {
+        'pendencias_existentes': pendencias_existentes,
         'controles': controles,
         'condominios': condominios,
         'tipos_controles': tipos_controles,
     }
     return render(request, 'lista_controleacesso.html', context)
+
+

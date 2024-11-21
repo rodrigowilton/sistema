@@ -20,137 +20,156 @@
             </ul>
         </div>
     </div>
-		<br>
-	<br>
-	<br>
-	<br>
+    <br><br><br><br>
 </nav>
 {% endblock %}
+
 {% block content %}
-<br>
-<br>
-<br>
-<br>
-<br>
-    <h2>Buscar Controles de Acessos</h2>
-    <form method="get">
-        <div class="row">
-            <div class="col-md-3">
-                <label for="condominio">Condomínio</label>
-                <select name="condominio" id="condominio" class="form-control">
-                    <option value="">Todos</option>
-                    {% for condominio in condominios %}
-                    <option value="{{ condominio.id }}">{{ condominio.nome }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="tipos">Tipos</label>
-                <select name="tipos" id="tipos" class="form-control">
-                    <option value="">Todos</option>
-                    {% for tipo in tipos_controles %}
-                    <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="execucao">Execução</label>
-                <select name="execucao" id="execucao" class="form-control">
-                    <option value="">Todos</option>
-                    <option value="1">Presencial</option>
-                    <option value="2">Remoto</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="pedido">Pedido</label>
-                <select name="pedido" id="pedido" class="form-control">
-                    <option value="">Selecione...</option>
-                    <option value="1">Gratuito</option>
-                    <option value="2">Aguardando Pagamento</option>
-                    <option value="3">Pago em Dinheiro</option>
-                    <!-- Adicione os demais -->
-                </select>
-            </div>
+<br><br><br><br><br>
+
+<h2>Buscar Controles de Acessos</h2>
+<form method="get">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="condominio">Condomínio</label>
+            <select name="condominio" id="condominio" class="form-control">
+                <option value="">Todos</option>
+                {% for condominio in condominios %}
+                <option value="{{ condominio.id }}">{{ condominio.nome }}</option>
+                {% endfor %}
+            </select>
         </div>
-        <div class="row mt-3">
-            <div class="col-md-3">
-                <label for="status">Status</label>
-                <select name="status" id="status" class="form-control">
-                    <option value="">Todos</option>
-                    <option value="1">Pendente</option>
-                    <option value="2">A Entregar</option>
-                    <option value="3">Resolvido</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="data_inicio">Data Início</label>
-                <input type="date" name="data_inicio" id="data_inicio" class="form-control">
-            </div>
-            <div class="col-md-3">
-                <label for="data_fim">Data Fim</label>
-                <input type="date" name="data_fim" id="data_fim" class="form-control">
-            </div>
-            <div class="col-md-3">
-                <label>&nbsp;</label>
-                <button type="submit" class="btn btn-primary btn-block">Buscar</button>
-            </div>
+        <div class="col-md-3">
+            <label for="tipos">Tipos</label>
+            <select name="tipos" id="tipos" class="form-control">
+                <option value="">Todos</option>
+                {% for tipo in tipos_controles %}
+                <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                {% endfor %}
+            </select>
         </div>
-    </form>
-    <h3 class="mt-4">Controles de Acessos</h3>
-    <p>Controles de Acessos de {{ data_inicio|default_if_none:"-" }} até {{ data_fim|default_if_none:"-" }}</p>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>Cidade</th>
-                <th>Condomínio</th>
-                <th>Tipo</th>
-                <th>QTD</th>
-                <th>Solicitante</th>
-                <th>Executor</th>
-                <th>Observação Interna</th>
-                <th>Pedido</th>
-                <th>Valor</th>
-                <th>Validade</th>
-                <th>Status</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for controle in controles %}
-            <tr>
-                <td>{{ controle.created|date:"d/m/Y H:i:s" }}</td>
-                <td>{{ controle.condominio.cidade }}</td>
-                <td>{{ controle.condominio.nome }}</td>
-                <td>{{ controle.tipos_controles_acesso.nome }}</td>
-                <td>{{ controle.quantidade }}</td>
-                <td>{{ controle.solicitante }}</td>
-                <td>{{ controle.realizador.nome }}</td>
-                <td>{{ controle.descricao }}</td>
-                <td>{{ controle.pedido }}</td>
-                <td>{{ controle.valor }}</td>
-                <td>{{ controle.data_prazo|date:"d/m/Y" }}</td>
-                <td>
-                    {% if controle.status == 1 %}
-                        Pendente
-                    {% elif controle.status == 2 %}
-                        A Entregar
-                    {% elif controle.status == 3 %}
-                        Resolvido
-                    {% else %}
-                        {{ controle.status }}
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="#" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="#" class="btn btn-danger btn-sm">Excluir</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="13" class="text-center">Nenhum controle de acesso encontrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <div class="col-md-3">
+            <label for="execucao">Execução</label>
+            <select name="execucao" id="execucao" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Presencial</option>
+                <option value="2">Remoto</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="pedido">Pedido</label>
+            <select name="pedido" id="pedido" class="form-control">
+                <option value="">Selecione...</option>
+                <option value="1">Gratuito</option>
+                <option value="2">Aguardando Pagamento</option>
+                <option value="3">Pago em Dinheiro</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label for="status">Status</label>
+            <select name="status" id="status" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Pendente</option>
+                <option value="2">A Entregar</option>
+                <option value="3">Resolvido</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="data_inicio">Data Início</label>
+            <input type="date" name="data_inicio" id="data_inicio" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label for="data_fim">Data Fim</label>
+            <input type="date" name="data_fim" id="data_fim" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+        </div>
+    </div>
+</form>
+
+<h3 class="mt-4">Controles de Acessos</h3>
+<p>Controles de Acessos de {{ data_inicio|default_if_none:"-" }} até {{ data_fim|default_if_none:"-" }}</p>
+
+{% if pendencias_existentes %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Atenção!</strong> Existem pendências a serem tratadas. Por favor, resolva-as o mais rápido possível.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Cidade</th>
+            <th>Condomínio</th>
+            <th>Tipo</th>
+            <th>QTD</th>
+            <th>Solicitante</th>
+            <th>Executor</th>
+            <th>Observação Interna</th>
+            <th>Pedido</th>
+            <th>Valor</th>
+            <th>Validade</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for controle in controles %}
+        <tr>
+            <td>{{ controle.created|date:"d/m/Y H:i:s" }}</td>
+            <td>{{ controle.condominio.cidade }}</td>
+            <td>{{ controle.condominio.nome }}</td>
+            <td>{{ controle.tipos_controles_acesso.nome }}</td>
+            <td>{{ controle.quantidade }}</td>
+            <td>{{ controle.solicitante }}</td>
+            <td>{{ controle.realizador.nome }}</td>
+            <td>{{ controle.descricao }}</td>
+            <td>{{ controle.pedido }}</td>
+            <td>{{ controle.valor }}</td>
+            <td>{{ controle.data_prazo|date:"d/m/Y" }}</td>
+            <td>
+                {% if controle.status == 1 %}
+                    <span class="status-pendente">Pendente</span>
+                {% elif controle.status == 2 %}
+                    <span class="status-entregar">A Entregar</span>
+                {% elif controle.status == 3 %}
+                    <span class="status-resolvido">Resolvido</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<style>
+    .status-pendente {
+        background-color: red;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .status-entregar {
+        background-color: green;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .status-resolvido {
+        background-color: blue;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+</style>
+
 {% endblock %}
