@@ -10,6 +10,13 @@ from django.contrib import messages  # Para exibir mensagens ao usuário
 from controleacesso.templatetags.custom_tags import adicionar_dias_uteis
 
 @login_required
+def verificar_condominio_existe(request):
+    if request.method == 'GET':
+        nome_condominio = request.GET.get('nome_condominio', '').strip()
+        existe = Condominios.objects.filter(nome_condominio__iexact=nome_condominio).exists()
+        return JsonResponse({'existe': existe})
+
+@login_required
 def adicionar_controleacesso(request):
     colaboradores = TatticaFuncionarios.objects.all()
     tipos_controles_acesso = TiposControlesAcessos.objects.all()
@@ -154,4 +161,54 @@ def lista_controleacesso(request):
     }
     return render(request, 'lista_controleacesso.html', context)
 
+
+@login_required
+def lista_controleacesso_pendente(request):
+    # Obtenha os filtros enviados pelo usuário
+    condominio = request.GET.get('condominio')
+    tipos = request.GET.get('tipos')
+    execucao = request.GET.get('execucao')
+    pedido = request.GET.get('pedido')
+    status = request.GET.get('status')  # O campo status será crucial aqui
+    data_inicio = request.GET.get('data_inicio')
+    data_fim = request.GET.get('data_fim')
+
+    # Filtra os dados com base nos filtros selecionados
+    controles = ControlesAcessos.objects.all()
+
+    # Aplica os filtros baseados nos parâmetros recebidos
+    if condominio:
+        controles = controles.filter(condominio_id=condominio)
+    if tipos:
+        controles = controles.filter(tipos_controles_acesso_id=tipos)
+    if execucao:
+        controles = controles.filter(execucao=execucao)
+    if pedido:
+        controles = controles.filter(pedido=pedido)
+    if data_inicio:
+        controles = controles.filter(created__gte=data_inicio)
+    if data_fim:
+        controles = controles.filter(created__lte=data_fim)
+
+    # Filtra status; padrão será mostrar apenas "pendentes" (status=1) caso não seja selecionado um status
+    if status:
+        controles = controles.filter(status=status)
+    else:
+        controles = controles.filter(status=1)  # Apenas pendentes por padrão
+
+    # Verifica se há pendências
+    pendencias_existentes = controles.filter(status=1).exists()
+
+    # Para dropdowns de seleção
+    condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
+    tipos_controles = TiposControlesAcessos.objects.filter(status=1)
+
+    # Renderiza os dados no template
+    context = {
+        'pendencias_existentes': pendencias_existentes,
+        'controles': controles,
+        'condominios': condominios,
+        'tipos_controles': tipos_controles,
+    }
+    return render(request, 'menu_slc.html', context)
 
