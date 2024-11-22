@@ -5,11 +5,12 @@ from app.models import (ControlesAcessos, TatticaFuncionarios, TiposControlesAce
                         Apartamentos, Pessoas, Sindicos)
 from django.http import JsonResponse
 from controleacesso.forms import ControleAcessoForm
-
+from django.utils.timezone import now  # Para exibir a data atual se necessário
+from django.contrib import messages  # Para exibir mensagens ao usuário
+from controleacesso.templatetags.custom_tags import adicionar_dias_uteis
 
 @login_required
 def adicionar_controleacesso(request):
-    # Carregar os dados necessários para o formulário
     colaboradores = TatticaFuncionarios.objects.all()
     tipos_controles_acesso = TiposControlesAcessos.objects.all()
     condominios = Condominios.objects.all()
@@ -17,8 +18,41 @@ def adicionar_controleacesso(request):
     if request.method == 'POST':
         form = ControleAcessoForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('lista_controleacesso')  # Substitua 'success' pela URL que você deseja após a criação bem-sucedida
+            # Cria a instância sem salvar no banco
+            instance = form.save(commit=False)
+
+            # Define a data de criação se não preenchida
+            if not instance.created:
+                instance.created = now()
+                print(f"Created preenchido com: {instance.created}")
+
+            # Calcula a data de prazo (3 dias úteis após a criação)
+            try:
+                instance.data_prazo = adicionar_dias_uteis(instance.created, 3)
+                print(f"Data Prazo definida como: {instance.data_prazo}")
+            except Exception as e:
+                print(f"Erro ao calcular data_prazo: {e}")
+                messages.error(request, "Erro ao calcular a data limite.")
+                return render(request, 'adicionar_controleacesso.html', {
+                    'form': form,
+                    'colaboradores': colaboradores,
+                    'tipos_controles_acesso': tipos_controles_acesso,
+                    'condominios': condominios,
+                })
+
+            # Salva o objeto no banco
+            try:
+                instance.save()
+                print("Objeto salvo com sucesso!")
+                messages.success(request, "Controle de acesso adicionado com sucesso!")
+                return redirect('lista_controleacesso')  # Substitua pela URL correta
+            except Exception as e:
+                print(f"Erro ao salvar o objeto: {e}")
+                messages.error(request, "Erro ao salvar controle de acesso.")
+        else:
+            # Debug para erros de formulário
+            print(form.errors)
+            messages.error(request, "Erro ao adicionar controle de acesso. Verifique os dados fornecidos.")
     else:
         form = ControleAcessoForm()
 
