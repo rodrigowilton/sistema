@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from controleacesso.forms import ControleAcessoForm
 
 
+@login_required
 def adicionar_controleacesso(request):
     # Carregar os dados necessários para o formulário
     colaboradores = TatticaFuncionarios.objects.all()
@@ -17,7 +18,7 @@ def adicionar_controleacesso(request):
         form = ControleAcessoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('success')  # Substitua 'success' pela URL que você deseja após a criação bem-sucedida
+            return redirect('lista_controleacesso')  # Substitua 'success' pela URL que você deseja após a criação bem-sucedida
     else:
         form = ControleAcessoForm()
 

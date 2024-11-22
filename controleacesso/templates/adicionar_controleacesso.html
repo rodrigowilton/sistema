@@ -1,0 +1,170 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'lista_funcionarios' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
+<br>
+<br>
+<br>
+{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center;">Adicionar Controle de Acesso</h2>
+
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Primeira coluna -->
+            <div class="col-md-6">
+                <!-- Colaborador -->
+                <label for="colaborador"><strong>Colaborador:</strong></label>
+                <select id="colaborador" name="colaborador" class="form-control">
+                    <option value="">Selecione um Colaborador</option>
+                    {% for colaborador in colaboradores %}
+                        <option value="{{ colaborador.id }}">{{ colaborador.nome_funcionario }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Tipos de Controle de Acesso -->
+                <label for="tipos_controles_acesso"><strong>Tipos de Controle de Acesso:</strong></label>
+                <select id="tipos_controles_acesso" name="tipos_controles_acesso" class="form-control">
+                    <option value="">Selecione...</option>
+                    {% for tipo in tipos_controles_acesso %}
+                        <option value="{{ tipo.id }}">{{ tipo.nome_tipos_controles_acesso }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Perfil do Solicitante -->
+                <label for="perfil_solicitante"><strong>Perfil Do Solicitante:</strong></label>
+                <select id="perfil_solicitante" name="perfil_solicitante" class="form-control">
+                    <option value="">Selecione um perfil</option>
+                    <option value="morador">Morador</option>
+                    <option value="sindico">Síndico</option>
+                    <option value="funcionario_condominio">Funcionário do Condomínio</option>
+                    <option value="outros">Outros</option>
+                </select>
+
+                <!-- Condomínio -->
+                <label for="condominio"><strong>Condomínio:</strong></label>
+                <select id="condominio" name="condominio" class="form-control">
+                    <option value="">Selecione um Condomínio</option>
+                    {% for condominio in condominios %}
+                        <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Segunda coluna -->
+            <div class="col-md-6">
+                <!-- Apartamento e Pessoas Dinâmicos -->
+                <div id="apartamento_pessoas_fields"></div>
+
+                <!-- Execução -->
+                <label for="execucao"><strong>Execução:</strong></label>
+                <select id="execucao" name="execucao" class="form-control">
+                    <option value="1">Remoto</option>
+                    <option value="2">Presencial</option>
+                </select>
+
+                <!-- Pedido -->
+                <label for="pedido"><strong>Pedido:</strong></label>
+                <select id="pedido" name="pedido" class="form-control">
+                    <option value="1">A receber por PagSeguro</option>
+                    <option value="2">A receber por Transferência</option>
+                    <option value="3">Pago em Dinheiro</option>
+                </select>
+
+                <!-- Quantidade -->
+                <label for="quantidade"><strong>Quantidade:</strong></label>
+                <input type="number" id="quantidade" name="quantidade" class="form-control" min="1" />
+
+                <!-- Descrição -->
+                <label for="descricao"><strong>Descrição para o Cliente:</strong></label>
+                <textarea id="descricao" name="descricao" class="form-control"></textarea>
+
+                <!-- Observação Interna -->
+                <label for="observacao_interna"><strong>Observação Interna:</strong></label>
+                <textarea id="observacao_interna" name="observacao_interna" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <!-- Botão de submissão -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Salvar Controle de Acesso</button>
+        </div>
+    </form>
+</div>
+
+<!-- Inclua jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Inclua o jQuery Mask Plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Máscaras de telefone
+        $('#telefone1').mask('(00) 0 0000-0000');
+        $('#telefone2').mask('(00) 0 0000-0000');
+    });
+
+    document.getElementById("condominio").addEventListener("change", function() {
+        var condominioId = this.value;
+        var perfilSolicitante = document.getElementById("perfil_solicitante").value;
+
+        if (perfilSolicitante === "morador" || perfilSolicitante === "sindico") {
+            fetch(`/carregar_apartamentos/${condominioId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    var apartamentoSelect = "<label for='apartamento'><strong>Apartamento:</strong></label><select id='apartamento' name='apartamento' class='form-control'>";
+                    apartamentoSelect += "<option value=''>Selecione um Apartamento</option>";
+                    data.apartamentos.forEach(function(apartamento) {
+                        apartamentoSelect += `<option value='${apartamento.id}'>${apartamento.nome}</option>`;
+                    });
+                    apartamentoSelect += "</select>";
+
+                    var pessoasSelect = "<label for='pessoa'><strong>Pessoa:</strong></label><select id='pessoa' name='pessoa' class='form-control'>";
+                    pessoasSelect += "<option value=''>Selecione uma Pessoa</option>";
+                    data.pessoas.forEach(function(pessoa) {
+                        pessoasSelect += `<option value='${pessoa.id}'>${pessoa.nome}</option>`;
+                    });
+                    pessoasSelect += "</select>";
+
+                    document.getElementById("apartamento_pessoas_fields").innerHTML = apartamentoSelect + pessoasSelect;
+                });
+        } else if (perfilSolicitante === "funcionario_condominio") {
+            fetch(`/carregar_funcionarios/${condominioId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    var funcionarioSelect = "<label for='funcionario_condominio'><strong>Funcionário:</strong></label><select id='funcionario_condominio' name='funcionario_condominio' class='form-control'>";
+                    funcionarioSelect += "<option value=''>Selecione um Funcionário</option>";
+                    data.funcionarios.forEach(function(funcionario) {
+                        funcionarioSelect += `<option value='${funcionario.id}'>${funcionario.nome}</option>`;
+                    });
+                    funcionarioSelect += "</select>";
+
+                    document.getElementById("apartamento_pessoas_fields").innerHTML = funcionarioSelect;
+                });
+        }
+    });
+</script>
+{% endblock %}
