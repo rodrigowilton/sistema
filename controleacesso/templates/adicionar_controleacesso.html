@@ -105,11 +105,19 @@
 
                 <!-- Pedido -->
                 <label for="pedido"><strong>Pedido:</strong></label>
-                <select id="pedido" name="pedido" class="form-control">
-                    <option value="1">A receber por PagSeguro</option>
-                    <option value="2">A receber por Transferência</option>
-                    <option value="3">Pago em Dinheiro</option>
+                <select id="pedido" name="pedido" class="form-control" required>
+                    <option value="" disabled selected>Selecione uma opção de Pedido...</option>
+                    <option value="1">Gratuito</option>
+                    <option value="2">Aguardando Pagamento</option>
+                    <option value="6">A receber em dinheiro</option>
+                    <option value="7">A receber por PagSeguro</option>
+                    <option value="8">A receber por transferência</option>
+                    <option value="3">Pago em dinheiro</option>
+                    <option value="5">Pago por PagSeguro</option>
+                    <option value="4">Pago por transferência</option>
+                    <option value="9">Em análise</option>
                 </select>
+
 
                 <!-- Quantidade -->
                 <label for="quantidade"><strong>Quantidade:</strong></label>
@@ -122,6 +130,10 @@
                 <!-- Observação Interna -->
                 <label for="observacao_interna"><strong>Observação Interna:</strong></label>
                 <textarea id="observacao_interna" name="observacao_interna" class="form-control"></textarea>
+
+                <!--  valor -->
+                <label for="valor"><strong>Valor:</strong></label>
+                <input id="valor" name="valor" type="text" class="form-control" placeholder="Digite o valor">
             </div>
         </div>
 
@@ -142,6 +154,8 @@
         // Máscaras de telefone
         $('#telefone1').mask('(00) 0 0000-0000');
         $('#telefone2').mask('(00) 0 0000-0000');
+        $('#valor').mask('000.000.000.000.000,00', {reverse: true});
+
     });
 
         document.getElementById('condominio').addEventListener('change', function() {
