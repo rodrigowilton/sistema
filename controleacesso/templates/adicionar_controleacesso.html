@@ -72,6 +72,18 @@
                         <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
                     {% endfor %}
                 </select>
+
+                <label for="apartamento" class="form-label">Apartamento:</label>
+                <select name="apartamento" id="apartamento" class="form-control" required>
+                    <option value="">Selecione o Apartamento...</option>
+                </select>
+
+                <label for="pessoa" class="form-label">Pessoa:</label>
+                <select id="pessoa" name="pessoa" class="form-control">
+                    <option value="">Selecione a Pessoa...</option>
+                    <!-- As opções serão preenchidas pelo JavaScript -->
+                </select>
+
             </div>
 
             <!-- Segunda coluna -->
@@ -125,6 +137,48 @@
         // Máscaras de telefone
         $('#telefone1').mask('(00) 0 0000-0000');
         $('#telefone2').mask('(00) 0 0000-0000');
+    });
+
+        document.getElementById('condominio').addEventListener('change', function() {
+        var condominioId = this.value;
+        var apartamentoSelect = document.getElementById('apartamento');
+        apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+
+        if (condominioId) {
+            fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
+                .then(response => response.json())
+                .then(data => {
+                    data.apartamentos.forEach(function(apartamento) {
+                        var option = document.createElement('option');
+                        option.value = apartamento.id;
+                        option.text = apartamento.nome_apartamento;
+                        apartamentoSelect.appendChild(option);
+                    });
+                });
+        }
+    });
+
+        // Atualiza lista de pessoas ao escolher um apartamento
+    document.getElementById('apartamento').addEventListener('change', function() {
+        var apartamentoId = this.value;
+        var pessoaSelect = document.getElementById('pessoa');
+        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+
+        if (apartamentoId) {
+            fetch("{% url 'liberacaoacesso:get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
+                .then(response => response.json())
+                .then(data => {
+                    data.pessoas.forEach(function(pessoa) {
+                        var option = document.createElement('option');
+                        option.value = pessoa.id;
+                        // Exibe o nome e o tipo de pessoa, destaca em negrito se for proprietário
+                        option.innerHTML = pessoa.is_proprietario
+                            ? "<b>" + pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa + "</b>"
+                            : pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa;
+                        pessoaSelect.appendChild(option);
+                    });
+                });
+        }
     });
 
     document.getElementById("condominio").addEventListener("change", function() {

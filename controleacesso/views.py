@@ -29,6 +29,30 @@ def adicionar_controleacesso(request):
         'condominios': condominios,
     })
 
+@login_required
+def get_apartamentos_por_condominio(request):
+    condominio_id = request.GET.get('condominio_id')
+    apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id, status=1).values('id', 'nome_apartamento')
+
+    return JsonResponse({'apartamentos': list(apartamentos)})
+
+@login_required
+def get_pessoas_por_apartamento(request):
+    apartamento_id = request.GET.get('apartamento_id')
+    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)  # Sem filtro de status, conforme solicitado
+    data = {
+        'pessoas': [
+            {
+                'id': pessoa.id,
+                'nome_pessoa': pessoa.nome_pessoa,
+                'tipo_pessoa': pessoa.tipos_pessoa.nome_tipos_pessoa,  # Corrigido para 'tipos_pessoa'
+                'is_proprietario': pessoa.tipos_pessoa.nome_tipos_pessoa == 'Proprietário'  # Verifica se é proprietário
+            }
+            for pessoa in pessoas
+        ]
+    }
+    return JsonResponse(data)
+
 def carregar_apartamentos(request, condominio_id):
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
     apartamentos_data = [{'id': ap.id, 'nome': ap.nome_apartamento} for ap in apartamentos]
