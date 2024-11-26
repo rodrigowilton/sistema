@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from app.models import (ControlesAcessos, TatticaFuncionarios, TiposControlesAcessos, Condominios,
-                        Apartamentos, Pessoas, Sindicos)
+                        Apartamentos, Pessoas, Sindicos, TiposSindicos)
 from django.http import JsonResponse
 from controleacesso.forms import ControleAcessoForm
 from django.utils.timezone import now  # Para exibir a data atual se necessário
@@ -104,11 +104,26 @@ def carregar_pessoas(request, apartamento_id):
     pessoas_data = [{'id': p.id, 'nome': p.nome_pessoa} for p in pessoas]
     return JsonResponse({'pessoas': pessoas_data})
 
-def carregar_sindicos(request, condominio_id):
-    sindicos = Sindicos.objects.filter(condominio_id=condominio_id)
-    sindicos_data = [{'id': s.id, 'nome': s.nome_sindico} for s in sindicos]
-    return JsonResponse({'sindicos': sindicos_data})
 
+def carregar_sindicos(request, condominio_id):
+    try:
+        # Buscar os síndicos associados ao condomínio
+        sindicos = Sindicos.objects.filter(condominio_id=condominio_id, status=1)  # Filtra por status ativo
+
+        if sindicos.exists():
+            # Se houver síndicos, retorna as informações
+            sindico_data = []
+            for sindico in sindicos:
+                sindico_data.append({
+                    'id': sindico.pessoa.id,  # ID da pessoa associada ao síndico
+                    'nome_pessoa': sindico.pessoa.nome_pessoa  # Nome da pessoa
+                })
+            return JsonResponse({'sindicos': sindico_data})
+        else:
+            # Se não houver síndico, retorna None
+            return JsonResponse({'sindicos': None})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 @login_required
@@ -190,14 +205,8 @@ def lista_controleacesso_pendente(request):
     if data_fim:
         controles = controles.filter(created__lte=data_fim)
 
-    # Filtra status; padrão será mostrar apenas "pendentes" (status=1) caso não seja selecionado um status
-    if status:
-        controles = controles.filter(status=status)
-    else:
-        controles = controles.filter(status=1)  # Apenas pendentes por padrão
-
-    # Verifica se há pendências
-    pendencias_existentes = controles.filter(status=1).exists()
+    # Filtra status para mostrar apenas pendentes
+    controles = controles.filter(status=1)
 
     # Para dropdowns de seleção
     condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
@@ -205,10 +214,8 @@ def lista_controleacesso_pendente(request):
 
     # Renderiza os dados no template
     context = {
-        'pendencias_existentes': pendencias_existentes,
         'controles': controles,
         'condominios': condominios,
         'tipos_controles': tipos_controles,
     }
-    return render(request, 'menu_slc.html', context)
-
+    return render(request, 'lista_controleacesso_pendente.html', context)

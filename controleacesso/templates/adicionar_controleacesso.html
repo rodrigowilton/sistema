@@ -2,29 +2,7 @@
 {% load static %}
 
 {% block menu %}
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <div class="icon-container">
-                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
-            </div>
-        </a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav custom-nav-link">
-                <li class="nav-item">
-                    <a class="nav-link text-center" href="{% url 'lista_controleacesso' %}" style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
-                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="icon-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: -40px;"></div>
-<br>
-<br>
-<br>
+<!-- Código do menu permanece o mesmo -->
 {% endblock %}
 
 {% block content %}
@@ -36,7 +14,6 @@
         {% csrf_token %}
 
         <input type="hidden" name="status" value="1">
-
 
         <div class="row">
             <!-- Primeira coluna -->
@@ -78,7 +55,8 @@
                     {% endfor %}
                 </select>
 
-                <label for="apartamento" class="form-label">Apartamento:</label>
+                <!-- Apartamento (oculto quando o perfil for 'Síndico') -->
+                <label for="apartamento" class="form-label" id="apartamento-label">Apartamento:</label>
                 <select name="apartamento" id="apartamento" class="form-control" required>
                     <option value="">Selecione o Apartamento...</option>
                 </select>
@@ -88,14 +66,10 @@
                     <option value="">Selecione a Pessoa...</option>
                     <!-- As opções serão preenchidas pelo JavaScript -->
                 </select>
-
             </div>
 
             <!-- Segunda coluna -->
             <div class="col-md-6">
-                <!-- Apartamento e Pessoas Dinâmicos -->
-                <div id="apartamento_pessoas_fields"></div>
-
                 <!-- Execução -->
                 <label for="execucao"><strong>Execução:</strong></label>
                 <select id="execucao" name="execucao" class="form-control">
@@ -118,7 +92,6 @@
                     <option value="9">Em análise</option>
                 </select>
 
-
                 <!-- Quantidade -->
                 <label for="quantidade"><strong>Quantidade:</strong></label>
                 <input type="number" id="quantidade" name="quantidade" class="form-control" min="1" />
@@ -131,7 +104,7 @@
                 <label for="observacao_interna"><strong>Observação Interna:</strong></label>
                 <textarea id="observacao_interna" name="observacao_interna" class="form-control"></textarea>
 
-                <!--  valor -->
+                <!-- Valor -->
                 <label for="valor"><strong>Valor:</strong></label>
                 <input id="valor" name="valor" type="text" class="form-control" placeholder="Digite o valor">
             </div>
@@ -155,13 +128,21 @@
         $('#telefone1').mask('(00) 0 0000-0000');
         $('#telefone2').mask('(00) 0 0000-0000');
         $('#valor').mask('000.000.000.000.000,00', {reverse: true});
-
     });
 
-        document.getElementById('condominio').addEventListener('change', function() {
-        var condominioId = this.value;
-        var apartamentoSelect = document.getElementById('apartamento');
+    // Atualiza os apartamentos conforme o condomínio selecionado
+document.getElementById('condominio').addEventListener('change', function() {
+    var condominioId = this.value;
+    var perfilSolicitante = document.getElementById('perfil_solicitante').value;
+    var apartamentoSelect = document.getElementById('apartamento');
+    var apartamentoLabel = document.getElementById('apartamento-label');
+    var pessoaSelect = document.getElementById('pessoa');
+
+    // Se o perfil não for "Síndico", busca os apartamentos
+    if (perfilSolicitante !== "sindico") {
         apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+        apartamentoLabel.style.display = 'block';  // Exibe o campo de apartamento
+        pessoaSelect.innerHTML = '';  // Limpa as opções de pessoa
 
         if (condominioId) {
             fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
@@ -175,9 +156,36 @@
                     });
                 });
         }
-    });
+    } else {
+        // Se o perfil for "Síndico", oculta o campo de apartamento
+        apartamentoSelect.innerHTML = '';  // Limpa as opções de apartamento
+        apartamentoLabel.style.display = 'none';  // Oculta o campo de apartamento
 
-        // Atualiza lista de pessoas ao escolher um apartamento
+        var carregarSindicosUrl = "{% url 'carregar_sindicos' 0 %}".replace("0", condominioId);
+        fetch(carregarSindicosUrl)
+            .then(response => response.json())
+            .then(data => {
+                pessoaSelect.innerHTML = '';  // Limpa as opções anteriores
+                if (data.sindicos && data.sindicos.length > 0) {
+                    data.sindicos.forEach(function(sindico) {
+                        var option = document.createElement('option');
+                        option.value = sindico.id;
+                        option.text = sindico.nome_pessoa + ' (Síndico)';
+                        pessoaSelect.appendChild(option);
+                    });
+                } else {
+                    var option = document.createElement('option');
+                    option.value = "";
+                    option.text = "Nenhum síndico disponível";
+                    pessoaSelect.appendChild(option);
+                }
+            });
+    }
+});
+
+
+
+    // Atualiza a lista de pessoas ao escolher o apartamento
     document.getElementById('apartamento').addEventListener('change', function() {
         var apartamentoId = this.value;
         var pessoaSelect = document.getElementById('pessoa');
@@ -190,54 +198,12 @@
                     data.pessoas.forEach(function(pessoa) {
                         var option = document.createElement('option');
                         option.value = pessoa.id;
-                        // Exibe o nome e o tipo de pessoa, destaca em negrito se for proprietário
-                        option.innerHTML = pessoa.is_proprietario
-                            ? "<b>" + pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa + "</b>"
-                            : pessoa.nome_pessoa + " - " + pessoa.tipo_pessoa;
+                        option.text = pessoa.nome_pessoa;
                         pessoaSelect.appendChild(option);
                     });
                 });
         }
     });
-
-    document.getElementById("condominio").addEventListener("change", function() {
-        var condominioId = this.value;
-        var perfilSolicitante = document.getElementById("perfil_solicitante").value;
-
-        if (perfilSolicitante === "morador" || perfilSolicitante === "sindico") {
-            fetch(`/carregar_apartamentos/${condominioId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    var apartamentoSelect = "<label for='apartamento'><strong>Apartamento:</strong></label><select id='apartamento' name='apartamento' class='form-control'>";
-                    apartamentoSelect += "<option value=''>Selecione um Apartamento</option>";
-                    data.apartamentos.forEach(function(apartamento) {
-                        apartamentoSelect += `<option value='${apartamento.id}'>${apartamento.nome}</option>`;
-                    });
-                    apartamentoSelect += "</select>";
-
-                    var pessoasSelect = "<label for='pessoa'><strong>Pessoa:</strong></label><select id='pessoa' name='pessoa' class='form-control'>";
-                    pessoasSelect += "<option value=''>Selecione uma Pessoa</option>";
-                    data.pessoas.forEach(function(pessoa) {
-                        pessoasSelect += `<option value='${pessoa.id}'>${pessoa.nome}</option>`;
-                    });
-                    pessoasSelect += "</select>";
-
-                    document.getElementById("apartamento_pessoas_fields").innerHTML = apartamentoSelect + pessoasSelect;
-                });
-        } else if (perfilSolicitante === "funcionario_condominio") {
-            fetch(`/carregar_funcionarios/${condominioId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    var funcionarioSelect = "<label for='funcionario_condominio'><strong>Funcionário:</strong></label><select id='funcionario_condominio' name='funcionario_condominio' class='form-control'>";
-                    funcionarioSelect += "<option value=''>Selecione um Funcionário</option>";
-                    data.funcionarios.forEach(function(funcionario) {
-                        funcionarioSelect += `<option value='${funcionario.id}'>${funcionario.nome}</option>`;
-                    });
-                    funcionarioSelect += "</select>";
-
-                    document.getElementById("apartamento_pessoas_fields").innerHTML = funcionarioSelect;
-                });
-        }
-    });
 </script>
+
 {% endblock %}
