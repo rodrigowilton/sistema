@@ -218,4 +218,4 @@ def lista_controleacesso_pendente(request):
         'condominios': condominios,
         'tipos_controles': tipos_controles,
     }
-    return render(request, 'lista_controleacesso_pendente.html', context)
+    return render(request, 'lista_controleacesso.html', context)
