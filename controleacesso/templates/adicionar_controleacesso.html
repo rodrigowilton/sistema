@@ -55,12 +55,13 @@
                     {% endfor %}
                 </select>
 
-                <!-- Apartamento (oculto quando o perfil for 'Síndico') -->
+                <!-- Apartamento -->
                 <label for="apartamento" class="form-label" id="apartamento-label">Apartamento:</label>
                 <select name="apartamento" id="apartamento" class="form-control" required>
                     <option value="">Selecione o Apartamento...</option>
                 </select>
 
+                <!-- Pessoa -->
                 <label for="pessoa" class="form-label">Pessoa:</label>
                 <select id="pessoa" name="pessoa" class="form-control">
                     <option value="">Selecione a Pessoa...</option>
@@ -124,88 +125,143 @@
 
 <script>
     $(document).ready(function() {
-        // Máscaras de telefone
+        // Máscaras de telefone e valores
         $('#telefone1').mask('(00) 0 0000-0000');
         $('#telefone2').mask('(00) 0 0000-0000');
         $('#valor').mask('000.000.000.000.000,00', {reverse: true});
     });
 
-    // Função para atualizar o campo de apartamento e pessoas
-    function atualizarApartamentosEUsuarios(condominioId, perfilSolicitante) {
-        var apartamentoSelect = document.getElementById('apartamento');
-        var apartamentoLabel = document.getElementById('apartamento-label');
-        var pessoaSelect = document.getElementById('pessoa');
 
-        apartamentoSelect.style.display = perfilSolicitante === "sindico" ? 'none' : 'block';
-        apartamentoLabel.style.display = perfilSolicitante === "sindico" ? 'none' : 'block';
-        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+// aqui apartamento do sindico
 
-        if (condominioId && perfilSolicitante !== "sindico") {
-            // Carrega apartamentos
-            fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
-                .then(response => response.json())
-                .then(data => {
-                    apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
-                    data.apartamentos.forEach(function(apartamento) {
-                        var option = document.createElement('option');
-                        option.value = apartamento.id;
-                        option.text = apartamento.nome_apartamento;
-                        apartamentoSelect.appendChild(option);
-                    });
+function atualizarApartamentosEUsuarios(condominioId, perfilSolicitante) {
+    var apartamentoSelect = document.getElementById('apartamento');
+    var pessoaSelect = document.getElementById('pessoa');
+
+    pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+
+    if (condominioId) {
+        // Carregar apartamentos
+        fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
+            .then(response => response.json())
+            .then(data => {
+                apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+                data.apartamentos.forEach(function(apartamento) {
+                    var option = document.createElement('option');
+                    option.value = apartamento.id;
+                    option.text = apartamento.nome_apartamento;
+                    apartamentoSelect.appendChild(option);
                 });
-        } else if (condominioId && perfilSolicitante === "sindico") {
-            // Busca síndico relacionado ao condomínio
-            var carregarSindicosUrl = "{% url 'carregar_sindicos' 0 %}".replace("0", condominioId);
+
+                // Se o perfil for "Síndico", selecionar automaticamente o apartamento do síndico
+                if (perfilSolicitante === "sindico") {
+                    fetch("{% url 'get_apartamento_sindico' %}?condominio_id=" + condominioId)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.apartamento_sindico) {
+                                apartamentoSelect.value = data.apartamento_sindico.id; // Seleciona o apartamento do síndico
+                            }
+                        })
+                        .catch(error => console.error('Error fetching apartamento do síndico:', error));
+                }
+            })
+            .catch(error => console.error('Error fetching apartamentos:', error));
+    }
+
+    // Se o perfil for "Síndico", carregue os síndicos
+    if (perfilSolicitante === "sindico") {
+        // Verifique se condominioId está definido
+        if (condominioId) {
+            var carregarSindicosUrl = "{% url 'carregar_sindicos' condominio_id=0 %}".replace("0", condominioId);
+
             fetch(carregarSindicosUrl)
                 .then(response => response.json())
                 .then(data => {
-                    pessoaSelect.innerHTML = ''; // Limpa as opções anteriores
-                    if (data.sindicos && data.sindicos.length > 0) {
+                    if (data.sindicos.length > 0) {
+                        pessoaSelect.innerHTML = '';
                         data.sindicos.forEach(function(sindico) {
                             var option = document.createElement('option');
                             option.value = sindico.id;
                             option.text = sindico.nome_pessoa + ' (Síndico)';
                             pessoaSelect.appendChild(option);
                         });
-                    } else {
-                        var option = document.createElement('option');
-                        option.value = "";
-                        option.text = "Nenhum síndico disponível";
-                        pessoaSelect.appendChild(option);
                     }
-                });
+                })
+                .catch(error => console.error('Error fetching sindicos:', error));
+        } else {
+            console.error("Condominio ID não definido!");
         }
     }
+}
 
-    // Evento para atualizar apartamentos e usuários ao alterar o condomínio
+document.getElementById('condominio').addEventListener('change', function() {
+    var condominioId = this.value;
+    var perfilSolicitante = document.getElementById('perfil_solicitante').value;
+    atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
+});
+
+document.getElementById('perfil_solicitante').addEventListener('change', function() {
+    var condominioId = document.getElementById('condominio').value;
+    atualizarApartamentosEUsuarios(condominioId, this.value);
+});
+
+// ate aqui
+
+
+// Chamando a função ao carregar a página para verificar se já é síndico e preencher o apartamento
+document.addEventListener('DOMContentLoaded', function() {
+    var perfilSolicitante = document.getElementById('perfil_solicitante').value;
+    var condominioId = document.getElementById('condominio').value;
+    var apartamentoId = document.getElementById('apartamento').value;
+
+    atualizarApartamentosEUsuarios(condominioId, perfilSolicitante, apartamentoId);
+});
+
+document.getElementById('condominio').addEventListener('change', function() {
+    var condominioId = this.value;
+    var perfilSolicitante = document.getElementById('perfil_solicitante').value;
+    var apartamentoId = document.getElementById('apartamento').value;
+    atualizarApartamentosEUsuarios(condominioId, perfilSolicitante, apartamentoId);
+});
+
+document.getElementById('perfil_solicitante').addEventListener('change', function() {
+    var condominioId = document.getElementById('condominio').value;
+    var perfilSolicitante = this.value;
+    var apartamentoId = document.getElementById('apartamento').value;
+    atualizarApartamentosEUsuarios(condominioId, perfilSolicitante, apartamentoId);
+});
+
+document.getElementById('apartamento').addEventListener('change', function() {
+    var apartamentoId = this.value;
+    var pessoaSelect = document.getElementById('pessoa');
+    pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+
+    if (apartamentoId) {
+        fetch("{% url 'get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
+            .then(response => response.json())
+            .then(data => {
+                data.pessoas.forEach(function(pessoa) {
+                    var option = document.createElement('option');
+                    option.value = pessoa.id;
+                    option.text = pessoa.nome_pessoa;
+                    pessoaSelect.appendChild(option);
+                });
+            });
+    }
+});
+
+
     document.getElementById('condominio').addEventListener('change', function() {
         var condominioId = this.value;
         var perfilSolicitante = document.getElementById('perfil_solicitante').value;
         atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
     });
 
-    // Evento para ajustar o comportamento ao mudar o perfil do solicitante
     document.getElementById('perfil_solicitante').addEventListener('change', function() {
-        var perfilSolicitante = this.value;
         var condominioId = document.getElementById('condominio').value;
-        var apartamentoInput = document.getElementById('apartamento');
-        var apartamentoLabel = document.getElementById('apartamento-label');
-
-        if (perfilSolicitante === "sindico") {
-            // Para síndico, desabilita o campo de apartamento
-            apartamentoInput.style.display = 'none';
-            apartamentoLabel.style.display = 'block';
-            apartamentoLabel.textContent = "Apartamento do Síndico";
-        } else {
-            apartamentoInput.style.display = 'block';
-            apartamentoLabel.style.display = 'block';
-            apartamentoLabel.textContent = "Apartamento";
-        }
-
-        atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
+        atualizarApartamentosEUsuarios(condominioId, this.value);
     });
 
-    // Atualiza a lista de pessoas ao escolher o apartamento
     document.getElementById('apartamento').addEventListener('change', function() {
         var apartamentoId = this.value;
         var pessoaSelect = document.getElementById('pessoa');
@@ -225,6 +281,5 @@
         }
     });
 </script>
-
 
 {% endblock %}

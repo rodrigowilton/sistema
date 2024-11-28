@@ -8,6 +8,7 @@ from controleacesso.forms import ControleAcessoForm
 from django.utils.timezone import now  # Para exibir a data atual se necessário
 from django.contrib import messages  # Para exibir mensagens ao usuário
 from controleacesso.templatetags.custom_tags import adicionar_dias_uteis
+from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
 def verificar_condominio_existe(request):
@@ -94,30 +95,48 @@ def get_pessoas_por_apartamento(request):
     }
     return JsonResponse(data)
 
+@login_required
 def carregar_apartamentos(request, condominio_id):
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
     apartamentos_data = [{'id': ap.id, 'nome': ap.nome_apartamento} for ap in apartamentos]
     return JsonResponse({'apartamentos': apartamentos_data})
 
+@login_required
 def carregar_pessoas(request, apartamento_id):
     pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)
     pessoas_data = [{'id': p.id, 'nome': p.nome_pessoa} for p in pessoas]
     return JsonResponse({'pessoas': pessoas_data})
+@login_required
+def get_apartamento_sindico(request):
+    try:
+        condominio_id = request.GET.get('condominio_id')
+        if condominio_id:
+            condominio = Condominium.objects.get(id=condominio_id)
+            apartamento_sindico = Apartamento.objects.filter(condominio=condominio, is_sindico=True).first()
+            
+            if apartamento_sindico:
+                return JsonResponse({
+                    'apartamento_sindico': {
+                        'id': apartamento_sindico.id,
+                        'nome_apartamento': apartamento_sindico.nome_apartamento
+                    }
+                })
+            else:
+                return JsonResponse({'error': 'Síndico não encontrado'}, status=404)
+        else:
+            return JsonResponse({'error': 'Condomínio não especificado'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @login_required
-def carregar_apartamento_sindico(request):
+def get_apartamento_sindico(request):
     condominio_id = request.GET.get('condominio_id')
-    try:
-        sindico = Sindicos.objects.get(condominio_id=condominio_id)
-        apartamento = Apartamentos.objects.get(id=sindico.apartamento_id)
-        return JsonResponse({
-            'id': apartamento.id,
-            'nome_apartamento': apartamento.nome_apartamento
-        })
-    except (Sindicos.DoesNotExist, Apartamentos.DoesNotExist):
-        return JsonResponse({'error': 'Síndico ou apartamento não encontrado'}, status=404)
-
-
+    sindicos = Sindicos.objects.filter(condominio_id=condominio_id)
+    
+    return render(request, 'lista_controleacesso.html', {'sindicos': sindicos})
+    
+    
+@login_required
 def carregar_sindicos(request, condominio_id):
     try:
         # Buscar os síndicos associados ao condomínio
