@@ -13,4 +13,6 @@ urlpatterns = [
          name='get_apartamentos_por_condominio'),
     path('get_pessoas_por_apartamento/', views.get_pessoas_por_apartamento, name='get_pessoas_por_apartamento'),
     path('condominios/verificar/', verificar_condominio_existe, name='verificar_condominio_existe'),
+    path('carregar_apartamento_sindico/', views.carregar_apartamento_sindico, name='carregar_apartamento_sindico'),
+
 ]

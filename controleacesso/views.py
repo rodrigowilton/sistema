@@ -104,6 +104,19 @@ def carregar_pessoas(request, apartamento_id):
     pessoas_data = [{'id': p.id, 'nome': p.nome_pessoa} for p in pessoas]
     return JsonResponse({'pessoas': pessoas_data})
 
+@login_required
+def carregar_apartamento_sindico(request):
+    condominio_id = request.GET.get('condominio_id')
+    try:
+        sindico = Sindicos.objects.get(condominio_id=condominio_id)
+        apartamento = Apartamentos.objects.get(id=sindico.apartamento_id)
+        return JsonResponse({
+            'id': apartamento.id,
+            'nome_apartamento': apartamento.nome_apartamento
+        })
+    except (Sindicos.DoesNotExist, Apartamentos.DoesNotExist):
+        return JsonResponse({'error': 'Síndico ou apartamento não encontrado'}, status=404)
+
 
 def carregar_sindicos(request, condominio_id):
     try:

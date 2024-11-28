@@ -130,24 +130,22 @@
         $('#valor').mask('000.000.000.000.000,00', {reverse: true});
     });
 
-    // Atualiza os apartamentos conforme o condomínio selecionado
-document.getElementById('condominio').addEventListener('change', function() {
-    var condominioId = this.value;
-    var perfilSolicitante = document.getElementById('perfil_solicitante').value;
-    var apartamentoSelect = document.getElementById('apartamento');
-    var apartamentoLabel = document.getElementById('apartamento-label');
-    var pessoaSelect = document.getElementById('pessoa');
+    // Função para atualizar o campo de apartamento e pessoas
+    function atualizarApartamentosEUsuarios(condominioId, perfilSolicitante) {
+        var apartamentoSelect = document.getElementById('apartamento');
+        var apartamentoLabel = document.getElementById('apartamento-label');
+        var pessoaSelect = document.getElementById('pessoa');
 
-    // Se o perfil não for "Síndico", busca os apartamentos
-    if (perfilSolicitante !== "sindico") {
-        apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
-        apartamentoLabel.style.display = 'block';  // Exibe o campo de apartamento
-        pessoaSelect.innerHTML = '';  // Limpa as opções de pessoa
+        apartamentoSelect.style.display = perfilSolicitante === "sindico" ? 'none' : 'block';
+        apartamentoLabel.style.display = perfilSolicitante === "sindico" ? 'none' : 'block';
+        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
 
-        if (condominioId) {
+        if (condominioId && perfilSolicitante !== "sindico") {
+            // Carrega apartamentos
             fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
                 .then(response => response.json())
                 .then(data => {
+                    apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
                     data.apartamentos.forEach(function(apartamento) {
                         var option = document.createElement('option');
                         option.value = apartamento.id;
@@ -155,35 +153,57 @@ document.getElementById('condominio').addEventListener('change', function() {
                         apartamentoSelect.appendChild(option);
                     });
                 });
-        }
-    } else {
-        // Se o perfil for "Síndico", oculta o campo de apartamento
-        apartamentoSelect.innerHTML = '';  // Limpa as opções de apartamento
-        apartamentoLabel.style.display = 'none';  // Oculta o campo de apartamento
-
-        var carregarSindicosUrl = "{% url 'carregar_sindicos' 0 %}".replace("0", condominioId);
-        fetch(carregarSindicosUrl)
-            .then(response => response.json())
-            .then(data => {
-                pessoaSelect.innerHTML = '';  // Limpa as opções anteriores
-                if (data.sindicos && data.sindicos.length > 0) {
-                    data.sindicos.forEach(function(sindico) {
+        } else if (condominioId && perfilSolicitante === "sindico") {
+            // Busca síndico relacionado ao condomínio
+            var carregarSindicosUrl = "{% url 'carregar_sindicos' 0 %}".replace("0", condominioId);
+            fetch(carregarSindicosUrl)
+                .then(response => response.json())
+                .then(data => {
+                    pessoaSelect.innerHTML = ''; // Limpa as opções anteriores
+                    if (data.sindicos && data.sindicos.length > 0) {
+                        data.sindicos.forEach(function(sindico) {
+                            var option = document.createElement('option');
+                            option.value = sindico.id;
+                            option.text = sindico.nome_pessoa + ' (Síndico)';
+                            pessoaSelect.appendChild(option);
+                        });
+                    } else {
                         var option = document.createElement('option');
-                        option.value = sindico.id;
-                        option.text = sindico.nome_pessoa + ' (Síndico)';
+                        option.value = "";
+                        option.text = "Nenhum síndico disponível";
                         pessoaSelect.appendChild(option);
-                    });
-                } else {
-                    var option = document.createElement('option');
-                    option.value = "";
-                    option.text = "Nenhum síndico disponível";
-                    pessoaSelect.appendChild(option);
-                }
-            });
+                    }
+                });
+        }
     }
-});
 
+    // Evento para atualizar apartamentos e usuários ao alterar o condomínio
+    document.getElementById('condominio').addEventListener('change', function() {
+        var condominioId = this.value;
+        var perfilSolicitante = document.getElementById('perfil_solicitante').value;
+        atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
+    });
 
+    // Evento para ajustar o comportamento ao mudar o perfil do solicitante
+    document.getElementById('perfil_solicitante').addEventListener('change', function() {
+        var perfilSolicitante = this.value;
+        var condominioId = document.getElementById('condominio').value;
+        var apartamentoInput = document.getElementById('apartamento');
+        var apartamentoLabel = document.getElementById('apartamento-label');
+
+        if (perfilSolicitante === "sindico") {
+            // Para síndico, desabilita o campo de apartamento
+            apartamentoInput.style.display = 'none';
+            apartamentoLabel.style.display = 'block';
+            apartamentoLabel.textContent = "Apartamento do Síndico";
+        } else {
+            apartamentoInput.style.display = 'block';
+            apartamentoLabel.style.display = 'block';
+            apartamentoLabel.textContent = "Apartamento";
+        }
+
+        atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
+    });
 
     // Atualiza a lista de pessoas ao escolher o apartamento
     document.getElementById('apartamento').addEventListener('change', function() {
@@ -205,5 +225,6 @@ document.getElementById('condominio').addEventListener('change', function() {
         }
     });
 </script>
+
 
 {% endblock %}
