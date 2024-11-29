@@ -76,22 +76,32 @@ def get_apartamentos_por_condominio(request):
 
     return JsonResponse({'apartamentos': list(apartamentos)})
 
+
 @login_required
 def get_pessoas_por_apartamento(request):
     apartamento_id = request.GET.get('apartamento_id')
-    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)  # Sem filtro de status, conforme solicitado
-    data = {
-        'pessoas': [
-            {
-                'id': pessoa.id,
-                'nome_pessoa': pessoa.nome_pessoa,
-                'tipo_pessoa': pessoa.tipos_pessoa.nome_tipos_pessoa,  # Corrigido para 'tipos_pessoa'
-                'is_proprietario': pessoa.tipos_pessoa.nome_tipos_pessoa == 'Proprietário'  # Verifica se é proprietário
-            }
-            for pessoa in pessoas
-        ]
-    }
-    return JsonResponse(data)
+
+    if apartamento_id:
+        # Filtra as pessoas associadas ao apartamento
+        pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)
+
+        # Prepara os dados a serem retornados no formato JSON
+        data = {
+            'pessoas': [
+                {
+                    'id': pessoa.id,
+                    'nome_pessoa': pessoa.nome_pessoa,
+                    'tipo_pessoa': pessoa.tipos_pessoa.nome_tipos_pessoa,  # Acesso correto ao tipo de pessoa
+                    'is_proprietario': pessoa.tipos_pessoa.nome_tipos_pessoa == 'Proprietário'
+                    # Verifica se é 'Proprietário'
+                }
+                for pessoa in pessoas
+            ]
+        }
+        return JsonResponse(data)
+
+    # Caso o apartamento_id não seja fornecido
+    return JsonResponse({'pessoas': []}, status=400)
 
 @login_required
 def carregar_apartamentos(request, condominio_id):
@@ -118,16 +128,23 @@ def get_apartamento_sindico(request):
         apartamento = sindico.pessoa.apartamento
         apartamento_nome = None
 
+        # Acessa o objeto Pessoa diretamente
+        pessoa = sindico.pessoa  # Acessa o objeto Pessoa completo
+        pessoa_nome = pessoa.nome_pessoa  # Agora acessa corretamente o nome da pessoa
+
         if apartamento:
             apartamento_nome = apartamento.nome_apartamento  # Pega o nome do apartamento
 
         # Adiciona os dados do síndico à lista
         sindico_data.append({
-            'apartamento_nome': apartamento_nome  # Nome do apartamento
+            'apartamento_nome': apartamento_nome,  # Nome do apartamento
+            'pessoa_nome': pessoa_nome  # Nome da pessoa (síndico)
         })
-    print(sindico_data)
+
+    print(sindico_data)  # Para verificar os dados retornados
     # Retorna a lista como resposta JSON
     return JsonResponse({'sindicos': sindico_data})
+
 
 
 
