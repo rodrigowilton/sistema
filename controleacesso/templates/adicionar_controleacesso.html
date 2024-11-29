@@ -18,7 +18,6 @@
         <div class="row">
             <!-- Primeira coluna -->
             <div class="col-md-6">
-                <!-- Colaborador -->
                 <label for="colaborador"><strong>Colaborador:</strong></label>
                 <select id="colaborador" name="colaborador" class="form-control">
                     <option value="">Selecione um Colaborador</option>
@@ -27,7 +26,6 @@
                     {% endfor %}
                 </select>
 
-                <!-- Tipos de Controle de Acesso -->
                 <label for="tipos_controles_acesso"><strong>Tipos de Controle de Acesso:</strong></label>
                 <select id="tipos_controles_acesso" name="tipos_controles_acesso" class="form-control">
                     <option value="">Selecione...</option>
@@ -36,7 +34,6 @@
                     {% endfor %}
                 </select>
 
-                <!-- Perfil do Solicitante -->
                 <label for="perfil_solicitante"><strong>Perfil Do Solicitante:</strong></label>
                 <select id="perfil_solicitante" name="perfil_solicitante" class="form-control">
                     <option value="">Selecione um perfil</option>
@@ -46,7 +43,6 @@
                     <option value="outros">Outros</option>
                 </select>
 
-                <!-- Condomínio -->
                 <label for="condominio"><strong>Condomínio:</strong></label>
                 <select id="condominio" name="condominio" class="form-control">
                     <option value="">Selecione um Condomínio</option>
@@ -55,231 +51,107 @@
                     {% endfor %}
                 </select>
 
-                <!-- Apartamento -->
-                <label for="apartamento" class="form-label" id="apartamento-label">Apartamento:</label>
+                <label for="apartamento" class="form-label">Apartamento:</label>
                 <select name="apartamento" id="apartamento" class="form-control" required>
                     <option value="">Selecione o Apartamento...</option>
                 </select>
 
-                <!-- Pessoa -->
                 <label for="pessoa" class="form-label">Pessoa:</label>
                 <select id="pessoa" name="pessoa" class="form-control">
                     <option value="">Selecione a Pessoa...</option>
-                    <!-- As opções serão preenchidas pelo JavaScript -->
                 </select>
             </div>
 
             <!-- Segunda coluna -->
             <div class="col-md-6">
-                <!-- Execução -->
                 <label for="execucao"><strong>Execução:</strong></label>
                 <select id="execucao" name="execucao" class="form-control">
                     <option value="1">Remoto</option>
                     <option value="2">Presencial</option>
                 </select>
 
-                <!-- Pedido -->
                 <label for="pedido"><strong>Pedido:</strong></label>
                 <select id="pedido" name="pedido" class="form-control" required>
-                    <option value="" disabled selected>Selecione uma opção de Pedido...</option>
+                    <option value="" disabled selected>Selecione...</option>
                     <option value="1">Gratuito</option>
                     <option value="2">Aguardando Pagamento</option>
-                    <option value="6">A receber em dinheiro</option>
-                    <option value="7">A receber por PagSeguro</option>
-                    <option value="8">A receber por transferência</option>
                     <option value="3">Pago em dinheiro</option>
-                    <option value="5">Pago por PagSeguro</option>
                     <option value="4">Pago por transferência</option>
-                    <option value="9">Em análise</option>
                 </select>
 
-                <!-- Quantidade -->
                 <label for="quantidade"><strong>Quantidade:</strong></label>
                 <input type="number" id="quantidade" name="quantidade" class="form-control" min="1" />
 
-                <!-- Descrição -->
                 <label for="descricao"><strong>Descrição para o Cliente:</strong></label>
                 <textarea id="descricao" name="descricao" class="form-control"></textarea>
 
-                <!-- Observação Interna -->
-                <label for="observacao_interna"><strong>Observação Interna:</strong></label>
-                <textarea id="observacao_interna" name="observacao_interna" class="form-control"></textarea>
-
-                <!-- Valor -->
                 <label for="valor"><strong>Valor:</strong></label>
                 <input id="valor" name="valor" type="text" class="form-control" placeholder="Digite o valor">
             </div>
         </div>
 
-        <!-- Botão de submissão -->
         <div class="form-group"><br>
             <button type="submit" class="btn btn-primary">Salvar Controle de Acesso</button>
         </div>
     </form>
 </div>
 
-<!-- Inclua jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Inclua o jQuery Mask Plugin -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
 <script>
+    // Máscaras
     $(document).ready(function() {
-        // Máscaras de telefone e valores
-        $('#telefone1').mask('(00) 0 0000-0000');
-        $('#telefone2').mask('(00) 0 0000-0000');
-        $('#valor').mask('000.000.000.000.000,00', {reverse: true});
+        $('#valor').mask('000.000.000,00', {reverse: true});
     });
 
 
-// aqui apartamento do sindico
+    // Função para atualizar os selects de apartamentos e pessoas
+    function atualizarApartamentosEUsuarios(condominioId, perfilSolicitante) {
+        let apartamentoSelect = document.getElementById('apartamento');
+        let pessoaSelect = document.getElementById('pessoa');
+        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
 
-function atualizarApartamentosEUsuarios(condominioId, perfilSolicitante) {
-    var apartamentoSelect = document.getElementById('apartamento');
-    var pessoaSelect = document.getElementById('pessoa');
-
-    pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
-
-    if (condominioId) {
-        // Carregar apartamentos
-        fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
-            .then(response => response.json())
-            .then(data => {
-                apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
-                data.apartamentos.forEach(function(apartamento) {
-                    var option = document.createElement('option');
-                    option.value = apartamento.id;
-                    option.text = apartamento.nome_apartamento;
-                    apartamentoSelect.appendChild(option);
-                });
-
-                // Se o perfil for "Síndico", selecionar automaticamente o apartamento do síndico
-                if (perfilSolicitante === "sindico") {
-                    fetch("{% url 'get_apartamento_sindico' %}?condominio_id=" + condominioId)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.apartamento_sindico) {
-                                apartamentoSelect.value = data.apartamento_sindico.id; // Seleciona o apartamento do síndico
-                            }
-                        })
-                        .catch(error => console.error('Error fetching apartamento do síndico:', error));
-                }
-            })
-            .catch(error => console.error('Error fetching apartamentos:', error));
-    }
-
-    // Se o perfil for "Síndico", carregue os síndicos
-    if (perfilSolicitante === "sindico") {
-        // Verifique se condominioId está definido
         if (condominioId) {
-            var carregarSindicosUrl = "{% url 'carregar_sindicos' condominio_id=0 %}".replace("0", condominioId);
-
-            fetch(carregarSindicosUrl)
+            // Carregar apartamentos
+            fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.sindicos.length > 0) {
-                        pessoaSelect.innerHTML = '';
-                        data.sindicos.forEach(function(sindico) {
-                            var option = document.createElement('option');
-                            option.value = sindico.id;
-                            option.text = sindico.nome_pessoa + ' (Síndico)';
-                            pessoaSelect.appendChild(option);
-                        });
+                    apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+                    data.apartamentos.forEach(function(apartamento) {
+                        let option = document.createElement('option');
+                        option.value = apartamento.id;
+                        option.text = apartamento.nome_apartamento;
+                        apartamentoSelect.appendChild(option);
+                    });
+
+                    // Se o perfil for Síndico, filtrar apartamentos
+                    if (perfilSolicitante === "sindico") {
+                        fetch("{% url 'get_apartamento_sindico' %}?condominio_id=" + condominioId)
+                            .then(response => response.json())
+                            .then(data => {
+                                apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+                                data.sindicos.forEach(function(sindico) {
+                                    let option = document.createElement('option');
+                                    option.value = sindico.id;
+                                    option.text = sindico.apartamento_nome;
+                                    apartamentoSelect.appendChild(option);
+                                });
+                            });
                     }
-                })
-                .catch(error => console.error('Error fetching sindicos:', error));
-        } else {
-            console.error("Condominio ID não definido!");
+                });
         }
     }
-}
 
-document.getElementById('condominio').addEventListener('change', function() {
-    var condominioId = this.value;
-    var perfilSolicitante = document.getElementById('perfil_solicitante').value;
-    atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
-});
-
-document.getElementById('perfil_solicitante').addEventListener('change', function() {
-    var condominioId = document.getElementById('condominio').value;
-    atualizarApartamentosEUsuarios(condominioId, this.value);
-});
-
-// ate aqui
-
-
-// Chamando a função ao carregar a página para verificar se já é síndico e preencher o apartamento
-document.addEventListener('DOMContentLoaded', function() {
-    var perfilSolicitante = document.getElementById('perfil_solicitante').value;
-    var condominioId = document.getElementById('condominio').value;
-    var apartamentoId = document.getElementById('apartamento').value;
-
-    atualizarApartamentosEUsuarios(condominioId, perfilSolicitante, apartamentoId);
-});
-
-document.getElementById('condominio').addEventListener('change', function() {
-    var condominioId = this.value;
-    var perfilSolicitante = document.getElementById('perfil_solicitante').value;
-    var apartamentoId = document.getElementById('apartamento').value;
-    atualizarApartamentosEUsuarios(condominioId, perfilSolicitante, apartamentoId);
-});
-
-document.getElementById('perfil_solicitante').addEventListener('change', function() {
-    var condominioId = document.getElementById('condominio').value;
-    var perfilSolicitante = this.value;
-    var apartamentoId = document.getElementById('apartamento').value;
-    atualizarApartamentosEUsuarios(condominioId, perfilSolicitante, apartamentoId);
-});
-
-document.getElementById('apartamento').addEventListener('change', function() {
-    var apartamentoId = this.value;
-    var pessoaSelect = document.getElementById('pessoa');
-    pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
-
-    if (apartamentoId) {
-        fetch("{% url 'get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
-            .then(response => response.json())
-            .then(data => {
-                data.pessoas.forEach(function(pessoa) {
-                    var option = document.createElement('option');
-                    option.value = pessoa.id;
-                    option.text = pessoa.nome_pessoa;
-                    pessoaSelect.appendChild(option);
-                });
-            });
-    }
-});
-
-
+    // Eventos
     document.getElementById('condominio').addEventListener('change', function() {
-        var condominioId = this.value;
-        var perfilSolicitante = document.getElementById('perfil_solicitante').value;
+        let condominioId = this.value;
+        let perfilSolicitante = document.getElementById('perfil_solicitante').value;
         atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
     });
 
     document.getElementById('perfil_solicitante').addEventListener('change', function() {
-        var condominioId = document.getElementById('condominio').value;
+        let condominioId = document.getElementById('condominio').value;
         atualizarApartamentosEUsuarios(condominioId, this.value);
     });
-
-    document.getElementById('apartamento').addEventListener('change', function() {
-        var apartamentoId = this.value;
-        var pessoaSelect = document.getElementById('pessoa');
-        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
-
-        if (apartamentoId) {
-            fetch("{% url 'get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
-                .then(response => response.json())
-                .then(data => {
-                    data.pessoas.forEach(function(pessoa) {
-                        var option = document.createElement('option');
-                        option.value = pessoa.id;
-                        option.text = pessoa.nome_pessoa;
-                        pessoaSelect.appendChild(option);
-                    });
-                });
-        }
-    });
 </script>
-
 {% endblock %}

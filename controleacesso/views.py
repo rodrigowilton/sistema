@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from app.models import (ControlesAcessos, TatticaFuncionarios, TiposControlesAcessos, Condominios,
                         Apartamentos, Pessoas, Sindicos, TiposSindicos)
@@ -8,7 +7,6 @@ from controleacesso.forms import ControleAcessoForm
 from django.utils.timezone import now  # Para exibir a data atual se necessário
 from django.contrib import messages  # Para exibir mensagens ao usuário
 from controleacesso.templatetags.custom_tags import adicionar_dias_uteis
-from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
 def verificar_condominio_existe(request):
@@ -106,41 +104,33 @@ def carregar_pessoas(request, apartamento_id):
     pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)
     pessoas_data = [{'id': p.id, 'nome': p.nome_pessoa} for p in pessoas]
     return JsonResponse({'pessoas': pessoas_data})
-@login_required
-def get_apartamento_sindico(request):
-    try:
-        condominio_id = request.GET.get('condominio_id')
-        if condominio_id:
-            condominio = Condominium.objects.get(id=condominio_id)
-            apartamento_sindico = Apartamento.objects.filter(condominio=condominio, is_sindico=True).first()
-            
-            if apartamento_sindico:
-                return JsonResponse({
-                    'apartamento_sindico': {
-                        'id': apartamento_sindico.id,
-                        'nome_apartamento': apartamento_sindico.nome_apartamento
-                    }
-                })
-            else:
-                return JsonResponse({'error': 'Síndico não encontrado'}, status=404)
-        else:
-            return JsonResponse({'error': 'Condomínio não especificado'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+
+
 
 @login_required
 def get_apartamento_sindico(request):
     condominio_id = request.GET.get('condominio_id')
     sindicos = Sindicos.objects.filter(condominio_id=condominio_id)
 
+    sindico_data = []  # Lista que vai conter os dados dos síndicos
+
     for sindico in sindicos:
-        # Obtém o apartamento da pessoa associada ao síndico
-        sindico.pessoa.id = sindico.pessoa.apartamento  # Aqui usamos o relacionamento Pessoa -> Apartamento
-        print(sindicos)
-        print(sindico.pessoa.id)
-    return render(request, 'lista_controleacesso.html', {'sindicos': sindicos})
-    
-    
+        apartamento = sindico.pessoa.apartamento
+        apartamento_nome = None
+
+        if apartamento:
+            apartamento_nome = apartamento.nome_apartamento  # Pega o nome do apartamento
+
+        # Adiciona os dados do síndico à lista
+        sindico_data.append({
+            'apartamento_nome': apartamento_nome  # Nome do apartamento
+        })
+    print(sindico_data)
+    # Retorna a lista como resposta JSON
+    return JsonResponse({'sindicos': sindico_data})
+
+
+
 @login_required
 def carregar_sindicos(request, condominio_id):
     try:
@@ -155,6 +145,7 @@ def carregar_sindicos(request, condominio_id):
                     'id': sindico.pessoa.id,  # ID da pessoa associada ao síndico
                     'nome_pessoa': sindico.pessoa.nome_pessoa  # Nome da pessoa
                 })
+                print(sindico_data)
             return JsonResponse({'sindicos': sindico_data})
         else:
             # Se não houver síndico, retorna None
