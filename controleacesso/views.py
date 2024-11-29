@@ -23,6 +23,7 @@ def adicionar_controleacesso(request):
 
     if request.method == 'POST':
         form = ControleAcessoForm(request.POST)
+        print(form)
         if form.is_valid():
             # Cria a instância sem salvar no banco
             instance = form.save(commit=False)
@@ -127,6 +128,14 @@ def get_apartamento_sindico(request):
     for sindico in sindicos:
         apartamento = sindico.pessoa.apartamento
         apartamento_nome = None
+        tiposindico_nome = None
+
+        # Acessa o tipo de síndico através do relacionamento
+        tiposindico = sindico.tipos_sindico  # Aqui você já tem a instância do tipo de síndico
+
+        # Se o tipo de síndico existir, pega o nome
+        if tiposindico:
+            tiposindico_nome = tiposindico.nome_tipos_sindico
 
         # Acessa o objeto Pessoa diretamente
         pessoa = sindico.pessoa  # Acessa o objeto Pessoa completo
@@ -138,12 +147,14 @@ def get_apartamento_sindico(request):
         # Adiciona os dados do síndico à lista
         sindico_data.append({
             'apartamento_nome': apartamento_nome,  # Nome do apartamento
-            'pessoa_nome': pessoa_nome  # Nome da pessoa (síndico)
+            'pessoa_nome': pessoa_nome,  # Nome da pessoa (síndico)
+            'tiposindico_nome': tiposindico_nome  # Nome do tipo de síndico
         })
 
     print(sindico_data)  # Para verificar os dados retornados
     # Retorna a lista como resposta JSON
     return JsonResponse({'sindicos': sindico_data})
+
 
 
 
