@@ -132,7 +132,12 @@ def get_apartamento_sindico(request):
 def get_apartamento_sindico(request):
     condominio_id = request.GET.get('condominio_id')
     sindicos = Sindicos.objects.filter(condominio_id=condominio_id)
-    
+
+    for sindico in sindicos:
+        # Obtém o apartamento da pessoa associada ao síndico
+        sindico.pessoa.id = sindico.pessoa.apartamento  # Aqui usamos o relacionamento Pessoa -> Apartamento
+        print(sindicos)
+        print(sindico.pessoa.id)
     return render(request, 'lista_controleacesso.html', {'sindicos': sindicos})
     
     
