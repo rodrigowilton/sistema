@@ -35,6 +35,7 @@ class ControleAcessoMoradorForm(forms.ModelForm):
             raise forms.ValidationError("O campo 'Pessoa' é obrigatório.")
         return pessoa
 
+
     # Sobrescrevendo o método 'save' para garantir que as datas 'created' e 'modified' sejam preenchidas corretamente
     def save(self, commit=True, *args, **kwargs):
         instance = super().save(commit=False, *args, **kwargs)

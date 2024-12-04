@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from app.models import (ControlesAcessos, TatticaFuncionarios, TiposControlesAcessos, Condominios,
                         Apartamentos, Pessoas, Sindicos, TiposSindicos)
 from django.http import JsonResponse
@@ -148,52 +149,60 @@ def get_pessoas(request):
 
 @login_required
 def adicionar_controle_acesso_morador(request):
-    condominios = Condominios.objects.filter(status=1)  # Filtra os condomínios com status ativo
-    colaboradores = TatticaFuncionarios.objects.all()  # Obtém todos os colaboradores
-    tipos_controles_acesso = TiposControlesAcessos.objects.all()  # Obtém todos os tipos de controle de acesso
+    condominios = Condominios.objects.filter(status=1)
+    colaboradores = TatticaFuncionarios.objects.all()
+    tipos_controles_acesso = TiposControlesAcessos.objects.all()
 
-    apartamentos = []  # Lista para armazenar apartamentos filtrados
-    pessoas = []  # Lista para armazenar pessoas filtradas
+    apartamentos = []
+    pessoas = []
 
-    # Instanciando o formulário
     form = ControleAcessoMoradorForm()
 
     if request.method == 'POST':
         form = ControleAcessoMoradorForm(request.POST)
 
-        # Verifica se o formulário é válido
         if form.is_valid():
-            try:
-                # Atribui o valor de 'data_prazo' manualmente, caso necessário
-                controle = form.save(commit=False)  # Não salva automaticamente no banco ainda
-                if controle.created and not controle.data_prazo:  # Se a data de criação existe e não existe data de prazo
-                    controle.data_prazo = dias_uteis_mais(controle.created,
-                                                          3)  # Calcula a data de prazo com 3 dias úteis
-                    print(f"Data de prazo calculada: {controle.data_prazo}")
 
-                # Salva o objeto no banco de dados
-                controle.save()
-                print("Formulário salvo com sucesso!")  # Mensagem indicando que o formulário foi salvo
-                return redirect('lista_controleacesso')  # Redireciona para a URL que você definiu
+            controle = form.save(commit=False)
+            # Define a data de criação se não preenchida
+            if not controle.created:
+                controle.created = now()
+                print(f"Created preenchido com: {controle.created}")
+
+            try:
+                controle.data_prazo = adicionar_dias_uteis(controle.created, 3)
+                print(f"Data Prazo definida como: {controle.data_prazo}")
             except Exception as e:
-                print(f"Erro ao salvar o formulário: {e}")  # Exibe a mensagem de erro caso ocorra
+                print(f"Erro ao calcular data_prazo: {e}")
+                messages.error(request, "Erro ao calcular a data limite.")
+                return render(request, 'adicionar_controle_acesso_morador.html', {
+                    'form': form,
+                    'colaboradores': colaboradores,
+                    'tipos_controles_acesso': tipos_controles_acesso,
+                    'condominios': condominios,
+                })
+                # Salva o objeto no banco
+            try:
+                controle.save()
+                print("Objeto salvo com sucesso!")
+                messages.success(request, "Controle de acesso adicionado com sucesso!")
+                return redirect('lista_controleacesso')  # Substitua pela URL corret
+            except Exception as e:
+                print(f"Erro ao salvar o formulário: {e}")
 
         else:
-            print("Formulário inválido. Erros de validação detectados.")  # Mensagem caso o formulário seja inválido
+            print(f"Formulário inválido. Erros de validação detectados: {form.errors}")
 
-        # Se o formulário não for válido, faz com que os dados preenchidos sejam mantidos
-        condominio_id = request.POST.get('condominio')  # Obtém o id do condomínio
-        apartamento_id = request.POST.get('apartamento')  # Obtém o id do apartamento
+        # Lógica de preenchimento dos campos, como antes
+        condominio_id = request.POST.get('condominio')
+        apartamento_id = request.POST.get('apartamento')
 
-        # Verifica se o id do condomínio foi fornecido
         if condominio_id:
-            apartamentos = Apartamentos.objects.filter(
-                condominio_id=condominio_id)  # Filtra apartamentos por condomínio
+            apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
             print(f"Condomínio selecionado: {condominio_id}")
 
-            # Se um apartamento foi selecionado, filtra as pessoas associadas ao apartamento
             if apartamento_id:
-                pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)  # Filtra pessoas por apartamento
+                pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)
                 print(f"Apartamento selecionado: {apartamento_id}")
 
     return render(request, 'adicionar_controle_acesso_morador.html', {
@@ -204,6 +213,7 @@ def adicionar_controle_acesso_morador(request):
         'apartamentos': apartamentos,
         'pessoas': pessoas,
     })
+
 
 
 @login_required
