@@ -169,11 +169,14 @@
             </td>
             <td>
                 {% if controle.data_prazo %}
+                    {{ controle.data_prazo }} <!-- Exibe o valor para verificar -->
                     {% if controle|is_vencido %}
                         <span class="vencido">Vencido</span>
                     {% else %}
                         {{ controle.data_prazo|date:"d/m/Y" }}
                     {% endif %}
+                {% else %}
+                    <span>Data prazo não definida</span>
                 {% endif %}
             </td>
 

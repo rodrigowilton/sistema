@@ -2,7 +2,7 @@ from django import forms
 from django.utils import timezone
 from app.models import ControlesAcessos, Apartamentos, Pessoas
 
-class ControleAcessoForm(forms.ModelForm):
+class ControleAcessoMoradorForm(forms.ModelForm):
     class Meta:
         model = ControlesAcessos
         fields = [
@@ -16,7 +16,7 @@ class ControleAcessoForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        super(ControleAcessoForm, self).__init__(*args, **kwargs)
+        super(ControleAcessoMoradorForm, self).__init__(*args, **kwargs)
 
         # Filtrando os campos de Apartamento e Pessoa para exibir apenas os ativos
         self.fields['apartamento'].queryset = Apartamentos.objects.filter(status=1)  # Apenas apartamentos ativos
@@ -56,3 +56,4 @@ class ControleAcessoForm(forms.ModelForm):
             instance.save()
 
         return instance
+

@@ -1,0 +1,203 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block menu %}
+<!-- Código do menu permanece o mesmo -->
+{% endblock %}
+
+{% block content %}
+<br>
+<h2 style="text-align: center;">Adicionar Controle de Acesso</h2>
+
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="1">
+
+        <div class="row">
+            <!-- Primeira coluna -->
+            <div class="col-md-6">
+                <label for="colaborador"><strong>Colaborador:</strong></label>
+                <select id="colaborador" name="colaborador" class="form-control">
+                    <option value="">Selecione um Colaborador</option>
+                    {% for colaborador in colaboradores %}
+                        <option value="{{ colaborador.id }}">{{ colaborador.nome_funcionario }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="tipos_controles_acesso"><strong>Tipos de Controle de Acesso:</strong></label>
+                <select id="tipos_controles_acesso" name="tipos_controles_acesso" class="form-control">
+                    <option value="">Selecione...</option>
+                    {% for tipo in tipos_controles_acesso %}
+                        <option value="{{ tipo.id }}">{{ tipo.nome_tipos_controles_acesso }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="perfil_solicitante"><strong>Perfil Do Solicitante:</strong></label>
+                <select id="perfil_solicitante" name="perfil_solicitante" class="form-control">
+                    <option value="">Selecione um perfil</option>
+                    <option value="sindico">Síndico</option>
+                </select>
+
+                <label for="condominio"><strong>Condomínio:</strong></label>
+                <select id="condominio" name="condominio" class="form-control">
+                    <option value="">Selecione um Condomínio</option>
+                    {% for condominio in condominios %}
+                        <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="sindico" class="form-label">Sindico:</label>
+                <select id="sindico" name="sindico" class="form-control">
+                    <option value="">Selecione o sindico...</option>
+                </select>
+
+            </div>
+
+            <!-- Segunda coluna -->
+            <div class="col-md-6">
+                <label for="execucao"><strong>Execução:</strong></label>
+                <select id="execucao" name="execucao" class="form-control">
+                    <option value="1">Remoto</option>
+                    <option value="2">Presencial</option>
+                </select>
+
+                <label for="pedido"><strong>Pedido:</strong></label>
+                <select id="pedido" name="pedido" class="form-control" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    <option value="1">Gratuito</option>
+                    <option value="2">Aguardando Pagamento</option>
+                    <option value="3">Pago em dinheiro</option>
+                    <option value="4">Pago por transferência</option>
+                    <option value="5">Pago por Pagseguro</option>
+                    <option value="6">A receber em dinheiro</option>
+                    <option value="7">A receber por Pagseguro</option>
+                    <option value="8">A receber por transferência</option>
+                    <option value="9">Em Análise</option>
+                </select>
+
+
+                <label for="quantidade"><strong>Quantidade:</strong></label>
+                <input type="number" id="quantidade" name="quantidade" class="form-control" min="1" />
+
+                <label for="descricaocliente"><strong>Descrição para o Cliente:</strong></label>
+                <textarea id="descricaocliente" name="descricaocliente" class="form-control"></textarea>
+
+                <label for="descricaointerna"><strong>Descrição interna:</strong></label>
+                <textarea id="descricaointerna" name="descricaointerna" class="form-control"></textarea>
+
+                <label for="valor"><strong>Valor:</strong></label>
+                <input id="valor" name="valor" type="text" class="form-control" placeholder="Digite o valor">
+            </div>
+        </div>
+
+        <div class="form-group"><br>
+            <button type="submit" class="btn btn-primary">Salvar Controle de Acesso</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+    // Máscaras
+    $(document).ready(function() {
+        $('#valor').mask('000.000.000,00', {reverse: true});
+    });
+
+    function atualizarApartamentosEUsuarios(condominioId, perfilSolicitante) {
+    let apartamentoSelect = document.getElementById('apartamento');
+    let pessoaSelect = document.getElementById('pessoa');
+    let apartamentoInput = document.getElementById('apartamento_input');
+
+    // Limpar o conteúdo atual dos selects
+    pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+    apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
+
+    if (condominioId) {
+        // Carregar apartamentos
+        fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
+            .then(response => response.json())
+            .then(data => {
+                data.apartamentos.forEach(function(apartamento) {
+                    let option = document.createElement('option');
+                    option.value = apartamento.id;
+                    option.text = apartamento.nome_apartamento;
+                    apartamentoSelect.appendChild(option);
+                });
+
+                // Se o perfil for "síndico", então deve buscar também as pessoas associadas
+                if (perfilSolicitante === "sindico") {
+                    fetch("{% url 'get_apartamento_sindico' %}?condominio_id=" + condominioId)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Limpar dropdown de pessoas antes de adicionar novas opções
+                            pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+
+                            // Exibe o campo de input de apartamento e esconde o select
+                            apartamentoSelect.style.display = 'none';
+                            apartamentoInput.style.display = 'none';
+
+                            // Iterar sobre os sindicos e verificar a pessoa
+                            let pessoaSelecionadaId = $('#pessoa').val();  // Pegando a pessoa selecionada
+                            let nomeApartamento = '';
+
+                            data.sindicos.forEach(function(sindico) {
+                                // Verificar se a pessoa está no objeto e pegar o nome do apartamento
+                                if (sindico.pessoa_id == pessoaSelecionadaId) {
+                                    nomeApartamento = sindico.apartamento_nome;
+                                    apartamentoInput.value = nomeApartamento;
+                                }
+
+                                let option = document.createElement('option');
+                                option.value = sindico.pessoa_id;
+                                option.text = sindico.pessoa_nome + ' (' + sindico.apartamento_nome + ' - ' + sindico.tiposindico_nome + ')';
+                                pessoaSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Erro ao carregar apartamentos e pessoas para síndico:', error));
+                }
+            })
+            .catch(error => console.error('Erro ao carregar apartamentos:', error));
+    }
+}
+
+    function atualizarPessoasPorApartamento(apartamentoId) {
+        let pessoaSelect = document.getElementById('pessoa');
+        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
+
+        if (apartamentoId && apartamentoId !== "undefined") {
+            // Carregar pessoas vinculadas ao apartamento
+            fetch("{% url 'get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
+                .then(response => response.json())
+                .then(data => {
+                    data.pessoas.forEach(function(pessoa) {
+                        let option = document.createElement('option');
+                        option.value = pessoa.id;
+                        option.text = pessoa.nome_pessoa + ' (' + pessoa.tipo_pessoa + ')';
+                        pessoaSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Erro ao carregar pessoas:', error));
+        }
+    }
+
+    // Eventos para atualizar os selects ao mudar os valores
+    $('#condominio').change(function() {
+        let condominioId = $(this).val();
+        let perfilSolicitante = $('#perfil_solicitante').val();
+        atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
+    });
+
+    $('#apartamento').change(function() {
+        let apartamentoId = $(this).val();
+        atualizarPessoasPorApartamento(apartamentoId);
+    });
+
+    $('#perfil_solicitante').change(function() {
+        let perfilSolicitante = $(this).val();
+        let condominioId = $('#condominio').val();
+        atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
+    });
+</script>
+{% endblock %}
