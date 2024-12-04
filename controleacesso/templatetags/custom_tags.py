@@ -28,6 +28,17 @@ def dias_uteis_mais(data_criacao, limite_dias):
 
 @register.filter
 def is_vencido(controle):
+    # Verifica se ambos os campos 'data_prazo' e 'created' estão definidos
     if controle.data_prazo and controle.created:
-        return dias_uteis_mais(controle.created, 3)
-    return False
+        #print(f"Data de criação: {controle.created}")
+        #print(f"Data de prazo: {controle.data_prazo}")
+
+        # Chama a função 'dias_uteis_mais' para calcular a data com 3 dias úteis a mais
+        data_calculada = dias_uteis_mais(controle.created, 3)
+        #print(f"Data calculada com 3 dias úteis a mais: {data_calculada}")
+
+        return data_calculada
+    else:
+        # Caso 'data_prazo' ou 'created' não esteja definido, retorna False
+        print("Campos 'data_prazo' ou 'created' não definidos")
+        return False

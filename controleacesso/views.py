@@ -6,7 +6,8 @@ from django.http import JsonResponse
 from controleacesso.forms import ControleAcessoMoradorForm
 from django.utils.timezone import now  # Para exibir a data atual se necessário
 from django.contrib import messages  # Para exibir mensagens ao usuário
-from controleacesso.templatetags.custom_tags import adicionar_dias_uteis
+from controleacesso.templatetags.custom_tags import adicionar_dias_uteis, dias_uteis_mais
+
 
 @login_required
 def verificar_condominio_existe(request):
@@ -163,8 +164,15 @@ def adicionar_controle_acesso_morador(request):
         # Verifica se o formulário é válido
         if form.is_valid():
             try:
+                # Atribui o valor de 'data_prazo' manualmente, caso necessário
+                controle = form.save(commit=False)  # Não salva automaticamente no banco ainda
+                if controle.created and not controle.data_prazo:  # Se a data de criação existe e não existe data de prazo
+                    controle.data_prazo = dias_uteis_mais(controle.created,
+                                                          3)  # Calcula a data de prazo com 3 dias úteis
+                    print(f"Data de prazo calculada: {controle.data_prazo}")
+
                 # Salva o objeto no banco de dados
-                form.save()
+                controle.save()
                 print("Formulário salvo com sucesso!")  # Mensagem indicando que o formulário foi salvo
                 return redirect('lista_controleacesso')  # Redireciona para a URL que você definiu
             except Exception as e:
@@ -252,6 +260,7 @@ def lista_controleacesso(request):
 
     # Filtra status; padrão será mostrar apenas "pendentes" (status=1) caso não seja selecionado um status
     if status:
+        print(status)
         controles = controles.filter(status=status)
     else:
         controles = controles.filter(status=1)  # Apenas pendentes por padrão
@@ -301,8 +310,12 @@ def lista_controleacesso_pendente(request):
     if data_fim:
         controles = controles.filter(created__lte=data_fim)
 
-    # Filtra status para mostrar apenas pendentes
-    controles = controles.filter(status=1)
+    # Filtra status; padrão será mostrar apenas "pendentes" (status=1) caso não seja selecionado um status
+    if status:
+        print(status)
+        controles = controles.filter(status=status)
+    else:
+        controles = controles.filter(status=1)
 
     # Para dropdowns de seleção
     condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
