@@ -57,7 +57,6 @@
 
                 <label for="perfil_solicitante"><strong>Perfil Do Solicitante:</strong></label>
                 <select id="perfil_solicitante" name="perfil_solicitante" class="form-control">
-                    <option value="">Selecione um perfil</option>
                     <option value="sindico">Síndico</option>
                 </select>
 
@@ -69,10 +68,11 @@
                     {% endfor %}
                 </select>
 
-                <label for="sindico" class="form-label">Sindico:</label>
+                <label for="sindico" class="form-label">Síndico:</label>
                 <select id="sindico" name="sindico" class="form-control">
-                    <option value="">Selecione o sindico...</option>
+                    <option value="">Selecione o síndico...</option>
                 </select>
+
 
             </div>
 
@@ -135,7 +135,7 @@ $(document).ready(function () {
         // Se um condomínio for selecionado, faz a requisição
         if (condominioId) {
             $.ajax({
-                url: '{% url "carregar_sindicos" %}',
+                url: '{% url "carregar_sindicos" %}',  // URL que carrega os síndicos para o condomínio
                 data: { 'condominio_id': condominioId },
                 dataType: 'json',
                 success: function (data) {
@@ -147,10 +147,11 @@ $(document).ready(function () {
                             // Concatena nome do síndico e tipo de síndico
                             var displayText = sindico.nome_pessoa + ' - ' + sindico.tipos_sindico.nome_tipos_sindico;
 
+                            // Adiciona a opção ao select de síndicos
                             $('#sindico').append(
                                 $('<option>', {
-                                    value: sindico.id,
-                                    text: displayText // Exibe o nome e o tipo concatenados
+                                    value: sindico.id,  // ID do síndico como valor
+                                    text: displayText  // Exibe o nome e o tipo concatenados
                                 })
                             );
                         });
@@ -173,6 +174,9 @@ $(document).ready(function () {
                     );
                 },
             });
+        } else {
+            // Caso o condomínio não seja selecionado, limpar a lista de síndicos
+            $('#sindico').html('<option value="">Selecione o síndico...</option>');
         }
     });
 });

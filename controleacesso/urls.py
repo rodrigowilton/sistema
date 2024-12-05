@@ -24,6 +24,8 @@ urlpatterns = [
 
     path('carregar-sindicos/', views.carregar_sindicos, name='carregar_sindicos'),
     path('carregar-funcionarios/', views.carregar_funcionarios, name='carregar_funcionarios'),
+    path('adicionar-controle-acesso/', views.adicionar_controle_acesso_sindico,
+         name='adicionar_controle_acesso_sindico'),
 
 ]
 

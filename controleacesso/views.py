@@ -1,15 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_GET
-
-from django.utils import timezone
 from app.models import (ControlesAcessos, TatticaFuncionarios, TiposControlesAcessos, Condominios,
                         Apartamentos, Pessoas, Sindicos, TiposSindicos)
 from django.http import JsonResponse
-from controleacesso.forms import ControleAcessoMoradorForm
 from django.utils.timezone import now  # Para exibir a data atual se necessário
 from django.contrib import messages  # Para exibir mensagens ao usuário
 from controleacesso.templatetags.custom_tags import adicionar_dias_uteis, dias_uteis_mais
+from controleacesso.forms import ControleAcessoMoradorForm, ControleAcessoSindicoForms
+
 import logging
 
 # Configuração do logging
@@ -261,19 +260,43 @@ def adicionar_controle_acesso_morador(request):
     })
 
 
-
 @login_required
 def adicionar_controle_acesso_sindico(request):
-    condominios = Condominios.objects.filter(status=1)
-    colaboradores = TatticaFuncionarios.objects.all()
-    tipos_controles_acesso = TiposControlesAcessos.objects.all()
+    # Obtendo dados para os dropdowns do formulário
+    condominios = Condominios.objects.filter(status=1)  # Apenas condomínios com status = 1
+    colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
+    tipos_controles_acesso = TiposControlesAcessos.objects.all()  # Todos os tipos de controle de acesso
 
+    # Processando o formulário
+    if request.method == 'POST':
+        form = ControleAcessoSindicoForms(request.POST)
+
+        # Imprimindo o conteúdo do formulário recebido
+        #print("Formulário enviado:", request.POST)
+        #print("Formulário instanciado:", form)
+
+        if form.is_valid():
+            print(f"Valor do síndico: {form.cleaned_data['sindico']}")
+
+            form.save()  # Salva o controle de acesso
+            print("Formulário válido. Controle de Acesso Sindico salvo.")
+            return redirect('lista_controleacesso')  # Redireciona para a lista de controles
+        else:
+            # Caso o formulário não seja válido, imprimimos os erros
+            print("Erros no formulário:", form.errors)
+
+    else:
+        form = ControleAcessoSindicoForms()
+
+    # Renderizando o template com os dados e o formulário
+    print("Formulário não enviado. Renderizando template...")
     return render(request, 'adicionar_controle_acesso_sindico.html', {
+        'form': form,
         'colaboradores': colaboradores,
         'condominios': condominios,
         'tipos_controles_acesso': tipos_controles_acesso,
-
     })
+
 
 @login_required
 def adicionar_controle_acesso_funcionario_condominio(request):
