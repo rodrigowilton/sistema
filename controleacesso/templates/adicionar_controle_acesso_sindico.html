@@ -1,12 +1,34 @@
 {% extends 'base_login.html' %}
 {% load static %}
+{% load custom_tags %}
+
 
 {% block menu %}
-<!-- Código do menu permanece o mesmo -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_slc' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+</nav>
 {% endblock %}
 
 {% block content %}
-<br>
+    <br><br><br><br>
+
 <h2 style="text-align: center;">Adicionar Controle de Acesso Síndico</h2>
 
 <div class="container">
@@ -158,40 +180,6 @@ $(document).ready(function () {
 // aqui finaliza
 
 
-// inicia abusca dos funcionarios do condominio.
-$(document).ready(function() {
-    // Função para carregar funcionários do condomínio selecionado
-    $('#condominio').change(function() {
-        var condominioId = $(this).val();
-
-        // Limpa o select de colaboradores
-        //$('#colaborador').html('<option value="">Selecione um Colaborador</option>');
-
-        // Se um condomínio for selecionado, faz a requisição
-        if (condominioId) {
-            $.ajax({
-                url: '{% url "carregar_funcionarios" %}',  // Crie esta URL no urls.py
-                data: {
-                    'condominio_id': condominioId
-                },
-                dataType: 'json',
-                success: function(data) {
-                    // Popula o select de funcionários com os resultados
-                    $.each(data, function(index, funcionario) {
-                        $('#colaborador').append(
-                            $('<option>', {
-                                value: funcionario.id,
-                                text: funcionario.nome_funcionario
-                            })
-                        );
-                    });
-                }
-            });
-        }
-    });
-});
-
-// aqui finaliza
 
 </script>
 {% endblock %}

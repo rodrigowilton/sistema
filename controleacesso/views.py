@@ -117,35 +117,6 @@ def get_apartamento_sindico(request):
     return JsonResponse({'sindicos': sindico_data})
 
 
-
-
-
-@login_required
-def carregar_sindicos2(request, condominio_id):
-    try:
-        # Buscar os síndicos associados ao condomínio
-        sindicos = Sindicos.objects.filter(condominio_id=condominio_id, status=1)  # Filtra por status ativo
-
-        if sindicos.exists():
-            # Se houver síndicos, retorna as informações
-            sindico_data = []
-            for sindico in sindicos:
-                sindico_data.append({
-                    'id': sindico.pessoa.id,  # ID da pessoa associada ao síndico
-                    'nome_pessoa': sindico.pessoa.nome_pessoa  # Nome da pessoa
-                })
-            return JsonResponse({'sindicos': sindico_data})
-        else:
-            # Se não houver síndico, retorna None
-            return JsonResponse({'sindicos': None})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
-
-
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_GET
-
 @login_required
 @require_GET
 def carregar_sindicos(request):
@@ -236,7 +207,6 @@ def adicionar_controle_acesso_morador(request):
 
     if request.method == 'POST':
         form = ControleAcessoMoradorForm(request.POST)
-
         if form.is_valid():
 
             controle = form.save(commit=False)
