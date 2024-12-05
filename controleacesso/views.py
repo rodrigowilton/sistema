@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_GET
+
 from django.utils import timezone
 from app.models import (ControlesAcessos, TatticaFuncionarios, TiposControlesAcessos, Condominios,
                         Apartamentos, Pessoas, Sindicos, TiposSindicos)
@@ -8,6 +10,14 @@ from controleacesso.forms import ControleAcessoMoradorForm
 from django.utils.timezone import now  # Para exibir a data atual se necessário
 from django.contrib import messages  # Para exibir mensagens ao usuário
 from controleacesso.templatetags.custom_tags import adicionar_dias_uteis, dias_uteis_mais
+import logging
+
+# Configuração do logging
+logging.basicConfig(
+    level=logging.DEBUG,  # Nível mínimo para capturar mensagens
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -111,7 +121,7 @@ def get_apartamento_sindico(request):
 
 
 @login_required
-def carregar_sindicos(request, condominio_id):
+def carregar_sindicos2(request, condominio_id):
     try:
         # Buscar os síndicos associados ao condomínio
         sindicos = Sindicos.objects.filter(condominio_id=condominio_id, status=1)  # Filtra por status ativo
@@ -130,6 +140,72 @@ def carregar_sindicos(request, condominio_id):
             return JsonResponse({'sindicos': None})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_GET
+
+@login_required
+@require_GET
+def carregar_sindicos(request):
+    condominio_id = request.GET.get('condominio_id')
+
+    # Log para depuração
+    print(f"Recebido condominio_id: {condominio_id}")
+
+    try:
+        if not condominio_id:
+            return JsonResponse({'error': 'O ID do condomínio é obrigatório.'}, status=400)
+
+        # Consulta pelo campo correto 'condominio'
+        sindicos = Sindicos.objects.filter(condominio=condominio_id, status=1).select_related('tipos_sindico')
+
+        if sindicos.exists():
+            # Monta a lista de síndicos encontrados, incluindo o tipo de síndico
+            sindico_data = [
+                {
+                    'id': sindico.pessoa.id if sindico.pessoa else None,
+                    'nome_pessoa': sindico.pessoa.nome_pessoa if sindico.pessoa else "Não informado",
+                    'tipos_sindico': {
+                        'nome_tipos_sindico': sindico.tipos_sindico.nome_tipos_sindico
+                    } if sindico.tipos_sindico else None,
+                }
+                for sindico in sindicos
+            ]
+
+            # Log para depuração
+            print(f"Síndicos encontrados: {sindico_data}")
+            return JsonResponse({'sindicos': sindico_data})
+
+        else:
+            # Se não houver síndicos, retorna uma lista vazia
+            return JsonResponse({'sindicos': []})
+    except Exception as e:
+        # Log de erro detalhado
+        print(f"Erro ao carregar síndicos: {e}", exc_info=True)
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+
+
+@login_required
+@require_GET
+def carregar_funcionarios(request):
+    condominio_id = request.GET.get('condominio_id')
+
+    try:
+        # Ajuste esta consulta conforme a estrutura exata dos seus modelos
+        funcionarios = TatticaFuncionarios.objects.filter(
+            condominio_id=condominio_id
+        ).values('id', 'nome_funcionario')
+
+        return JsonResponse(list(funcionarios), safe=False)
+
+    except Exception as e:
+        # Log the error
+        logger.error(f"Erro ao carregar funcionários: {e}")
+        return JsonResponse([], safe=False)
 
 
 def get_apartamentos(request):
@@ -218,10 +294,16 @@ def adicionar_controle_acesso_morador(request):
 
 @login_required
 def adicionar_controle_acesso_sindico(request):
-    """
-    View para renderizar o template de controle de acesso do síndico.
-    """
-    return render(request, 'adicionar_controle_acesso_sindico.html')
+    condominios = Condominios.objects.filter(status=1)
+    colaboradores = TatticaFuncionarios.objects.all()
+    tipos_controles_acesso = TiposControlesAcessos.objects.all()
+
+    return render(request, 'adicionar_controle_acesso_sindico.html', {
+        'colaboradores': colaboradores,
+        'condominios': condominios,
+        'tipos_controles_acesso': tipos_controles_acesso,
+
+    })
 
 @login_required
 def adicionar_controle_acesso_funcionario_condominio(request):

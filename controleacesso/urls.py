@@ -6,7 +6,7 @@ urlpatterns = [
     path('adicionar/', views.adicionar_controleacesso, name='adicionar_controleacesso'),
     path('carregar_apartamentos/<int:condominio_id>/', views.carregar_apartamentos, name='carregar_apartamentos'),
     path('carregar_pessoas/<int:apartamento_id>/', views.carregar_pessoas, name='carregar_pessoas'),
-    path('carregar_sindicos/<int:condominio_id>/', views.carregar_sindicos, name='carregar_sindicos'),
+    #path('carregar_sindicos/<int:condominio_id>/', views.carregar_sindicos, name='carregar_sindicos'),
     path('menu_slc/', views.lista_controleacesso_pendente, name='menu_slc'),
     path('get_apartamentos_por_condominio/', views.get_apartamentos_por_condominio,
          name='get_apartamentos_por_condominio'),
@@ -21,5 +21,10 @@ urlpatterns = [
     path('adicionar_controle_acesso_outros/', views.adicionar_controle_acesso_outros, name='adicionar_controle_acesso_outros'),
     path('get_apartamentos/', views.get_apartamentos, name='get_apartamentos'),
     path('get_pessoas/', views.get_pessoas, name='get_pessoas'),
+
+    path('carregar-sindicos/', views.carregar_sindicos, name='carregar_sindicos'),
+    path('carregar-funcionarios/', views.carregar_funcionarios, name='carregar_funcionarios'),
+
 ]
+
 
