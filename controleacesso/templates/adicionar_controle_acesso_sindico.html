@@ -2,7 +2,6 @@
 {% load static %}
 {% load custom_tags %}
 
-
 {% block menu %}
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
@@ -27,7 +26,7 @@
 {% endblock %}
 
 {% block content %}
-    <br><br><br><br>
+<br><br><br><br>
 
 <h2 style="text-align: center;">Adicionar Controle de Acesso Síndico</h2>
 
@@ -35,6 +34,10 @@
     <form method="POST">
         {% csrf_token %}
         <input type="hidden" name="status" value="1">
+
+        <!-- Campos ocultos para as datas -->
+        <input type="hidden" name="data_criacao" value="{{ current_datetime }}">
+        <input type="hidden" name="data_modificacao" value="{{ current_datetime }}">
 
         <div class="row">
             <!-- Primeira coluna -->
@@ -56,7 +59,7 @@
                 </select>
 
                 <label for="perfil_solicitante"><strong>Perfil Do Solicitante:</strong></label>
-                <select id="perfil_solicitante" name="perfil_solicitante" class="form-control">
+                <select id="perfil_solicitante" name="perfil_solicitante" class="form-control" readonly>
                     <option value="sindico">Síndico</option>
                 </select>
 
@@ -69,8 +72,15 @@
                 </select>
 
                 <label for="sindico" class="form-label">Síndico:</label>
-                <select id="sindico" name="sindico" class="form-control">
+                <select id="sindico" name="sindico" class="form-control" onchange="document.getElementById('solicitante').value = this.value;">
                     <option value="">Selecione o síndico...</option>
+                    {% for sindico in sindicos %}
+                        <option value="{{ sindico.id }}">
+                            {{ sindico.pessoa.nome_pessoa }}
+                        </option>
+                    {% empty %}
+                        <option value="">Nenhum síndico encontrado</option>
+                    {% endfor %}
                 </select>
 
 
@@ -98,7 +108,6 @@
                     <option value="9">Em Análise</option>
                 </select>
 
-
                 <label for="quantidade"><strong>Quantidade:</strong></label>
                 <input type="number" id="quantidade" name="quantidade" class="form-control" min="1" />
 
@@ -118,72 +127,38 @@
         </div>
     </form>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
+    // inicia busca sindico por condominio
+document.getElementById('condominio').addEventListener('change', function() {
+    const condominioId = this.value;
 
-    // aqui inicia a busca por sindico
+    if (condominioId) {
+        const url = `/controleacesso/get_sindicos_por_condominio/${condominioId}/`;
+        console.log('URL da requisição:', url); // Depuração
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const sindicoSelect = document.getElementById('sindico');
+                sindicoSelect.innerHTML = '<option value="">Selecione o síndico...</option>';
 
-$(document).ready(function () {
-    $('#condominio').change(function () {
-        var condominioId = $(this).val();
+                data.forEach(sindico => {
+                    const option = document.createElement('option');
+                    option.value = sindico.id;
+                    option.textContent = `${sindico.nome_pessoa} (${sindico.tipo_sindico})`;
+                    sindicoSelect.appendChild(option);
+                });
 
-        // Limpa o select de síndicos e adiciona uma opção padrão
-        $('#sindico').html('<option value="">Selecione o síndico...</option>');
-
-        // Se um condomínio for selecionado, faz a requisição
-        if (condominioId) {
-            $.ajax({
-                url: '{% url "carregar_sindicos" %}',  // URL que carrega os síndicos para o condomínio
-                data: { 'condominio_id': condominioId },
-                dataType: 'json',
-                success: function (data) {
-                    console.log('Dados recebidos:', data);
-
-                    // Verifica se há síndicos no JSON retornado
-                    if (data.sindicos && data.sindicos.length > 0) {
-                        $.each(data.sindicos, function (index, sindico) {
-                            // Concatena nome do síndico e tipo de síndico
-                            var displayText = sindico.nome_pessoa + ' - ' + sindico.tipos_sindico.nome_tipos_sindico;
-
-                            // Adiciona a opção ao select de síndicos
-                            $('#sindico').append(
-                                $('<option>', {
-                                    value: sindico.id,  // ID do síndico como valor
-                                    text: displayText  // Exibe o nome e o tipo concatenados
-                                })
-                            );
-                        });
-                    } else {
-                        $('#sindico').append(
-                            $('<option>', {
-                                value: '',
-                                text: 'Nenhum síndico encontrado',
-                            })
-                        );
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Erro na requisição:', status, error);
-                    $('#sindico').append(
-                        $('<option>', {
-                            value: '',
-                            text: 'Erro ao carregar síndicos',
-                        })
-                    );
-                },
-            });
-        } else {
-            // Caso o condomínio não seja selecionado, limpar a lista de síndicos
-            $('#sindico').html('<option value="">Selecione o síndico...</option>');
-        }
-    });
+                if (data.length === 0) {
+                    const noSindicoOption = document.createElement('option');
+                    noSindicoOption.value = '';
+                    noSindicoOption.textContent = 'Nenhum síndico encontrado';
+                    sindicoSelect.appendChild(noSindicoOption);
+                }
+            })
+            .catch(error => console.error('Erro ao buscar síndicos:', error));
+    }
 });
-
-// aqui finaliza
-
-
-
+    // dinaliza a interacoa
 </script>
+
 {% endblock %}

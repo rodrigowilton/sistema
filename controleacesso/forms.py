@@ -64,14 +64,11 @@ class ControleAcessoSindicoForms(forms.ModelForm):
     class Meta:
         model = ControlesAcessos
         fields = [
-            'condominio', 'tipos_controles_acesso', 'tattica_funcionario', 'apartamento',
-            'pessoa', 'condominios_funcionario', 'sindico', 'entregador', 'realizador',
-            'solicitante', 'execucao', 'pedido', 'quantidade', 'valor', 'descricao',
-            'identificador', 'agendado', 'promo_status', 'data_prazo', 'data_entrega',
-            'data_final', 'data_pagamento', 'comprador_nome', 'comprador_email',
-            'comprador_cpf', 'comprador_telefone', 'metodo_pagamento', 'link_boleto',
-            'codigo_pagseguro', 'status_pagseguro', 'status', 'created', 'modified'
+            'condominio', 'tipos_controles_acesso', 'tattica_funcionario',
+            'sindico', 'execucao', 'pedido', 'quantidade', 'valor', 'descricao',
+            'identificador', 'data_prazo', 'metodo_pagamento', 'status', 'solicitante'
         ]
+        # Não incluímos 'created' e 'modified' nos fields, pois serão manipulados no método save()
 
     def __init__(self, *args, **kwargs):
         super(ControleAcessoSindicoForms, self).__init__(*args, **kwargs)
@@ -80,7 +77,7 @@ class ControleAcessoSindicoForms(forms.ModelForm):
         self.fields['tattica_funcionario'].queryset = Sindicos.objects.filter(status=1)  # Apenas colaboradores ativos
         self.fields['tipos_controles_acesso'].queryset = TiposControlesAcessos.objects.all()
         self.fields['condominio'].queryset = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
-        self.fields['sindico'].queryset = Sindicos.objects.all()  # Apenas síndicos ativos
+        self.fields['sindico'].queryset = Sindicos.objects.filter(status=1)  # Apenas síndicos ativos
 
     # Validação adicional para garantir que os campos 'condominio' e 'sindico' não sejam deixados em branco
     def clean_condominio(self):
@@ -91,8 +88,8 @@ class ControleAcessoSindicoForms(forms.ModelForm):
 
     def clean_sindico(self):
         sindico = self.cleaned_data.get('sindico')
-        if not sindico:
-            raise forms.ValidationError("O campo 'Síndico' é obrigatório.")
+        if not sindico or not Sindicos.objects.filter(id=sindico.id).exists():
+            raise forms.ValidationError("Selecione um síndico válido.")
         return sindico
 
     # Sobrescrevendo o método 'save' para garantir que as datas 'created' e 'modified' sejam preenchidas corretamente
@@ -103,7 +100,6 @@ class ControleAcessoSindicoForms(forms.ModelForm):
         print("Dados do formulário antes de salvar:")
         print(f"Condomínio: {instance.condominio}")
         print(f"Síndico: {instance.sindico}")
-        print(f"Solicitante: {instance.solicitante}")
         print(f"Data de criação: {instance.created}")
         print(f"Data de modificação: {instance.modified}")
 
@@ -117,8 +113,18 @@ class ControleAcessoSindicoForms(forms.ModelForm):
         sindico = instance.sindico
 
         if condominio and sindico:
-            # Exemplo de como definir 'solicitante' com base no condomínio e síndico
-            instance.solicitante = f'{condominio.nome_condominio} - {sindico.nome_funcionario}'
+            # Acessar o nome do síndico
+            nome_sindico = None
+            if sindico.pessoa:
+                # Buscar o nome da pessoa relacionada ao síndico
+                nome_sindico = sindico.pessoa.nome_pessoa
+
+            if nome_sindico:
+                # Definir 'solicitante' como a combinação do nome do condomínio e nome do síndico
+                instance.solicitante = f'{condominio.nome_condominio} - {nome_sindico}'
+            else:
+                # Caso o síndico não tenha uma pessoa associada
+                instance.solicitante = f'{condominio.nome_condominio} - Síndico não encontrado'
 
         if commit:
             instance.save()

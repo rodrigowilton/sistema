@@ -1,3 +1,5 @@
+from msilib.schema import ProgId
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_GET
@@ -121,7 +123,6 @@ def get_apartamento_sindico(request):
 def carregar_sindicos(request):
     condominio_id = request.GET.get('condominio_id')
 
-    # Log para depuração
     print(f"Recebido condominio_id: {condominio_id}")
 
     try:
@@ -132,7 +133,6 @@ def carregar_sindicos(request):
         sindicos = Sindicos.objects.filter(condominio=condominio_id, status=1).select_related('tipos_sindico')
 
         if sindicos.exists():
-            # Monta a lista de síndicos encontrados, incluindo o tipo de síndico
             sindico_data = [
                 {
                     'id': sindico.pessoa.id if sindico.pessoa else None,
@@ -144,19 +144,36 @@ def carregar_sindicos(request):
                 for sindico in sindicos
             ]
 
-            # Log para depuração
             print(f"Síndicos encontrados: {sindico_data}")
             return JsonResponse({'sindicos': sindico_data})
 
         else:
-            # Se não houver síndicos, retorna uma lista vazia
             return JsonResponse({'sindicos': []})
+
     except Exception as e:
-        # Log de erro detalhado
         print(f"Erro ao carregar síndicos: {e}", exc_info=True)
         return JsonResponse({'error': str(e)}, status=500)
 
 
+@login_required
+@require_GET
+def get_sindicos_por_condominio(request, condominio_id):
+    if request.method == "GET":
+        # Filtrar os síndicos pelo condomínio selecionado
+        sindicos = Sindicos.objects.filter(condominio=condominio_id, status=1).select_related('pessoa', 'tipos_sindico')
+
+        print(sindicos)
+
+        # Retornar os dados como JSON
+        data = [
+            {
+                "id": sindico.pessoa.id,
+                "nome_pessoa": sindico.pessoa.nome_pessoa,
+                "tipo_sindico": sindico.tipos_sindico.nome_tipos_sindico,
+            }
+            for sindico in sindicos
+        ]
+        return JsonResponse(data, safe=False)
 
 
 @login_required
@@ -262,41 +279,58 @@ def adicionar_controle_acesso_morador(request):
 
 @login_required
 def adicionar_controle_acesso_sindico(request):
-    # Obtendo dados para os dropdowns do formulário
-    condominios = Condominios.objects.filter(status=1)  # Apenas condomínios com status = 1
+    condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
     colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
     tipos_controles_acesso = TiposControlesAcessos.objects.all()  # Todos os tipos de controle de acesso
 
-    # Processando o formulário
+    sindicos = Sindicos.objects.none()  # Default: nenhum síndico
+    condominio_id = request.GET.get('condominio', None)
+
+    if condominio_id:
+        try:
+            # Filtrar síndicos pelo condomínio
+            sindicos = Sindicos.objects.filter(
+                condominio_id=condominio_id,
+                tipos_sindico_id__isnull=False,  # Síndicos com tipo definido
+                pessoa_id__isnull=False  # Síndicos vinculados a uma pessoa
+            ).select_related('pessoa')  # Otimização para reduzir consultas
+
+            print(f"Síndicos filtrados para condomínio {condominio_id}:")
+            for sindico in sindicos:
+                print(f"ID: {sindico.id}, Nome: {sindico.pessoa.nome_pessoa}")
+
+        except (ValueError, TypeError) as e:
+            print(f"Erro ao filtrar síndicos: {str(e)}")
+            messages.error(request, "ID de condomínio inválido.")
+
     if request.method == 'POST':
         form = ControleAcessoSindicoForms(request.POST)
-
-        # Imprimindo o conteúdo do formulário recebido
-        #print("Formulário enviado:", request.POST)
-        #print("Formulário instanciado:", form)
-
+        print("Dados do formulário enviado:", form.data)
         if form.is_valid():
-            print(f"Valor do síndico: {form.cleaned_data['sindico']}")
-
-            form.save()  # Salva o controle de acesso
-            print("Formulário válido. Controle de Acesso Sindico salvo.")
-            return redirect('lista_controleacesso')  # Redireciona para a lista de controles
+            try:
+                print("Formulário válido. Dados do formulário:", form.cleaned_data)
+                form.save()
+                messages.success(request, 'Controle de acesso adicionado com sucesso!')
+                return redirect('lista_controleacesso')
+            except Exception as e:
+                print(f"Erro ao salvar controle de acesso: {str(e)}")
+                messages.error(request, f'Erro ao salvar o controle de acesso: {str(e)}')
         else:
-            # Caso o formulário não seja válido, imprimimos os erros
-            print("Erros no formulário:", form.errors)
-
+            print("Formulário inválido. Erros:", form.errors)
+            if form.errors.get('sindico'):
+                messages.error(request, f"Erro no campo Síndico: {form.errors['sindico']}")
+            if form.errors.get('condominio'):
+                messages.error(request, f"Erro no campo Condomínio: {form.errors['condominio']}")
     else:
         form = ControleAcessoSindicoForms()
 
-    # Renderizando o template com os dados e o formulário
-    print("Formulário não enviado. Renderizando template...")
     return render(request, 'adicionar_controle_acesso_sindico.html', {
         'form': form,
         'colaboradores': colaboradores,
         'condominios': condominios,
         'tipos_controles_acesso': tipos_controles_acesso,
+        'sindicos': sindicos,  # Passando os síndicos filtrados para o template
     })
-
 
 @login_required
 def adicionar_controle_acesso_funcionario_condominio(request):
