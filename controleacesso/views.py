@@ -330,6 +330,8 @@ def lista_controleacesso_pendente(request):
     condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
     tipos_controles = TiposControlesAcessos.objects.filter(status=1)
 
+    messages.warning(request, "Atenção! Existem pendências que precisam ser resolvidas.")
+
     # Renderiza os dados no template
     context = {
         'controles': controles,
