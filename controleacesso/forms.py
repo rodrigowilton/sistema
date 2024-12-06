@@ -119,10 +119,10 @@ class ControleAcessoSindicoForms(forms.ModelForm):
             if sindico.pessoa:
                 # Buscar o nome da pessoa relacionada ao síndico
                 nome_sindico = sindico.pessoa.nome_pessoa
-
+                tipos_sindico = sindico.tipos_sindico
             if nome_sindico:
                 # Definir 'solicitante' como a combinação do nome do condomínio e nome do síndico
-                instance.solicitante = f'{condominio.nome_condominio} - {nome_sindico}'
+                instance.solicitante = f'{tipos_sindico} - {nome_sindico}'
             else:
                 # Caso o síndico não tenha uma pessoa associada
                 instance.solicitante = f'{condominio.nome_condominio} - Síndico não encontrado'

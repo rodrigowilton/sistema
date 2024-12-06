@@ -309,6 +309,18 @@ def adicionar_controle_acesso_sindico(request):
         print("ID do síndico enviado no formulário:", sindico_id)
 
         if form.is_valid():
+            controle = form.save(commit=False)
+            # Define a data de criação se não preenchida
+            if not controle.created:
+                controle.created = now()
+                print(f"Created preenchido com: {controle.created}")
+
+            try:
+                controle.data_prazo = adicionar_dias_uteis(controle.created, 3)
+                print(f"Data Prazo definida como: {controle.data_prazo}")
+            except Exception as e:
+                print(f"Erro ao calcular data_prazo: {e}")
+                messages.error(request, "Erro ao calcular a data limite.")
             try:
                 print("Formulário válido. Dados do formulário:", form.cleaned_data)
                 form.save()
