@@ -160,14 +160,14 @@ def carregar_sindicos(request):
 def get_sindicos_por_condominio(request, condominio_id):
     if request.method == "GET":
         # Filtrar os síndicos pelo condomínio selecionado
-        sindicos = Sindicos.objects.filter(condominio=condominio_id, status=1).select_related('pessoa', 'tipos_sindico')
+        sindicos = Sindicos.objects.filter(condominio_id=condominio_id, status=1).select_related('pessoa', 'tipos_sindico')
 
         print(sindicos)
 
         # Retornar os dados como JSON
         data = [
             {
-                "id": sindico.pessoa.id,
+                "id": sindico.id,
                 "nome_pessoa": sindico.pessoa.nome_pessoa,
                 "tipo_sindico": sindico.tipos_sindico.nome_tipos_sindico,
             }
@@ -305,7 +305,9 @@ def adicionar_controle_acesso_sindico(request):
 
     if request.method == 'POST':
         form = ControleAcessoSindicoForms(request.POST)
-        print("Dados do formulário enviado:", form.data)
+        sindico_id = request.POST.get('sindico')
+        print("ID do síndico enviado no formulário:", sindico_id)
+
         if form.is_valid():
             try:
                 print("Formulário válido. Dados do formulário:", form.cleaned_data)

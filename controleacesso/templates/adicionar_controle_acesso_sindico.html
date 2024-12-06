@@ -134,7 +134,7 @@ document.getElementById('condominio').addEventListener('change', function() {
 
     if (condominioId) {
         const url = `/controleacesso/get_sindicos_por_condominio/${condominioId}/`;
-        console.log('URL da requisição:', url); // Depuração
+        console.log('URL da requisição:', url);
         fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -143,8 +143,8 @@ document.getElementById('condominio').addEventListener('change', function() {
 
                 data.forEach(sindico => {
                     const option = document.createElement('option');
-                    option.value = sindico.id;
-                    option.textContent = `${sindico.nome_pessoa} (${sindico.tipo_sindico})`;
+                    option.value = sindico.id;  // Valor do ID
+                    option.textContent = `${sindico.nome_pessoa} (${sindico.tipo_sindico}) - ID: ${sindico.id}`; // Exibe o nome e o ID
                     sindicoSelect.appendChild(option);
                 });
 
@@ -158,6 +158,29 @@ document.getElementById('condominio').addEventListener('change', function() {
             .catch(error => console.error('Erro ao buscar síndicos:', error));
     }
 });
+
+fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        const sindicoSelect = document.getElementById('sindico');
+        sindicoSelect.innerHTML = '<option value="">Selecione o síndico...</option>';
+
+        data.forEach(sindico => {
+            const option = document.createElement('option');
+            option.value = sindico.id;  // Aqui você envia o ID
+            option.textContent = `${sindico.nome_pessoa} (ID: ${sindico.id})`;  // Exibe o nome e o ID
+            sindicoSelect.appendChild(option);
+        });
+
+        if (data.length === 0) {
+            const noSindicoOption = document.createElement('option');
+            noSindicoOption.value = '';
+            noSindicoOption.textContent = 'Nenhum síndico encontrado';
+            sindicoSelect.appendChild(noSindicoOption);
+        }
+    })
+    .catch(error => console.error('Erro ao buscar síndicos:', error));
+
     // dinaliza a interacoa
 </script>
 

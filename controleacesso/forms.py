@@ -111,6 +111,7 @@ class ControleAcessoSindicoForms(forms.ModelForm):
         # Definir o 'solicitante' como uma combinação do condomínio e síndico
         condominio = instance.condominio
         sindico = instance.sindico
+        print("ID do síndico enviado:", instance.sindico.id)
 
         if condominio and sindico:
             # Acessar o nome do síndico
