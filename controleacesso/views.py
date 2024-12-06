@@ -20,14 +20,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-@login_required
-def verificar_condominio_existe(request):
-    if request.method == 'GET':
-        nome_condominio = request.GET.get('nome_condominio', '').strip()
-        existe = Condominios.objects.filter(nome_condominio__iexact=nome_condominio).exists()
-        return JsonResponse({'existe': existe})
-
 @login_required
 def adicionar_controleacesso(request):
     return render(request, 'adicionar_controleacesso.html')
@@ -38,122 +30,6 @@ def get_apartamentos_por_condominio(request):
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id, status=1).values('id', 'nome_apartamento')
 
     return JsonResponse({'apartamentos': list(apartamentos)})
-
-
-@login_required
-def get_pessoas_por_apartamento(request):
-    apartamento_id = request.GET.get('apartamento_id')
-
-    if apartamento_id:
-        # Filtra as pessoas associadas ao apartamento
-        pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)
-
-        # Prepara os dados a serem retornados no formato JSON
-        data = {
-            'pessoas': [
-                {
-                    'id': pessoa.id,
-                    'nome_pessoa': pessoa.nome_pessoa,
-                    'tipo_pessoa': pessoa.tipos_pessoa.nome_tipos_pessoa,  # Acesso correto ao tipo de pessoa
-                    'is_proprietario': pessoa.tipos_pessoa.nome_tipos_pessoa == 'Proprietário'
-                    # Verifica se é 'Proprietário'
-                }
-                for pessoa in pessoas
-            ]
-        }
-        return JsonResponse(data)
-
-    # Caso o apartamento_id não seja fornecido
-    return JsonResponse({'pessoas': []}, status=400)
-
-@login_required
-def carregar_apartamentos(request, condominio_id):
-    apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
-    apartamentos_data = [{'id': ap.id, 'nome': ap.nome_apartamento} for ap in apartamentos]
-    return JsonResponse({'apartamentos': apartamentos_data})
-
-@login_required
-def carregar_pessoas(request, apartamento_id):
-    pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)
-    pessoas_data = [{'id': p.id, 'nome': p.nome_pessoa} for p in pessoas]
-    return JsonResponse({'pessoas': pessoas_data})
-
-
-
-@login_required
-def get_apartamento_sindico(request):
-    condominio_id = request.GET.get('condominio_id')
-    sindicos = Sindicos.objects.filter(condominio_id=condominio_id)
-
-    sindico_data = []  # Lista que vai conter os dados dos síndicos
-
-    for sindico in sindicos:
-        apartamento = sindico.pessoa.apartamento
-        apartamento_nome = None
-        tiposindico_nome = None
-
-        # Acessa o tipo de síndico através do relacionamento
-        tiposindico = sindico.tipos_sindico  # Aqui você já tem a instância do tipo de síndico
-
-        # Se o tipo de síndico existir, pega o nome
-        if tiposindico:
-            tiposindico_nome = tiposindico.nome_tipos_sindico
-
-        # Acessa o objeto Pessoa diretamente
-        pessoa = sindico.pessoa  # Acessa o objeto Pessoa completo
-        pessoa_nome = pessoa.nome_pessoa  # Agora acessa corretamente o nome da pessoa
-
-        if apartamento:
-            apartamento_nome = apartamento.nome_apartamento  # Pega o nome do apartamento
-
-        # Adiciona os dados do síndico à lista
-        sindico_data.append({
-            'apartamento_nome': apartamento_nome,  # Nome do apartamento
-            'pessoa_nome': pessoa_nome,  # Nome da pessoa (síndico)
-            'tiposindico_nome': tiposindico_nome  # Nome do tipo de síndico
-        })
-
-    print(sindico_data)  # Para verificar os dados retornados
-    # Retorna a lista como resposta JSON
-    return JsonResponse({'sindicos': sindico_data})
-
-
-@login_required
-@require_GET
-def carregar_sindicos(request):
-    condominio_id = request.GET.get('condominio_id')
-
-    print(f"Recebido condominio_id: {condominio_id}")
-
-    try:
-        if not condominio_id:
-            return JsonResponse({'error': 'O ID do condomínio é obrigatório.'}, status=400)
-
-        # Consulta pelo campo correto 'condominio'
-        sindicos = Sindicos.objects.filter(condominio=condominio_id, status=1).select_related('tipos_sindico')
-
-        if sindicos.exists():
-            sindico_data = [
-                {
-                    'id': sindico.pessoa.id if sindico.pessoa else None,
-                    'nome_pessoa': sindico.pessoa.nome_pessoa if sindico.pessoa else "Não informado",
-                    'tipos_sindico': {
-                        'nome_tipos_sindico': sindico.tipos_sindico.nome_tipos_sindico
-                    } if sindico.tipos_sindico else None,
-                }
-                for sindico in sindicos
-            ]
-
-            print(f"Síndicos encontrados: {sindico_data}")
-            return JsonResponse({'sindicos': sindico_data})
-
-        else:
-            return JsonResponse({'sindicos': []})
-
-    except Exception as e:
-        print(f"Erro ao carregar síndicos: {e}", exc_info=True)
-        return JsonResponse({'error': str(e)}, status=500)
-
 
 @login_required
 @require_GET
@@ -175,32 +51,14 @@ def get_sindicos_por_condominio(request, condominio_id):
         ]
         return JsonResponse(data, safe=False)
 
-
 @login_required
-@require_GET
-def carregar_funcionarios(request):
-    condominio_id = request.GET.get('condominio_id')
-
-    try:
-        # Ajuste esta consulta conforme a estrutura exata dos seus modelos
-        funcionarios = TatticaFuncionarios.objects.filter(
-            condominio_id=condominio_id
-        ).values('id', 'nome_funcionario')
-
-        return JsonResponse(list(funcionarios), safe=False)
-
-    except Exception as e:
-        # Log the error
-        logger.error(f"Erro ao carregar funcionários: {e}")
-        return JsonResponse([], safe=False)
-
-
 def get_apartamentos(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id)
     apartamentos_data = [{'id': apartamento.id, 'nome_apartamento': apartamento.nome_apartamento} for apartamento in apartamentos]
     return JsonResponse({'apartamentos': apartamentos_data})
 
+@login_required
 def get_pessoas(request):
     apartamento_id = request.GET.get('apartamento_id')
     pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id)
@@ -346,11 +204,29 @@ def adicionar_controle_acesso_sindico(request):
         'sindicos': sindicos,  # Passando os síndicos filtrados para o template
     })
 
+
+
+@require_GET
+def carregar_funcionarios(request):
+    condominio_id = request.GET.get('condominio_id')
+    try:
+        # Ajuste esta consulta conforme a estrutura exata dos seus modelos
+        funcionarios = TatticaFuncionarios.objects.filter(
+            condominio_id=condominio_id
+        ).values('id', 'nome_funcionario')
+
+        return JsonResponse(list(funcionarios), safe=False)
+
+    except Exception as e:
+        # Log the error
+        logger.error(f"Erro ao carregar funcionários: {e}")
+        return JsonResponse([], safe=False)
+
+
 @login_required
 def adicionar_controle_acesso_funcionario_condominio(request):
-    """
-    View para renderizar o template de controle de acesso dos funcionários do condomínio.
-    """
+
+
     return render(request, 'adicionar_controle_acesso_funcionario_condominio.html')
 
 @login_required
