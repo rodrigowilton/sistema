@@ -189,3 +189,48 @@ class ControleAcessoFuncionarioForms(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+class ControleAcessoOutroForms(forms.ModelForm):
+    class Meta:
+        model = ControlesAcessos
+        fields = [
+            'condominio', 'tipos_controles_acesso', 'execucao', 'pedido', 'quantidade', 'valor', 'descricao',
+            'identificador', 'data_prazo', 'metodo_pagamento', 'status', 'solicitante'
+        ]
+        # Campos criados e modificados não são incluídos porque são gerados automaticamente
+
+    def __init__(self, *args, **kwargs):
+        super(ControleAcessoOutroForms, self).__init__(*args, **kwargs)
+
+        # Filtra somente condomínios ativos
+        self.fields['condominio'].queryset = Condominios.objects.filter(status=1)
+
+        # Configuração do queryset de tipos de controle de acesso
+        self.fields['tipos_controles_acesso'].queryset = TiposControlesAcessos.objects.all()
+
+        # Adicionando classes CSS para estilização dos campos
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+    def clean_condominio(self):
+        """Valida se o campo condomínio foi preenchido."""
+        condominio = self.cleaned_data.get('condominio')
+        if not condominio:
+            raise forms.ValidationError("O campo 'Condomínio' é obrigatório.")
+        return condominio
+
+    def save(self, commit=True, *args, **kwargs):
+        """Sobrescreve o método save para adicionar lógica personalizada."""
+        instance = super().save(commit=False, *args, **kwargs)
+
+        # Define ou atualiza os campos de data
+        if not instance.created:
+            instance.created = timezone.now()  # Define a data de criação apenas se estiver vazia
+        instance.modified = timezone.now()  # Atualiza a data de modificação
+
+        # Configura lógica personalizada (por exemplo, dados do solicitante)
+        instance.solicitante = f"Condomínio: {instance.condominio}"
+
+        if commit:
+            instance.save()
+        return instance

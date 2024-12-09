@@ -11,7 +11,8 @@ from django.http import JsonResponse
 from django.utils.timezone import now  # Para exibir a data atual se necessário
 from django.contrib import messages  # Para exibir mensagens ao usuário
 from controleacesso.templatetags.custom_tags import adicionar_dias_uteis, dias_uteis_mais
-from controleacesso.forms import ControleAcessoMoradorForm, ControleAcessoSindicoForms, ControleAcessoFuncionarioForms
+from controleacesso.forms import (ControleAcessoMoradorForm, ControleAcessoSindicoForms,
+                                  ControleAcessoFuncionarioForms, ControleAcessoOutroForms)
 
 import logging
 
@@ -308,15 +309,42 @@ def adicionar_controle_acesso_funcionario_condominio(request):
     })
 
 
-
-
 @login_required
 def adicionar_controle_acesso_outros(request):
-    """
-    View para renderizar o template de controle de acesso para outras pessoas.
-    """
-    return render(request, 'adicionar_controle_acesso_outro.html')
+    condominios = Condominios.objects.filter(status=1)  # Filtra condomínios ativos
+    colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
+    tipos_controles_acesso = TiposControlesAcessos.objects.all()  # Todos os tipos de controle de acesso
 
+    if request.method == 'POST':
+        form = ControleAcessoOutroForms(request.POST)
+        if form.is_valid():
+            controle_acesso = form.save(commit=False)
+
+            # Define o solicitante com o valor do campo manual
+            solicitante = request.POST.get('outros', '').strip()
+            if solicitante:
+                controle_acesso.solicitante = solicitante
+            else:
+                messages.error(request, "O campo 'Outros' é obrigatório quando não há funcionário associado.")
+                return render(request, 'controle_acesso_outros_form.html', {
+                    'form': form,
+                    'colaboradores': colaboradores,
+                    'condominios': condominios,
+                    'tipos_controles_acesso': tipos_controles_acesso,
+                })
+
+            controle_acesso.save()
+            messages.success(request, "Controle de acesso adicionado com sucesso!")
+            return redirect('lista_controleacesso')  # Ajuste para sua URL correta
+    else:
+        form = ControleAcessoOutroForms()
+
+    return render(request, 'adicionar_controle_acesso_outros.html', {
+        'form': form,
+        'colaboradores': colaboradores,
+        'condominios': condominios,
+        'tipos_controles_acesso': tipos_controles_acesso,
+    })
 
 
 

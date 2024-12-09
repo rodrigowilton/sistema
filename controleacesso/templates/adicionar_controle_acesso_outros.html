@@ -1,5 +1,6 @@
 {% extends 'base_login.html' %}
 {% load static %}
+{% load custom_tags %}
 
 {% block menu %}
 <!-- Código do menu permanece o mesmo -->
@@ -7,7 +8,7 @@
 
 {% block content %}
 <br>
-<h2 style="text-align: center;">Adicionar Controle de Acesso</h2>
+<h2 style="text-align: center;">Adicionar Controle de Acesso Outro</h2>
 
 <div class="container">
     <form method="POST">
@@ -35,7 +36,6 @@
 
                 <label for="perfil_solicitante"><strong>Perfil Do Solicitante:</strong></label>
                 <select id="perfil_solicitante" name="perfil_solicitante" class="form-control">
-                    <option value="">Selecione um perfil</option>
                     <option value="outros">Outros</option>
                 </select>
 
@@ -97,105 +97,5 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-<script>
-    // Máscaras
-    $(document).ready(function() {
-        $('#valor').mask('000.000.000,00', {reverse: true});
-    });
 
-    function atualizarApartamentosEUsuarios(condominioId, perfilSolicitante) {
-    let apartamentoSelect = document.getElementById('apartamento');
-    let pessoaSelect = document.getElementById('pessoa');
-    let apartamentoInput = document.getElementById('apartamento_input');
-
-    // Limpar o conteúdo atual dos selects
-    pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
-    apartamentoSelect.innerHTML = '<option value="">Selecione o Apartamento...</option>';
-
-    if (condominioId) {
-        // Carregar apartamentos
-        fetch("{% url 'get_apartamentos_por_condominio' %}?condominio_id=" + condominioId)
-            .then(response => response.json())
-            .then(data => {
-                data.apartamentos.forEach(function(apartamento) {
-                    let option = document.createElement('option');
-                    option.value = apartamento.id;
-                    option.text = apartamento.nome_apartamento;
-                    apartamentoSelect.appendChild(option);
-                });
-
-                // Se o perfil for "síndico", então deve buscar também as pessoas associadas
-                if (perfilSolicitante === "sindico") {
-                    fetch("{% url 'get_apartamento_sindico' %}?condominio_id=" + condominioId)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Limpar dropdown de pessoas antes de adicionar novas opções
-                            pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
-
-                            // Exibe o campo de input de apartamento e esconde o select
-                            apartamentoSelect.style.display = 'none';
-                            apartamentoInput.style.display = 'none';
-
-                            // Iterar sobre os sindicos e verificar a pessoa
-                            let pessoaSelecionadaId = $('#pessoa').val();  // Pegando a pessoa selecionada
-                            let nomeApartamento = '';
-
-                            data.sindicos.forEach(function(sindico) {
-                                // Verificar se a pessoa está no objeto e pegar o nome do apartamento
-                                if (sindico.pessoa_id == pessoaSelecionadaId) {
-                                    nomeApartamento = sindico.apartamento_nome;
-                                    apartamentoInput.value = nomeApartamento;
-                                }
-
-                                let option = document.createElement('option');
-                                option.value = sindico.pessoa_id;
-                                option.text = sindico.pessoa_nome + ' (' + sindico.apartamento_nome + ' - ' + sindico.tiposindico_nome + ')';
-                                pessoaSelect.appendChild(option);
-                            });
-                        })
-                        .catch(error => console.error('Erro ao carregar apartamentos e pessoas para síndico:', error));
-                }
-            })
-            .catch(error => console.error('Erro ao carregar apartamentos:', error));
-    }
-}
-
-    function atualizarPessoasPorApartamento(apartamentoId) {
-        let pessoaSelect = document.getElementById('pessoa');
-        pessoaSelect.innerHTML = '<option value="">Selecione a Pessoa...</option>';
-
-        if (apartamentoId && apartamentoId !== "undefined") {
-            // Carregar pessoas vinculadas ao apartamento
-            fetch("{% url 'get_pessoas_por_apartamento' %}?apartamento_id=" + apartamentoId)
-                .then(response => response.json())
-                .then(data => {
-                    data.pessoas.forEach(function(pessoa) {
-                        let option = document.createElement('option');
-                        option.value = pessoa.id;
-                        option.text = pessoa.nome_pessoa + ' (' + pessoa.tipo_pessoa + ')';
-                        pessoaSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Erro ao carregar pessoas:', error));
-        }
-    }
-
-    // Eventos para atualizar os selects ao mudar os valores
-    $('#condominio').change(function() {
-        let condominioId = $(this).val();
-        let perfilSolicitante = $('#perfil_solicitante').val();
-        atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
-    });
-
-    $('#apartamento').change(function() {
-        let apartamentoId = $(this).val();
-        atualizarPessoasPorApartamento(apartamentoId);
-    });
-
-    $('#perfil_solicitante').change(function() {
-        let perfilSolicitante = $(this).val();
-        let condominioId = $('#condominio').val();
-        atualizarApartamentosEUsuarios(condominioId, perfilSolicitante);
-    });
-</script>
 {% endblock %}
