@@ -285,7 +285,8 @@ def adicionar_controle_acesso_funcionario_condominio(request):
             try:
                 controle = form.save(commit=False)
                 controle.created = timezone.now()  # Define a data de criação
-                controle.data_prazo = timezone.now() + timedelta(days=3)  # Exemplo: Define um prazo de 3 dias
+                controle.data_prazo = adicionar_dias_uteis(controle.created, 3)
+                print(f"Data Prazo definida como: {controle.data_prazo}")
 
                 # Salva o controle de acesso no banco
                 controle.save()
@@ -318,12 +319,15 @@ def adicionar_controle_acesso_outros(request):
     if request.method == 'POST':
         form = ControleAcessoOutroForms(request.POST)
         if form.is_valid():
-            controle_acesso = form.save(commit=False)
+            controle = form.save(commit=False)
+            controle.created = timezone.now()  # Define a data de criação
+            controle.data_prazo = adicionar_dias_uteis(controle.created, 3)
+            print(f"Data Prazo definida como: {controle.data_prazo}")
 
             # Define o solicitante com o valor do campo manual
             solicitante = request.POST.get('outros', '').strip()
             if solicitante:
-                controle_acesso.solicitante = solicitante
+                controle.solicitante = solicitante
             else:
                 messages.error(request, "O campo 'Outros' é obrigatório quando não há funcionário associado.")
                 return render(request, 'controle_acesso_outros_form.html', {
@@ -333,7 +337,7 @@ def adicionar_controle_acesso_outros(request):
                     'tipos_controles_acesso': tipos_controles_acesso,
                 })
 
-            controle_acesso.save()
+            controle.save()
             messages.success(request, "Controle de acesso adicionado com sucesso!")
             return redirect('lista_controleacesso')  # Ajuste para sua URL correta
     else:
