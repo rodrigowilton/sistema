@@ -9,7 +9,7 @@ class SolicitacaoImagemMoradorForm(forms.ModelForm):
         model = Imagemcameras
         fields = [
             'condominio', 'tattica_funcionario_id', 'apartamento_id', 'pessoa_id',
-            'sindico_id', 'condominios_funcionario', 'solicitante', 'cameras',
+            'condominios_funcionario', 'solicitante', 'cameras',
             'periodo', 'descricao', 'link', 'tipo_gravacao', 'execucao',
             'aprovacao', 'area_sindico', 'status', 'created', 'modified'
         ]

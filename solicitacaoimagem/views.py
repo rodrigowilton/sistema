@@ -71,77 +71,69 @@ def get_pessoas(request):
     return JsonResponse({'pessoas': pessoas_data})
 
 
-# aqui iniciei outro teste
-
-
 @login_required
 def adicionar_solicitacaoimagem_morador(request):
-    condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
-    colaboradores = TatticaFuncionarios.objects.all()
-    tipos_controles_acesso = TiposControlesAcessos.objects.all()
-
+    condominios = Condominios.objects.filter(status=1)  # Condomínios ativos
+    colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
     apartamentos = []
     pessoas = []
 
-    # Inicializar o formulário
-    form = SolicitacaoImagemMoradorForm()
-
     if request.method == 'POST':
+        print(request.POST)
         form = SolicitacaoImagemMoradorForm(request.POST)
+        print(form)
         if form.is_valid():
             controle = form.save(commit=False)
+            controle.created = now()  # Define a data de criação como agora
+            area_sindico = form.cleaned_data.get('area_sindico', 0)
 
-            # Define a data de criação se não preenchida
-            if not controle.created:
-                controle.created = now()
-                print(f"Created preenchido com: {controle.created}")
-
-            # Adiciona 3 dias úteis ao prazo
+            # Calcula a data limite de prazo
             try:
                 controle.data_prazo = adicionar_dias_uteis(controle.created, 3)
-                print(f"Data Prazo definida como: {controle.data_prazo}")
             except Exception as e:
-                print(f"Erro ao calcular data_prazo: {e}")
-                messages.error(request, "Erro ao calcular a data limite.")
+                messages.error(request, f"Erro ao calcular a data limite: {e}")
                 return render(request, 'adicionar_solicitacao_imagem_morador.html', {
                     'form': form,
                     'colaboradores': colaboradores,
-                    'tipos_controles_acesso': tipos_controles_acesso,
                     'condominios': condominios,
+                    'apartamentos': apartamentos,
+                    'pessoas': pessoas,
                 })
 
-            # Salva o objeto no banco
+            # Salva a solicitação
             try:
                 controle.save()
-                print("Objeto salvo com sucesso!")
                 messages.success(request, "Solicitação de imagem adicionada com sucesso!")
-                return redirect('lista_controleacesso')  # Substitua pela URL correta
+                return redirect('lista_controleacesso')  # Redireciona para a lista de controle de acesso
             except Exception as e:
-                print(f"Erro ao salvar o formulário: {e}")
-                messages.error(request, "Erro ao salvar a solicitação de imagem.")
+                messages.error(request, f"Erro ao salvar a solicitação: {e}")
         else:
-            print(f"Formulário inválido. Erros de validação detectados: {form.errors}")
+            # Adiciona mensagens de erro específicas para cada campo
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"Erro no campo {field}: {error}")
 
-        # Lógica de preenchimento dinâmico de campos
+            messages.error(request, "Erro ao validar o formulário. Por favor, revise os dados.")
+
+        # Filtra os apartamentos e pessoas para a exibição dinâmica
         condominio_id = request.POST.get('condominio')
         apartamento_id = request.POST.get('apartamento_id')
 
         if condominio_id:
             apartamentos = Apartamentos.objects.filter(condominio_id=condominio_id, status=1)
-            print(f"Condomínio selecionado: {condominio_id}")
-
             if apartamento_id:
                 pessoas = Pessoas.objects.filter(apartamento_id=apartamento_id, status=1)
-                print(f"Apartamento selecionado: {apartamento_id}")
+    else:
+        form = SolicitacaoImagemMoradorForm()
 
     return render(request, 'adicionar_solicitacao_imagem_morador.html', {
         'form': form,
         'colaboradores': colaboradores,
-        'tipos_controles_acesso': tipos_controles_acesso,
         'condominios': condominios,
         'apartamentos': apartamentos,
         'pessoas': pessoas,
     })
+
 
 @login_required
 def adicionar_controle_acesso_sindico(request):

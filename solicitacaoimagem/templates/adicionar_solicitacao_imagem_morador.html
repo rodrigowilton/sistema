@@ -29,13 +29,15 @@
 {% block content %}
     <br><br><br><br>
 
-<h2 style="text-align: center;">Adicionar Solicitação de imagem Morador</h2>
+<h2 style="text-align: center;">Adicionar Solicitação de imagem Morador</h2><br>
 
 <div class="container">
     <form method="POST" id="SolicitacaoImagemMoradorForm">
         {% csrf_token %}
         <input type="hidden" name="status" value="1">
         <input type="hidden" name="created" value="{{ current_time }}"> <!-- Campo 'created' oculto -->
+        <input type="hidden" name="area_sindico" value="0" required aria-invalid="true" id="id_area_sindico">
+
 
         <div class="row">
             <!-- Primeira coluna -->
@@ -62,12 +64,12 @@
                 </select>
 
                 <label for="apartamento" class="form-label">Apartamento:</label>
-                <select name="apartamento" id="apartamento" class="form-control" required>
+                <select name="apartamento_id" id="apartamento" class="form-control" required>
                     <option value="">Selecione o Apartamento...</option>
                 </select>
 
                 <label for="pessoa" class="form-label">Pessoa:</label>
-                <select id="pessoa" name="pessoa" class="form-control">
+                <select id="pessoa" name="pessoa_id" class="form-control">
                     <option value="">Selecione a Pessoa...</option>
                     {% for pessoa in pessoas %}
                         <option value="{{ pessoa.id }}">{{ pessoa.nome_pessoa }}</option>
@@ -75,20 +77,18 @@
                 </select>
 
                 <label for="cameras"><strong>Cameras:</strong></label>
-                <input type="text" id="cameras" name="cameras" class="form-control" min="1" />
-
-
+                <input type="text" id="cameras" name="cameras" class="form-control"/>
+            </div>
+            <div class="col-md-6">
                 <label for="periodo"><strong>Periodo para o Cliente:</strong></label>
                 <textarea id="periodo" name="periodo" class="form-control"></textarea>
 
                 <label for="descricao"><strong>Descrição:</strong></label>
                 <textarea id="descricao" name="descricao" class="form-control"></textarea>
-            </div>
 
             <!-- Segunda coluna -->
-            <div class="col-md-6">
-                <label for="tipogravao"><strong>Tipo Gravação:</strong></label>
-                <select id="tipogravao" name="tipogravao" class="form-control">
+                <label for="tipo_gravacao"><strong>Tipo Gravação:</strong></label>
+                <select id="tipo_gravacao" name="tipo_gravacao" class="form-control">
                     <option value="1">Imagem</option>
                     <option value="2">Audio</option>
                 </select>
