@@ -19,6 +19,7 @@ urlpatterns = [
     path('get_sindicos_por_condominio/<int:condominio_id>/', views.get_sindicos_por_condominio,name='get_sindicos_por_condominio'),
 
     path('carregar-funcionarios/', views.carregar_funcionarios, name='carregar_funcionarios'),
+    path('carregar_funcionarios_condominio/', views.carregar_funcionarios_condominio, name='carregar_funcionarios_condominio'),
 
 ]
 

@@ -1,15 +1,17 @@
+from datetime import timedelta
 from msilib.schema import ProgId
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from django.views.decorators.http import require_GET
 from app.models import (ControlesAcessos, TatticaFuncionarios, TiposControlesAcessos, Condominios,
-                        Apartamentos, Pessoas, Sindicos, TiposSindicos)
+                        Apartamentos, Pessoas, Sindicos, CondominiosFuncionarios)
 from django.http import JsonResponse
 from django.utils.timezone import now  # Para exibir a data atual se necessário
 from django.contrib import messages  # Para exibir mensagens ao usuário
 from controleacesso.templatetags.custom_tags import adicionar_dias_uteis, dias_uteis_mais
-from controleacesso.forms import ControleAcessoMoradorForm, ControleAcessoSindicoForms
+from controleacesso.forms import ControleAcessoMoradorForm, ControleAcessoSindicoForms, ControleAcessoFuncionarioForms
 
 import logging
 
@@ -224,10 +226,87 @@ def carregar_funcionarios(request):
 
 
 @login_required
+@require_GET
+def carregar_funcionarios_condominio(request):
+    condominio_id = request.GET.get('condominio_id')
+    try:
+        funcionarios = CondominiosFuncionarios.objects.filter(
+            condominio_id=condominio_id
+        ).select_related('tipos_condominios_funcionario').values(
+            'id',
+            'nome_condominios_funcionario',
+            'tipos_condominios_funcionario__nome_tipo_funcionario'  # Inclui o nome do tipo de funcionário
+        )
+
+        data = [
+            {
+                'id': funcionario['id'],
+                'nome_funcionario': f"{funcionario['nome_condominios_funcionario']} ({funcionario['tipos_condominios_funcionario__nome_tipo_funcionario']})"
+            }
+            for funcionario in funcionarios
+        ]
+
+        return JsonResponse(data, safe=False)
+
+    except Exception as e:
+        logger.error(f"Erro ao carregar funcionários: {e}")
+        return JsonResponse([], safe=False)
+
+
+
+@login_required
 def adicionar_controle_acesso_funcionario_condominio(request):
+    """View para adicionar controle de acesso vinculado a um funcionário e condomínio."""
+    condominios = Condominios.objects.filter(status=1)  # Filtra condomínios ativos
+    colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
+    tipos_controles_acesso = TiposControlesAcessos.objects.all()  # Todos os tipos de controle de acesso
+    funcionarios = CondominiosFuncionarios.objects.none()  # Inicialmente nenhum funcionário é exibido
+
+    # Verifica se um condomínio foi selecionado para filtrar funcionários
+    condominio_id = request.GET.get('condominio', None)
+    if condominio_id:
+        try:
+            # Filtra funcionários relacionados ao condomínio selecionado
+            funcionarios = CondominiosFuncionarios.objects.filter(
+                condominio_id=condominio_id,
+                status=1  # Apenas funcionários ativos
+            )
+        except Exception as e:
+            print(f"Erro ao filtrar funcionários: {e}")
+            messages.error(request, "Erro ao carregar os funcionários deste condomínio.")
+
+    # Processamento do formulário
+    if request.method == 'POST':
+        form = ControleAcessoFuncionarioForms(request.POST)
+        if form.is_valid():
+            try:
+                controle = form.save(commit=False)
+                controle.created = timezone.now()  # Define a data de criação
+                controle.data_prazo = timezone.now() + timedelta(days=3)  # Exemplo: Define um prazo de 3 dias
+
+                # Salva o controle de acesso no banco
+                controle.save()
+                messages.success(request, 'Controle de acesso adicionado com sucesso!')
+                return redirect('lista_controleacesso')  # Redireciona para a lista de controles de acesso
+            except Exception as e:
+                print(f"Erro ao salvar controle de acesso: {e}")
+                messages.error(request, "Erro ao salvar o controle de acesso.")
+        else:
+            print("Erros no formulário:", form.errors)
+            messages.error(request, "Por favor, corrija os erros no formulário.")
+    else:
+        form = ControleAcessoFuncionarioForms()
+
+    return render(request, 'adicionar_controle_acesso_funcionario_condominio.html', {
+        'form': form,
+        'colaboradores': colaboradores,
+        'condominios': condominios,
+        'tipos_controles_acesso': tipos_controles_acesso,
+        'funcionarios': funcionarios,  # Passa os funcionários filtrados para o template
+    })
 
 
-    return render(request, 'adicionar_controle_acesso_funcionario_condominio.html')
+
 
 @login_required
 def adicionar_controle_acesso_outros(request):

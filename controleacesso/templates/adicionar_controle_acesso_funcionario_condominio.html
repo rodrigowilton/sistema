@@ -99,41 +99,40 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 <script>
-// inicia abusca dos funcionarios do condominio.
 $(document).ready(function() {
     // Função para carregar funcionários do condomínio selecionado
     $('#condominio').change(function() {
         var condominioId = $(this).val();
+        var funcionariosDropdown = $('#Funcionarioscondominio');
 
-        // Limpa o select de colaboradores
-        //$('#colaborador').html('<option value="">Selecione um Colaborador</option>');
+        // Limpa o dropdown de funcionários
+        funcionariosDropdown.html('<option value="">Selecione o funcionário...</option>');
 
-        // Se um condomínio for selecionado, faz a requisição
         if (condominioId) {
             $.ajax({
-                url: '{% url "carregar_funcionarios" %}',  // Crie esta URL no urls.py
-                data: {
-                    'condominio_id': condominioId
-                },
+                url: '{% url "carregar_funcionarios_condominio" %}',
+                data: { 'condominio_id': condominioId },
                 dataType: 'json',
                 success: function(data) {
-                    // Popula o select de funcionários com os resultados
                     $.each(data, function(index, funcionario) {
-                        $('#colaborador').append(
+                        funcionariosDropdown.append(
                             $('<option>', {
                                 value: funcionario.id,
                                 text: funcionario.nome_funcionario
                             })
                         );
                     });
+                },
+                error: function() {
+                    alert("Erro ao carregar os funcionários. Tente novamente.");
                 }
             });
         }
     });
 });
-
-// aqui finaliza
-
 </script>
+
+
 {% endblock %}
