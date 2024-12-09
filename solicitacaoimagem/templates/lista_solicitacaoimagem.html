@@ -1,0 +1,250 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load custom_tags %}
+
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_slc' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+</nav>
+{% endblock %}
+
+{% block content %}
+<br><br><br>
+
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <h2 class="mb-0">Solicitações de Imagens</h2>
+    <a href="{% url 'adicionar_solicitacaoimagem' %}" class="btn btn-link p-0" style="text-decoration: none;">
+        <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 20px; height: 20px; margin-left: 60px;">
+    </a>
+</div>
+<form method="get">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="condominio">Condomínio</label>
+            <select name="condominio" id="condominio" class="form-control">
+                <option value="">Todos</option>
+                {% for condominio in condominios %}
+                <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="tipos">Tipos</label>
+            <select name="tipos" id="tipos" class="form-control">
+                <option value="">Todos</option>
+                {% for tipo in tipos_controles %}
+                <option value="{{ tipo.id }}">{{ tipo.nome_tipos_controles_acesso }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="execucao">Execução</label>
+            <select name="execucao" id="execucao" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Presencial</option>
+                <option value="2">Remoto</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+                <!-- Pedido -->
+                <label for="pedido"><strong>Pedido:</strong></label>
+                <select id="pedido" name="pedido" class="form-control">
+                    <option value=""> Todos</option>
+                    <option value="1">Gratuito</option>
+                    <option value="2">Aguardando Pagamento</option>
+                    <option value="6">A receber em dinheiro</option>
+                    <option value="7">A receber por PagSeguro</option>
+                    <option value="8">A receber por transferência</option>
+                    <option value="3">Pago em dinheiro</option>
+                    <option value="5">Pago por PagSeguro</option>
+                    <option value="4">Pago por transferência</option>
+                    <option value="9">Em análise</option>
+                </select>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label for="status">Status</label>
+            <select name="status" id="status" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Pendente</option>
+                <option value="2">A Entregar</option>
+                <option value="3">Resolvido</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="data_inicio">Data Início</label>
+            <input type="date" name="data_inicio" id="data_inicio" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label for="data_fim">Data Fim</label>
+            <input type="date" name="data_fim" id="data_fim" class="form-control">
+        </div>
+        <div class="col-md-3"><br>
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+        </div>
+    </div>
+    <br>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Cidade</th>
+            <th>Condomínio</th>
+            <th>Tipo</th>
+            <th>QTD</th>
+            <th>Solicitante</th>
+            <th>Executor</th>
+            <th>Observação Interna</th>
+            <th>Pedido</th>
+            <th>Valor</th>
+            <th>Validade</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for controle in controles %}
+        <tr>
+            <td>{{ controle.created|date:"d/m/Y H:i:s" }}</td>
+            <td>{{ controle.condominio.cidade }}</td>
+            <td>{{ controle.condominio.nome_condominio }}</td>
+            <td>{{ controle.tipos_controles_acesso.nome_tipos_controles_acesso }}</td>
+            <td>{{ controle.quantidade }}</td>
+            <td>{{ controle.solicitante }}</td>
+            <td>Tattica</td>
+            <td>{{ controle.descricao }}</td>
+            <td>
+                {% if controle.pedido == 1 %}
+                    Gratuito
+                {% elif controle.pedido == 2 %}
+                    Aguardando Pagamento
+                {% elif controle.pedido == 3 %}
+                    Pago em Dinheiro
+                {% elif controle.pedido == 6 %}
+                    A receber em Dinheiro
+                {% elif controle.pedido == 7 %}
+                    A receber por PagSeguro
+                {% elif controle.pedido == 8 %}
+                    A receber por Transferência
+                {% elif controle.pedido == 4 %}
+                    Pago por Transferência
+                {% elif controle.pedido == 5 %}
+                    Pago por PagSeguro
+                {% elif controle.pedido == 9 %}
+                    Em Análise
+                {% else %}
+                    Não Definido
+                {% endif %}
+            </td>
+            <td>
+                {% if controle.valor == None %}
+                     {% if controle.pedido == 1 %}
+                        0,00
+                    {% endif %}
+                {% else %}
+                    {{controle.valor}}
+                {% endif %}
+            </td>
+            <td>
+                {% if controle.data_prazo %}
+                    {% if controle|is_vencido %}
+                        <span class="vencido">Vencido</span>
+                    {% else %}
+                        {{ controle.data_prazo|date:"d/m/Y" }}
+                    {% endif %}
+                {% else %}
+                    <span>Data prazo não definida</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if controle.status == 1 %}
+                    <span class="status-pendente">Pendente</span>
+                {% elif controle.status == 2 %}
+                    <span class="status-entregar">A Entregar</span>
+                {% elif controle.status == 3 %}
+                    <span class="status-resolvido">Resolvido</span>
+                {% else %}
+                    <span class="status-nao-determinado">Indeterminado</span> <!-- Novo caso para status não definido -->
+                {% endif %}
+            </td>
+            <td>
+                                                <a href="#">
+                    <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px;">
+                </a>
+                <a href="#">
+                    <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px;">
+                </a>
+            </td>
+
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<style>
+.vencido {
+    color: white;
+    background-color: #ffb884;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.status-pendente {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-entregar {
+    background-color: green;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-resolvido {
+    background-color: blue;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-nao-determinado {
+    background-color: gray;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+</style>
+
+{% endblock %}

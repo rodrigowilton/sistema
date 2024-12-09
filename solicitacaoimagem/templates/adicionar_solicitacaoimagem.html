@@ -1,0 +1,62 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 20px;">
+            </div>
+        </a>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'lista_solicitacaoimagem_pendente' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'adicionar_solicitacao_imagem_morador' %}">
+                        <img src="{% static 'img/pessoa.png' %}" alt="pessoa" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
+                        Moradores
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'adicionar_controle_acesso_sindico' %}">
+                        <img src="{% static 'img/sindicos.png' %}" alt="sindicos" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
+                        Síndico
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'adicionar_controle_acesso_funcionario_condominio' %}">
+                        <img src="{% static 'img/tipofuncionanrio.png' %}" alt="tipofuncionanrio" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
+                        Funcionário Condomínio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link custom-nav-link" href="{% url 'adicionar_controle_acesso_outros' %}">
+                        <img src="{% static 'img/slc.png' %}" alt="slc" style="width: 30px; height: 30px; margin-bottom: 5px;filter: invert(1);"><br>
+                        Outros
+                    </a>
+                </li>
+            </ul>
+            <!-- Adicione o logout aqui, dentro de um novo <ul> com a classe ms-auto -->
+            <ul class="navbar-nav ms-auto"> <!-- Isso vai empurrar o conteúdo para a direita -->
+                <li class="nav-item">
+                    <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link custom-nav-link logout-link" style="background: none; border: none; padding: 0;">
+                            <img src="{% static 'img/sair.png' %}" alt="sair" style="width: 30px; height: 30px; margin-right: 5px;">𝐒𝐚𝐢𝐫
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+

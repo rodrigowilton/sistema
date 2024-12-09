@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'prestadores',
     'servicoempresa',
     'controleacesso',
+    'solicitacaoimagem',
 
 ]
 

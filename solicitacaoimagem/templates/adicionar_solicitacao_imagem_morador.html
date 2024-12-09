@@ -1,0 +1,222 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load custom_tags %}
+
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'adicionar_controleacesso' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+</nav>
+{% endblock %}
+
+{% block content %}
+    <br><br><br><br>
+
+<h2 style="text-align: center;">Adicionar Solicitação de imagem Morador</h2>
+
+<div class="container">
+    <form method="POST" id="SolicitacaoImagemMoradorForm">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="1">
+        <input type="hidden" name="created" value="{{ current_time }}"> <!-- Campo 'created' oculto -->
+
+        <div class="row">
+            <!-- Primeira coluna -->
+            <div class="col-md-6">
+                <label for="colaborador"><strong>Colaborador:</strong></label>
+                <select id="colaborador" name="colaborador" class="form-control">
+                    <option value="">Selecione um Colaborador</option>
+                    {% for colaborador in colaboradores %}
+                        <option value="{{ colaborador.id }}">{{ colaborador.nome_funcionario }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="perfil_solicitante"><strong>Perfil Do Solicitante:</strong></label>
+                <select id="perfil_solicitante" name="perfil_solicitante" class="form-control">
+                    <option value="morador">Morador</option>
+                </select>
+
+                <label for="condominio"><strong>Condomínio:</strong></label>
+                <select id="condominio" name="condominio" class="form-control" required>
+                    <option value="">Selecione um Condomínio</option>
+                    {% for condominio in condominios %}
+                        <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="apartamento" class="form-label">Apartamento:</label>
+                <select name="apartamento" id="apartamento" class="form-control" required>
+                    <option value="">Selecione o Apartamento...</option>
+                </select>
+
+                <label for="pessoa" class="form-label">Pessoa:</label>
+                <select id="pessoa" name="pessoa" class="form-control">
+                    <option value="">Selecione a Pessoa...</option>
+                    {% for pessoa in pessoas %}
+                        <option value="{{ pessoa.id }}">{{ pessoa.nome_pessoa }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="cameras"><strong>Cameras:</strong></label>
+                <input type="text" id="cameras" name="cameras" class="form-control" min="1" />
+
+
+                <label for="periodo"><strong>Periodo para o Cliente:</strong></label>
+                <textarea id="periodo" name="periodo" class="form-control"></textarea>
+
+                <label for="descricao"><strong>Descrição:</strong></label>
+                <textarea id="descricao" name="descricao" class="form-control"></textarea>
+            </div>
+
+            <!-- Segunda coluna -->
+            <div class="col-md-6">
+                <label for="tipogravao"><strong>Tipo Gravação:</strong></label>
+                <select id="tipogravao" name="tipogravao" class="form-control">
+                    <option value="1">Imagem</option>
+                    <option value="2">Audio</option>
+                </select>
+
+                <label for="execucao"><strong>Execução:</strong></label>
+                <select id="execucao" name="execucao" class="form-control">
+                    <option value="1">Presencial</option>
+                    <option value="2">Remoto</option>
+                </select>
+
+                <label for="aprovacao"><strong>Aprovação:</strong></label>
+                <select id="aprovacao" name="aprovacao" class="form-control">
+                    <option value="1">Pendente</option>
+                    <option value="2">Aprovado</option>
+                    <option value="3">Reprovado</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group"><br>
+            <button type="submit" class="btn btn-primary">Salvar Solicitação Imagem</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+
+// aqui busco todos apartamentos vinculados ao condominio via get_apartamentos
+
+    $(document).ready(function() {
+        // Atualiza os apartamentos com base no condomínio selecionado
+        $('#condominio').change(function() {
+            var condominio_id = $(this).val();
+            if (condominio_id) {
+                $.ajax({
+                    url: '{% url "get_apartamentos" %}',  // URL do seu endpoint
+                    data: {
+                        'condominio_id': condominio_id
+                    },
+                    success: function(data) {
+                        var apartamentoSelect = $('#apartamento');
+                        apartamentoSelect.empty();
+                        apartamentoSelect.append('<option value="">Selecione o Apartamento...</option>');
+                        $.each(data.apartamentos, function(index, apartamento) {
+                            apartamentoSelect.append('<option value="' + apartamento.id + '">' + apartamento.nome_apartamento + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#apartamento').empty();
+                $('#apartamento').append('<option value="">Selecione o Apartamento...</option>');
+            }
+        });
+    });
+
+// aqui termina a interação
+
+// aqui para o dropdow pessoas
+$(document).ready(function() {
+    // Máscaras
+    $('#cpf').mask('000.000.000-00', {reverse: true});
+    $('#celular').mask('(00) 0 0000-0000');
+    $('#celular_2').mask('(00) 0 0000-0000');
+
+    // Quando o valor do select de condomínio mudar
+    $('#condominio').on('change', function() {
+        var condominioId = $(this).val();  // Pega o id do condomínio selecionado
+
+        // Verifica se um condomínio foi selecionado
+        if (condominioId) {
+            // Faz a requisição AJAX para obter os apartamentos
+            $.ajax({
+                url: '{% url "get_apartamentos" %}',  // URL para o view de apartamentos
+                data: {
+                    'condominio_id': condominioId  // Passa o id do condomínio como parâmetro
+                },
+                dataType: 'json',
+                success: function(data) {
+                    // Limpa o select de apartamentos
+                    $('#apartamento').empty().append('<option value="">Selecione o Apartamento...</option>');
+
+                    // Adiciona as opções de apartamentos
+                    $.each(data.apartamentos, function(index, apartamento) {
+                        $('#apartamento').append('<option value="' + apartamento.id + '">' + apartamento.nome_apartamento + '</option>');
+                    });
+                }
+            });
+        } else {
+            // Caso nenhum condomínio seja selecionado, limpa o select de apartamentos
+            $('#apartamento').empty().append('<option value="">Selecione o Apartamento...</option>');
+        }
+    });
+
+    // Quando o valor do select de apartamento mudar
+    $('#apartamento').on('change', function() {
+        var apartamentoId = $(this).val();  // Pega o id do apartamento selecionado
+
+        // Verifica se um apartamento foi selecionado
+        if (apartamentoId) {
+            // Faz a requisição AJAX para obter as pessoas
+            $.ajax({
+                url: '{% url "get_pessoas" %}',  // URL para o view de pessoas
+                data: {
+                    'apartamento_id': apartamentoId  // Passa o id do apartamento como parâmetro
+                },
+                dataType: 'json',
+                success: function(data) {
+                    // Limpa o select de pessoas
+                    $('#pessoa').empty().append('<option value="">Selecione a Pessoa...</option>');
+
+                    // Adiciona as opções de pessoas
+                    $.each(data.pessoas, function(index, pessoa) {
+                        $('#pessoa').append('<option value="' + pessoa.id + '">' + pessoa.nome_pessoa + '</option>');
+                    });
+                }
+            });
+        } else {
+            // Caso nenhum apartamento seja selecionado, limpa o select de pessoas
+            $('#pessoa').empty().append('<option value="">Selecione a Pessoa...</option>');
+        }
+    });
+});
+// termina a interação
+
+
+</script>
+
+{% endblock %}
