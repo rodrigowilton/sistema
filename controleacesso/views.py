@@ -277,6 +277,8 @@ def adicionar_controle_acesso_funcionario_condominio(request):
 
     # Processamento do formulário
     if request.method == 'POST':
+        print("Dados enviados no POST:", request.POST)
+
         form = ControleAcessoFuncionarioForms(request.POST)
         if form.is_valid():
             try:

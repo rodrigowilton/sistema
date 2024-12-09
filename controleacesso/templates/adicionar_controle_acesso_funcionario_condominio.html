@@ -47,8 +47,8 @@
                     {% endfor %}
                 </select>
 
-                <label for="Funcionarioscondominio" class="form-label">Funcionarioscondominio:</label>
-                <select id="Funcionarioscondominio" name="Funcionarioscondominio" class="form-control">
+                <label for="condominios_funcionario" class="form-label">condominios_funcionario:</label>
+                <select id="condominios_funcionario" name="condominios_funcionario" class="form-control">
                     <option value="">Selecione o funcionarios...</option>
                 </select>
 
@@ -105,7 +105,7 @@ $(document).ready(function() {
     // Função para carregar funcionários do condomínio selecionado
     $('#condominio').change(function() {
         var condominioId = $(this).val();
-        var funcionariosDropdown = $('#Funcionarioscondominio');
+        var funcionariosDropdown = $('#condominios_funcionario');
 
         // Limpa o dropdown de funcionários
         funcionariosDropdown.html('<option value="">Selecione o funcionário...</option>');
@@ -132,6 +132,13 @@ $(document).ready(function() {
         }
     });
 });
+
+$('#condominio').change(function() {
+    console.log("Condomínio selecionado:", $(this).val());
+    // Restante do código...
+});
+
+
 </script>
 
 
