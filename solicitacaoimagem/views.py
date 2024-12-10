@@ -320,6 +320,7 @@ def adicionar_controle_acesso_outros(request):
             controle.created = timezone.now()  # Define a data de criação
             controle.data_prazo = adicionar_dias_uteis(controle.created, 3)
             print(f"Data Prazo definida como: {controle.data_prazo}")
+            tipo_gravacao = Imagemcameras.tipo_gravacao
 
             # Define o solicitante com o valor do campo manual
             solicitante = request.POST.get('outros', '').strip()
@@ -331,7 +332,7 @@ def adicionar_controle_acesso_outros(request):
                     'form': form,
                     'colaboradores': colaboradores,
                     'condominios': condominios,
-                    'tipos_controles_acesso': tipos_controles_acesso,
+                    'tipo_gravacao': tipo_gravacao,
                 })
 
             controle.save()
@@ -339,12 +340,13 @@ def adicionar_controle_acesso_outros(request):
             return redirect('lista_controleacesso')  # Ajuste para sua URL correta
     else:
         form = ControleAcessoOutroForms()
+        tipo_gravacao = Imagemcameras.tipo_gravacao
 
     return render(request, 'adicionar_controle_acesso_outros.html', {
         'form': form,
         'colaboradores': colaboradores,
         'condominios': condominios,
-        'tipos_controles_acesso': tipos_controles_acesso,
+        'tipo_gravacao': tipo_gravacao,
     })
 
 
@@ -367,7 +369,7 @@ def lista_solicitacaoimagem(request):
     if condominio:
         controles = controles.filter(condominio_id=condominio)
     if tipos:
-        controles = controles.filter(tipos_controles_acesso_id=tipos)
+        controles = controles.filter(tipo_gravacao=tipos)
     if execucao:
         controles = controles.filter(execucao=execucao)
     if pedido:
@@ -389,14 +391,14 @@ def lista_solicitacaoimagem(request):
 
     # Para dropdowns de seleção
     condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
-    tipos_controles = TiposControlesAcessos.objects.filter(status=1)
+    tipo_gravacao = Imagemcameras.objects.all()
 
     # Renderiza os dados no template
     context = {
         'pendencias_existentes': pendencias_existentes,
         'controles': controles,
         'condominios': condominios,
-        'tipos_controles': tipos_controles,
+        'tipo_gravacao': tipo_gravacao,
     }
     return render(request, 'lista_solicitacaoimagem.html', context)
 
@@ -413,13 +415,13 @@ def lista_solicitacaoimagem_pendente(request):
     data_fim = request.GET.get('data_fim')
 
     # Filtra os dados com base nos filtros selecionados
-    controles = ControlesAcessos.objects.all()
+    controles = Imagemcameras.objects.all()
 
     # Aplica os filtros baseados nos parâmetros recebidos
     if condominio:
         controles = controles.filter(condominio_id=condominio)
     if tipos:
-        controles = controles.filter(tipos_controles_acesso_id=tipos)
+        controles = controles.filter(tipo_gravacao=tipos)
     if execucao:
         controles = controles.filter(execucao=execucao)
     if pedido:
@@ -438,7 +440,7 @@ def lista_solicitacaoimagem_pendente(request):
 
     # Para dropdowns de seleção
     condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
-    tipos_controles = TiposControlesAcessos.objects.filter(status=1)
+    tipo_gravacao = Imagemcameras.objects.all()
 
     messages.warning(request, "Atenção! Existem pendências que precisam ser resolvidas.")
 
@@ -446,6 +448,6 @@ def lista_solicitacaoimagem_pendente(request):
     context = {
         'controles': controles,
         'condominios': condominios,
-        'tipos_controles': tipos_controles,
+        'tipo_gravacao': tipo_gravacao,
     }
     return render(request, 'lista_solicitacaoimagem.html', context)

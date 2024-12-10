@@ -50,9 +50,8 @@
             <label for="tipos">Tipos</label>
             <select name="tipos" id="tipos" class="form-control">
                 <option value="">Todos</option>
-                {% for tipo in tipos_controles %}
-                <option value="{{ tipo.id }}">{{ tipo.nome_tipos_controles_acesso }}</option>
-                {% endfor %}
+                <option value="1">Imagem</option>
+                <option value="2">Áudio</option>
             </select>
         </div>
         <div class="col-md-3">
@@ -141,7 +140,16 @@
                 <span class="remoto">Remoto</span>
                 {% endif %} <!-- Fechar o bloco 'if' -->
             </td>
-            <td>{{ controle.aprovacao }}</td>
+
+            <td>
+                {% if controle.aprovacao == 1 %}
+                <span class="status-pendente">Pendente</span>
+                {% elif controle.aprovacao == 2 %}
+                <span class="status-resolvido">Aprovado</span>
+                {% elif controle.aprovacao == 3 %}
+                <span class="aprovacao">Reprovado</span>
+                {% endif %}
+            </td>
             <td>
                 {% if controle.status == 1 %}
                     <span class="status-pendente">Pendente</span>
