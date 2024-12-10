@@ -46,14 +46,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-3">
-            <label for="tipos">Tipos</label>
-            <select name="tipos" id="tipos" class="form-control">
-                <option value="">Todos</option>
-                <option value="1">Imagem</option>
-                <option value="2">Áudio</option>
-            </select>
-        </div>
+
         <div class="col-md-3">
             <label for="execucao">Execução</label>
             <select name="execucao" id="execucao" class="form-control">
@@ -62,29 +55,22 @@
                 <option value="2">Remoto</option>
             </select>
         </div>
-        <div class="col-md-3">
-                <!-- Pedido -->
-                <label for="pedido"><strong>Pedido:</strong></label>
-                <select id="pedido" name="pedido" class="form-control">
-                    <option value=""> Todos</option>
-                    <option value="1">Gratuito</option>
-                    <option value="2">Aguardando Pagamento</option>
-                    <option value="6">A receber em dinheiro</option>
-                    <option value="7">A receber por PagSeguro</option>
-                    <option value="8">A receber por transferência</option>
-                    <option value="3">Pago em dinheiro</option>
-                    <option value="5">Pago por PagSeguro</option>
-                    <option value="4">Pago por transferência</option>
-                    <option value="9">Em análise</option>
-                </select>
-        </div>
     </div>
     <div class="row mt-3">
+        <div class="col-md-3">
+            <label for="aprovacao">Aprovação</label>
+            <select name="aprovacao" id="aprovacao" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Pendente</option>
+                <option value="2">Aprovado</option>
+            </select>
+        </div>
         <div class="col-md-3">
             <label for="status">Status</label>
             <select name="status" id="status" class="form-control">
                 <option value="">Todos</option>
                 <option value="1">Pendente</option>
+                <option value="4">Aguardando HD</option>
                 <option value="2">A Entregar</option>
                 <option value="3">Resolvido</option>
             </select>

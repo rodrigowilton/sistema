@@ -402,17 +402,16 @@ def lista_solicitacaoimagem(request):
     }
     return render(request, 'lista_solicitacaoimagem.html', context)
 
-
 @login_required
 def lista_solicitacaoimagem_pendente(request):
     # Obtenha os filtros enviados pelo usuário
     condominio = request.GET.get('condominio')
     tipos = request.GET.get('tipos')
     execucao = request.GET.get('execucao')
-    pedido = request.GET.get('pedido')
-    status = request.GET.get('status')  # O campo status será crucial aqui
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
+    status = request.GET.get('status')  # Filtro de status
+    aprovacao = request.GET.get('aprovacao')  # Filtro de aprovação
 
     # Filtra os dados com base nos filtros selecionados
     controles = Imagemcameras.objects.all()
@@ -424,19 +423,18 @@ def lista_solicitacaoimagem_pendente(request):
         controles = controles.filter(tipo_gravacao=tipos)
     if execucao:
         controles = controles.filter(execucao=execucao)
-    if pedido:
-        controles = controles.filter(pedido=pedido)
     if data_inicio:
         controles = controles.filter(created__gte=data_inicio)
     if data_fim:
         controles = controles.filter(created__lte=data_fim)
-
-    # Filtra status; padrão será mostrar apenas "pendentes" (status=1) caso não seja selecionado um status
     if status:
-        print(status)
         controles = controles.filter(status=status)
     else:
         controles = controles.filter(status=1)
+    if aprovacao:
+        controles = controles.filter(aprovacao=aprovacao)
+    else:
+        controles = controles.filter(aprovacao=1)
 
     # Para dropdowns de seleção
     condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
@@ -451,3 +449,4 @@ def lista_solicitacaoimagem_pendente(request):
         'tipo_gravacao': tipo_gravacao,
     }
     return render(request, 'lista_solicitacaoimagem.html', context)
+
