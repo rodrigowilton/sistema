@@ -1,0 +1,147 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'adicionar_controleacesso' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+</nav>
+{% endblock %}
+
+{% block content %}
+<br><br><br><br>
+
+<h2 style="text-align: center;">Adicionar Solicitação de Imagem Síndico</h2>
+
+<div class="container">
+    <form method="POST" id="SolicitacaoImagemSindicoForm">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="1">
+        <input type="hidden" name="aprovacao" value="2">
+
+        <!-- Campos ocultos para as datas -->
+        <input type="hidden" name="data_criacao" value="{{ current_datetime }}">
+        <input type="hidden" name="data_modificacao" value="{{ current_datetime }}">
+
+        <div class="row">
+            <!-- Primeira coluna -->
+            <div class="col-md-6">
+                <label for="tattica_funcionario_id"><strong>Colaborador:</strong></label>
+                <select id="tattica_funcionario_id" name="tattica_funcionario_id" class="form-control">
+                    <option value="">Selecione um Colaborador</option>
+                    {% for colaborador in colaboradores %}
+                        <option value="{{ colaborador.id }}">{{ colaborador.nome_funcionario }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="solicitante"><strong>Perfil Do Solicitante:</strong></label>
+                <select id="solicitante" name="solicitante" class="form-control" readonly>
+                    <option value="sindico">Síndico</option>
+                </select>
+
+                <label for="condominio"><strong>Condomínio:</strong></label>
+                <select id="condominio" name="condominio" class="form-control">
+                    <option value="">Selecione um Condomínio</option>
+                    {% for condominio in condominios %}
+                        <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="sindico_id" class="form-label">Síndico:</label>
+                <select id="sindico_id" name="sindico_id" class="form-control" onchange="document.getElementById('solicitante').value = this.value;">
+                    <option value="">Selecione o síndico...</option>
+                    {% for sindico in sindicos %}
+                        <option value="{{ sindico.id }}">
+                            {{ sindico.pessoa.nome_pessoa }}
+                        </option>
+                    {% empty %}
+                        <option value="">Nenhum síndico encontrado</option>
+                    {% endfor %}
+                </select>
+
+                <label for="cameras"><strong>Cameras:</strong></label>
+                <input type="text" id="cameras" name="cameras" class="form-control"/>
+            </div>
+            <div class="col-md-6">
+                <label for="periodo"><strong>Periodo para o Cliente:</strong></label>
+                <textarea id="periodo" name="periodo" class="form-control"></textarea>
+
+                <label for="descricao"><strong>Descrição:</strong></label>
+                <textarea id="descricao" name="descricao" class="form-control"></textarea>
+
+            <!-- Segunda coluna -->
+                <label for="tipo_gravacao"><strong>Tipo Gravação:</strong></label>
+                <select id="tipo_gravacao" name="tipo_gravacao" class="form-control">
+                    <option value="1">Imagem</option>
+                </select>
+            <!-- Segunda coluna -->
+            <div class="col-md-6">
+                <label for="execucao"><strong>Execução:</strong></label>
+                <select id="execucao" name="execucao" class="form-control">
+                    <option value="1">Remoto</option>
+                    <option value="2">Presencial</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group"><br>
+            <button type="submit" class="btn btn-primary">Salvar Controle de Acesso</button>
+        </div>
+    </form>
+</div>
+<script>
+    // Inicia busca de síndicos por condomínio
+    document.getElementById('condominio').addEventListener('change', function() {
+        const condominioId = this.value;
+
+        if (condominioId) {
+            const url = `/solicitacaoimagem/get_sindicos_por_condominio/${condominioId}/`;
+            console.log('URL da requisição:', url);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const sindicoSelect = document.getElementById('sindico_id'); // Corrigido ID
+                    sindicoSelect.innerHTML = '<option value="">Selecione o síndico...</option>';
+
+                    data.forEach(sindico => {
+                        const option = document.createElement('option');
+                        option.value = sindico.id; // Valor do ID
+                        option.textContent = `${sindico.nome_pessoa} (${sindico.tipo_sindico}) - ID: ${sindico.id}`; // Nome e ID
+                        sindicoSelect.appendChild(option);
+                    });
+
+                    if (data.length === 0) {
+                        const noSindicoOption = document.createElement('option');
+                        noSindicoOption.value = '';
+                        noSindicoOption.textContent = 'Nenhum síndico encontrado';
+                        sindicoSelect.appendChild(noSindicoOption);
+                    }
+                })
+                .catch(error => console.error('Erro ao buscar síndicos:', error));
+        } else {
+            // Limpa o dropdown caso o condomínio seja desmarcado
+            const sindicoSelect = document.getElementById('sindico_id');
+            sindicoSelect.innerHTML = '<option value="">Selecione o síndico...</option>';
+        }
+    });
+</script>
+
+{% endblock %}

@@ -51,46 +51,27 @@ class SolicitacaoImagemMoradorForm(forms.ModelForm):
         return instance
 
 
-class ControleAcessoSindicoForms(forms.ModelForm):
+class SolicitacaoImagemSindicoForms(forms.ModelForm):
     class Meta:
-        model = ControlesAcessos
+        model = Imagemcameras
+
         fields = [
-            'condominio', 'tipos_controles_acesso', 'tattica_funcionario',
-            'sindico', 'execucao', 'pedido', 'quantidade', 'valor', 'descricao',
-            'identificador', 'data_prazo', 'metodo_pagamento', 'status', 'solicitante'
+            'condominio', 'tipo_gravacao', 'tattica_funcionario_id',
+            'sindico_id', 'execucao', 'cameras', 'descricao',
+            'periodo', 'status', 'solicitante'
         ]
         # Não incluímos 'created' e 'modified' nos fields, pois serão manipulados no método save()
 
-    def __init__(self, *args, **kwargs):
-        super(ControleAcessoSindicoForms, self).__init__(*args, **kwargs)
-
-        # Filtrando os campos para mostrar apenas síndicos ativos
-        self.fields['tattica_funcionario'].queryset = Sindicos.objects.filter(status=1)  # Apenas colaboradores ativos
-        self.fields['tipos_controles_acesso'].queryset = TiposControlesAcessos.objects.all()
-        self.fields['condominio'].queryset = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
-        self.fields['sindico'].queryset = Sindicos.objects.filter(status=1)  # Apenas síndicos ativos
-
-    # Validação adicional para garantir que os campos 'condominio' e 'sindico' não sejam deixados em branco
-    def clean_condominio(self):
-        condominio = self.cleaned_data.get('condominio')
-        if not condominio:
-            raise forms.ValidationError("O campo 'Condomínio' é obrigatório.")
-        return condominio
-
-    def clean_sindico(self):
-        sindico = self.cleaned_data.get('sindico')
-        if not sindico or not Sindicos.objects.filter(id=sindico.id).exists():
-            raise forms.ValidationError("Selecione um síndico válido.")
-        return sindico
-
-    # Sobrescrevendo o método 'save' para garantir que as datas 'created' e 'modified' sejam preenchidas corretamente
     def save(self, commit=True, *args, **kwargs):
         instance = super().save(commit=False, *args, **kwargs)
+
+        instance.aprovacao = 2
+        instance.area_sindico = 0
 
         # Depuração: Imprimir os dados do formulário para verificação
         print("Dados do formulário antes de salvar:")
         print(f"Condomínio: {instance.condominio}")
-        print(f"Síndico: {instance.sindico}")
+        print(f"Síndico: {instance.sindico_id}")
         print(f"Data de criação: {instance.created}")
         print(f"Data de modificação: {instance.modified}")
 
@@ -101,17 +82,21 @@ class ControleAcessoSindicoForms(forms.ModelForm):
 
         # Definir o 'solicitante' como uma combinação do condomínio e síndico
         condominio = instance.condominio
-        sindico = instance.sindico
-        print("ID do síndico enviado:", instance.sindico.id)
+        sindico_id = instance.sindico_id  # ID do síndico
 
-        if condominio and sindico:
-            # Acessar o nome do síndico
-            nome_sindico = None
-            if sindico.pessoa:
-                # Buscar o nome da pessoa relacionada ao síndico
+        print("ID do síndico enviado:", sindico_id)
+
+        if condominio and sindico_id:
+            # Buscar o objeto Sindicos correspondente ao ID
+            try:
+                sindico = Sindicos.objects.get(id=sindico_id)  # Carrega o objeto completo
+            except Sindicos.DoesNotExist:
+                sindico = None
+
+            if sindico and sindico.pessoa:
+                # Acessar o nome e tipo do síndico
                 nome_sindico = sindico.pessoa.nome_pessoa
                 tipos_sindico = sindico.tipos_sindico
-            if nome_sindico:
                 # Definir 'solicitante' como a combinação do nome do condomínio e nome do síndico
                 instance.solicitante = f'{tipos_sindico} - {nome_sindico}'
             else:

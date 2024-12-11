@@ -16,7 +16,7 @@ from controleacesso.forms import (ControleAcessoMoradorForm, ControleAcessoSindi
 
 import logging
 
-from solicitacaoimagem.forms import SolicitacaoImagemMoradorForm
+from solicitacaoimagem.forms import SolicitacaoImagemMoradorForm, SolicitacaoImagemSindicoForms
 
 # Configuração do logging
 logging.basicConfig(
@@ -104,7 +104,7 @@ def adicionar_solicitacaoimagem_morador(request):
             try:
                 controle.save()
                 messages.success(request, "Solicitação de imagem adicionada com sucesso!")
-                return redirect('lista_controleacesso')  # Redireciona para a lista de controle de acesso
+                return redirect('lista_solicitacaoimagem_pendente')  # Redireciona para a lista de controle de acesso
             except Exception as e:
                 messages.error(request, f"Erro ao salvar a solicitação: {e}")
         else:
@@ -136,10 +136,9 @@ def adicionar_solicitacaoimagem_morador(request):
 
 
 @login_required
-def adicionar_controle_acesso_sindico(request):
+def adicionar_solicitacaoimagem_sindico(request):
     condominios = Condominios.objects.filter(status=1)  # Apenas condomínios ativos
     colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
-    tipos_controles_acesso = TiposControlesAcessos.objects.all()  # Todos os tipos de controle de acesso
 
     sindicos = Sindicos.objects.none()  # Default: nenhum síndico
     condominio_id = request.GET.get('condominio', None)
@@ -162,11 +161,12 @@ def adicionar_controle_acesso_sindico(request):
             messages.error(request, "ID de condomínio inválido.")
 
     if request.method == 'POST':
-        form = ControleAcessoSindicoForms(request.POST)
+        form = SolicitacaoImagemSindicoForms(request.POST)
         sindico_id = request.POST.get('sindico')
         print("ID do síndico enviado no formulário:", sindico_id)
 
         if form.is_valid():
+            print(form)
             controle = form.save(commit=False)
             # Define a data de criação se não preenchida
             if not controle.created:
@@ -182,11 +182,11 @@ def adicionar_controle_acesso_sindico(request):
             try:
                 print("Formulário válido. Dados do formulário:", form.cleaned_data)
                 form.save()
-                messages.success(request, 'Controle de acesso adicionado com sucesso!')
-                return redirect('lista_controleacesso')
+                messages.success(request, 'Solicitação de imagem adicionado com sucesso!')
+                return redirect('lista_solicitacaoimagem_pendente')
             except Exception as e:
                 print(f"Erro ao salvar controle de acesso: {str(e)}")
-                messages.error(request, f'Erro ao salvar o controle de acesso: {str(e)}')
+                messages.error(request, f'Erro ao salvar Solicitação de imagem: {str(e)}')
         else:
             print("Formulário inválido. Erros:", form.errors)
             if form.errors.get('sindico'):
@@ -194,13 +194,12 @@ def adicionar_controle_acesso_sindico(request):
             if form.errors.get('condominio'):
                 messages.error(request, f"Erro no campo Condomínio: {form.errors['condominio']}")
     else:
-        form = ControleAcessoSindicoForms()
+        form = SolicitacaoImagemSindicoForms()
 
-    return render(request, 'adicionar_controle_acesso_sindico.html', {
+    return render(request, 'adicionar_solicitacao_imagem_sindico.html', {
         'form': form,
         'colaboradores': colaboradores,
         'condominios': condominios,
-        'tipos_controles_acesso': tipos_controles_acesso,
         'sindicos': sindicos,  # Passando os síndicos filtrados para o template
     })
 
