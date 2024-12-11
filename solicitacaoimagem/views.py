@@ -16,7 +16,8 @@ from controleacesso.forms import (ControleAcessoMoradorForm, ControleAcessoSindi
 
 import logging
 
-from solicitacaoimagem.forms import SolicitacaoImagemMoradorForm, SolicitacaoImagemSindicoForms
+from solicitacaoimagem.forms import SolicitacaoImagemMoradorForm, SolicitacaoImagemSindicoForms, \
+    SolicitacaoImagemFuncionarioForms
 
 # Configuração do logging
 logging.basicConfig(
@@ -252,11 +253,10 @@ def carregar_funcionarios_condominio(request):
 
 
 @login_required
-def adicionar_controle_acesso_funcionario_condominio(request):
+def adicionar_solicitacaoimagem_funcionario_condominio(request):
     """View para adicionar controle de acesso vinculado a um funcionário e condomínio."""
     condominios = Condominios.objects.filter(status=1)  # Filtra condomínios ativos
     colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
-    tipos_controles_acesso = TiposControlesAcessos.objects.all()  # Todos os tipos de controle de acesso
     funcionarios = CondominiosFuncionarios.objects.none()  # Inicialmente nenhum funcionário é exibido
 
     # Verifica se um condomínio foi selecionado para filtrar funcionários
@@ -276,7 +276,7 @@ def adicionar_controle_acesso_funcionario_condominio(request):
     if request.method == 'POST':
         print("Dados enviados no POST:", request.POST)
 
-        form = ControleAcessoFuncionarioForms(request.POST)
+        form = SolicitacaoImagemFuncionarioForms(request.POST)
         if form.is_valid():
             try:
                 controle = form.save(commit=False)
@@ -287,7 +287,7 @@ def adicionar_controle_acesso_funcionario_condominio(request):
                 # Salva o controle de acesso no banco
                 controle.save()
                 messages.success(request, 'Controle de acesso adicionado com sucesso!')
-                return redirect('lista_controleacesso')  # Redireciona para a lista de controles de acesso
+                return redirect('lista_solicitacaoimagem_pendente')  # Redireciona para a lista de controles de acesso
             except Exception as e:
                 print(f"Erro ao salvar controle de acesso: {e}")
                 messages.error(request, "Erro ao salvar o controle de acesso.")
@@ -295,13 +295,12 @@ def adicionar_controle_acesso_funcionario_condominio(request):
             print("Erros no formulário:", form.errors)
             messages.error(request, "Por favor, corrija os erros no formulário.")
     else:
-        form = ControleAcessoFuncionarioForms()
+        form = SolicitacaoImagemFuncionarioForms()
 
-    return render(request, 'adicionar_controle_acesso_funcionario_condominio.html', {
+    return render(request, 'adicionar_solicitacao_imagem_funcionario_condominio.html', {
         'form': form,
         'colaboradores': colaboradores,
         'condominios': condominios,
-        'tipos_controles_acesso': tipos_controles_acesso,
         'funcionarios': funcionarios,  # Passa os funcionários filtrados para o template
     })
 

@@ -1,0 +1,150 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load custom_tags %}
+
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'adicionar_controleacesso' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+</nav>
+{% endblock %}
+
+{% block content %}
+    <br><br><br><br>
+<h2 style="text-align: center;">Adicionar Solicitação de Imagem Funcionário Condomínio</h2><br>
+
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="1">
+        <input type="hidden" name="area_sindico" value="0">
+
+        <div class="row">
+            <!-- Primeira coluna -->
+            <div class="col-md-6">
+                <label for="tattica_funcionario_id"><strong>Colaborador:</strong></label>
+                <select id="tattica_funcionario_id" name="tattica_funcionario_id" class="form-control">
+                    <option value="">Selecione um Colaborador</option>
+                    {% for colaborador in colaboradores %}
+                        <option value="{{ colaborador.id }}">{{ colaborador.nome_funcionario }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="solicitante"><strong>Perfil Do Solicitante:</strong></label>
+                <select id="solicitante" name="solicitante" class="form-control">
+                    <option value="funcionario_condominio">Funcionário do Condomínio</option>
+                </select>
+
+                <label for="condominio"><strong>Condomínio:</strong></label>
+                <select id="condominio" name="condominio" class="form-control">
+                    <option value="">Selecione um Condomínio</option>
+                    {% for condominio in condominios %}
+                        <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="condominios_funcionario" class="form-label">condominios_funcionario:</label>
+                <select id="condominios_funcionario" name="condominios_funcionario" class="form-control">
+                    <option value="">Selecione o funcionarios...</option>
+                </select>
+
+                <label for="cameras"><strong>Cameras:</strong></label>
+                <input id="cameras" name="cameras" type="text" class="form-control">
+            </div>
+
+            <!-- Segunda coluna -->
+            <div class="col-md-6">
+
+                <label for="descricaocliente"><strong>Periodo para o Cliente:</strong></label>
+                <textarea id="descricaocliente" name="descricaocliente" class="form-control"></textarea>
+
+                <label for="descricaointerna"><strong>Descrição interna:</strong></label>
+                <textarea id="descricaointerna" name="descricaointerna" class="form-control"></textarea>
+
+                <label for="tipo_gravacao"><strong>Tipo Gravação:</strong></label>
+                <select id="tipo_gravacao" name="tipo_gravacao" class="form-control">
+                    <option value="1">Imagem</option>
+                </select>
+                <label for="execucao"><strong>Execução:</strong></label>
+                <select id="execucao" name="execucao" class="form-control">
+                    <option value="1">Remoto</option>
+                    <option value="2">Presencial</option>
+                </select>
+                <label for="aprovacao"><strong>Aprovação:</strong></label>
+                <select id="aprovacao" name="aprovacao" class="form-control">
+                    <option value="1">Pendente</option>
+                    <option value="2">Aprovado</option>
+                    <option value="3">Reprovado</option>
+                </select>'
+            </div>
+        </div>
+
+        <div class="form-group"><br>
+            <button type="submit" class="btn btn-primary">Salvar Controle de Acesso</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Função para carregar funcionários do condomínio selecionado
+    $('#condominio').change(function() {
+        var condominioId = $(this).val();
+        var funcionariosDropdown = $('#condominios_funcionario');
+
+        // Limpa o dropdown de funcionários
+        funcionariosDropdown.html('<option value="">Selecione o funcionário...</option>');
+
+        if (condominioId) {
+            $.ajax({
+                url: '{% url "carregar_funcionarios_condominio" %}',
+                data: { 'condominio_id': condominioId },
+                dataType: 'json',
+                success: function(data) {
+                    $.each(data, function(index, funcionario) {
+                        funcionariosDropdown.append(
+                            $('<option>', {
+                                value: funcionario.id,
+                                text: funcionario.nome_funcionario
+                            })
+                        );
+                    });
+                },
+                error: function() {
+                    alert("Erro ao carregar os funcionários. Tente novamente.");
+                }
+            });
+        }
+    });
+});
+
+$('#condominio').change(function() {
+    console.log("Condomínio selecionado:", $(this).val());
+    // Restante do código...
+});
+
+
+</script>
+
+
+{% endblock %}

@@ -109,18 +109,19 @@ class SolicitacaoImagemSindicoForms(forms.ModelForm):
         return instance
 
 
-class ControleAcessoFuncionarioForms(forms.ModelForm):
+class SolicitacaoImagemFuncionarioForms(forms.ModelForm):
     class Meta:
-        model = ControlesAcessos
+        model = Imagemcameras
         fields = [
-            'condominio', 'tipos_controles_acesso', 'tattica_funcionario',
-            'condominios_funcionario', 'execucao', 'pedido', 'quantidade', 'valor', 'descricao',
-            'identificador', 'data_prazo', 'metodo_pagamento', 'status', 'solicitante'
+            'condominio', 'tipo_gravacao', 'tattica_funcionario_id',
+            'condominios_funcionario', 'execucao', 'aprovacao','descricao',
+            'periodo', 'cameras', 'status', 'solicitante','area_sindico'
         ]
         # Campos criados e modificados não são incluídos porque são gerados automaticamente
 
+
     def __init__(self, *args, **kwargs):
-        super(ControleAcessoFuncionarioForms, self).__init__(*args, **kwargs)
+        super(SolicitacaoImagemFuncionarioForms, self).__init__(*args, **kwargs)
 
         # Filtra somente condomínios ativos
         self.fields['condominio'].queryset = Condominios.objects.filter(status=1)
@@ -128,8 +129,6 @@ class ControleAcessoFuncionarioForms(forms.ModelForm):
         # Filtra somente funcionários ativos
         self.fields['condominios_funcionario'].queryset = CondominiosFuncionarios.objects.filter(status=1)
 
-        # Configuração do queryset de tipos de controle de acesso
-        self.fields['tipos_controles_acesso'].queryset = TiposControlesAcessos.objects.all()
 
         # Adicionando classes CSS para estilização dos campos
         for field in self.fields.values():
@@ -153,6 +152,8 @@ class ControleAcessoFuncionarioForms(forms.ModelForm):
         """Sobrescreve o método save para adicionar lógica personalizada."""
         instance = super().save(commit=False, *args, **kwargs)
 
+        instance.area_sindico = 0
+
         # Define ou atualiza os campos de data
         if not instance.created:
             instance.created = timezone.now()  # Define a data de criação apenas se estiver vazia
@@ -164,6 +165,7 @@ class ControleAcessoFuncionarioForms(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
 
 class ControleAcessoOutroForms(forms.ModelForm):
     class Meta:
