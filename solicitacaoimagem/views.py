@@ -11,13 +11,12 @@ from django.http import JsonResponse
 from django.utils.timezone import now  # Para exibir a data atual se necessário
 from django.contrib import messages  # Para exibir mensagens ao usuário
 from controleacesso.templatetags.custom_tags import adicionar_dias_uteis, dias_uteis_mais
-from controleacesso.forms import (ControleAcessoMoradorForm, ControleAcessoSindicoForms,
-                                  ControleAcessoFuncionarioForms, ControleAcessoOutroForms)
+
 
 import logging
 
 from solicitacaoimagem.forms import SolicitacaoImagemMoradorForm, SolicitacaoImagemSindicoForms, \
-    SolicitacaoImagemFuncionarioForms
+    SolicitacaoImagemFuncionarioForms, SolicitacaoImagemOutroForms
 
 # Configuração do logging
 logging.basicConfig(
@@ -306,13 +305,12 @@ def adicionar_solicitacaoimagem_funcionario_condominio(request):
 
 
 @login_required
-def adicionar_controle_acesso_outros(request):
+def adicionar_solicitacaoimagem_outros(request):
     condominios = Condominios.objects.filter(status=1)  # Filtra condomínios ativos
     colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
-    tipos_controles_acesso = TiposControlesAcessos.objects.all()  # Todos os tipos de controle de acesso
 
     if request.method == 'POST':
-        form = ControleAcessoOutroForms(request.POST)
+        form = SolicitacaoImagemOutroForms(request.POST)
         if form.is_valid():
             controle = form.save(commit=False)
             controle.created = timezone.now()  # Define a data de criação
@@ -335,12 +333,12 @@ def adicionar_controle_acesso_outros(request):
 
             controle.save()
             messages.success(request, "Controle de acesso adicionado com sucesso!")
-            return redirect('lista_controleacesso')  # Ajuste para sua URL correta
+            return redirect('lista_solicitacaoimagem_pendente')  # Ajuste para sua URL correta
     else:
-        form = ControleAcessoOutroForms()
+        form = SolicitacaoImagemOutroForms()
         tipo_gravacao = Imagemcameras.tipo_gravacao
 
-    return render(request, 'adicionar_controle_acesso_outros.html', {
+    return render(request, 'adicionar_solicitacao_imagem_outros.html', {
         'form': form,
         'colaboradores': colaboradores,
         'condominios': condominios,

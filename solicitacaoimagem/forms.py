@@ -167,23 +167,20 @@ class SolicitacaoImagemFuncionarioForms(forms.ModelForm):
         return instance
 
 
-class ControleAcessoOutroForms(forms.ModelForm):
+class SolicitacaoImagemOutroForms(forms.ModelForm):
     class Meta:
-        model = ControlesAcessos
+        model = Imagemcameras
         fields = [
-            'condominio', 'tipos_controles_acesso', 'execucao', 'pedido', 'quantidade', 'valor', 'descricao',
-            'identificador', 'data_prazo', 'metodo_pagamento', 'status', 'solicitante'
+            'condominio', 'tipo_gravacao', 'execucao', 'periodo', 'cameras', 'descricao',
+            'area_sindico', 'status', 'solicitante','tattica_funcionario_id','aprovacao'
         ]
         # Campos criados e modificados não são incluídos porque são gerados automaticamente
 
     def __init__(self, *args, **kwargs):
-        super(ControleAcessoOutroForms, self).__init__(*args, **kwargs)
+        super(SolicitacaoImagemOutroForms, self).__init__(*args, **kwargs)
 
         # Filtra somente condomínios ativos
         self.fields['condominio'].queryset = Condominios.objects.filter(status=1)
-
-        # Configuração do queryset de tipos de controle de acesso
-        self.fields['tipos_controles_acesso'].queryset = TiposControlesAcessos.objects.all()
 
         # Adicionando classes CSS para estilização dos campos
         for field in self.fields.values():
