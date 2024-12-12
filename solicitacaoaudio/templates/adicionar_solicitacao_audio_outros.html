@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="{% url 'adicionar_solicitacaoimagem' %}" style="display: flex; flex-direction: column; align-items: center;">
+                    <a class="nav-link text-center" href="{% url 'adicionar_solicitacaoaudio' %}" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
@@ -28,7 +28,7 @@
 
 {% block content %}
     <br><br><br><br>
-<h2 style="text-align: center;">Adicionar Solicitação de Imagem Outros</h2>
+<h2 style="text-align: center;">Adicionar Solicitação de Áudio Outros</h2>
 
 <div class="container">
     <form method="POST">
@@ -63,7 +63,7 @@
                 <label for="outros" class="form-label">Solicitante:</label>
                 <input id="outros" name="outros" class="form-control" placeholder="Digite o nome do solicitante..." type="text">
 
-                <label for="cameras" class="form-label">Cameras:</label>
+                <label for="cameras" class="form-label">Tip:</label>
                 <input id="cameras" name="cameras" class="form-control">
 
 
@@ -80,7 +80,7 @@
 
                 <label for="tipo_gravacao"><strong>Tipo Gravação:</strong></label>
                 <select id="tipo_gravacao" name="tipo_gravacao" class="form-control">
-                    <option value="1">Imagem</option>
+                    <option value="1">Áudio</option>
                 </select>
 
                             <div class="col-md-6">
@@ -103,7 +103,7 @@
         </div>
 
         <div class="form-group"><br>
-            <button type="submit" class="btn btn-primary">Salvar Solicitação de Imagem</button>
+            <button type="submit" class="btn btn-primary">Salvar Solicitação de Áudio</button>
         </div>
     </form>
 </div>

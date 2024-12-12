@@ -1,0 +1,204 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load custom_tags %}
+
+
+{% block menu %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <div class="icon-container">
+                <img src="{% static 'img/icon.png' %}" alt="Logo" class="navbar img.icon-img" style="max-width: 65%; height: 65px; margin-left: 20px; margin-top: 15px;">
+            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav custom-nav-link">
+                <li class="nav-item">
+                    <a class="nav-link text-center" href="{% url 'menu_slc' %}" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
+                        <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+</nav>
+{% endblock %}
+
+{% block content %}
+<br><br><br>
+
+<div class="d-flex justify-content-center align-items-center mb-4">
+    <h2 class="mb-0">Solicitações de Áudio</h2>
+    <a href="{% url 'adicionar_solicitacaoaudio' %}" class="btn btn-link p-0" style="text-decoration: none;">
+        <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 20px; height: 20px; margin-left: 60px;">
+    </a>
+</div>
+<form method="get">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="condominio">Condomínio</label>
+            <select name="condominio" id="condominio" class="form-control">
+                <option value="">Todos</option>
+                {% for condominio in condominios %}
+                <option value="{{ condominio.id }}">{{ condominio.nome_condominio }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="execucao">Execução</label>
+            <select name="execucao" id="execucao" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Presencial</option>
+                <option value="2">Remoto</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label for="aprovacao">Aprovação</label>
+            <select name="aprovacao" id="aprovacao" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Pendente</option>
+                <option value="2">Aprovado</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="status">Status</label>
+            <select name="status" id="status" class="form-control">
+                <option value="">Todos</option>
+                <option value="1">Pendente</option>
+                <option value="4">Aguardando HD</option>
+                <option value="2">A Entregar</option>
+                <option value="3">Resolvido</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="data_inicio">Data Início</label>
+            <input type="date" name="data_inicio" id="data_inicio" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label for="data_fim">Data Fim</label>
+            <input type="date" name="data_fim" id="data_fim" class="form-control">
+        </div>
+        <div class="col-md-3"><br>
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+        </div>
+    </div>
+    <br>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Cidade</th>
+            <th>Condomínio</th>
+            <th>Tip</th>
+            <th>Tipo</th>
+            <th>Executor</th>
+            <th>Aprovação</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+<tbody>
+    {% for controle in controles %}
+        <tr>
+            <td>{{ controle.created|date:"d/m/Y H:i:s" }}</td>
+            <td>{{ controle.condominio.cidade }}</td>
+            <td>{{ controle.condominio.nome_condominio }}</td>
+            <td>{{ controle.cameras }}</td>
+            <td>
+                {% if controle.tipo_gravacao == 2 %}
+                <span class="audio">Audio</span>
+                {% endif %} <!-- Fechar o bloco 'if' -->
+            </td>
+            <td>
+                {% if controle.execucao == 1 %}
+                <span class="presencial">Presencial</span>
+                {% else %}
+                <span class="remoto">Remoto</span>
+                {% endif %} <!-- Fechar o bloco 'if' -->
+            </td>
+
+            <td>
+                {% if controle.aprovacao == 1 %}
+                <span class="status-pendente">Pendente</span>
+                {% elif controle.aprovacao == 2 %}
+                <span class="status-resolvido">Aprovado</span>
+                {% elif controle.aprovacao == 3 %}
+                <span class="aprovacao">Reprovado</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if controle.status == 1 %}
+                    <span class="status-pendente">Pendente</span>
+                {% elif controle.status == 2 %}
+                    <span class="status-entregar">A Entregar</span>
+                {% elif controle.status == 3 %}
+                    <span class="status-resolvido">Resolvido</span>
+                {% else %}
+                    <span class="status-nao-determinado">Indeterminado</span> <!-- Novo caso para status não definido -->
+                {% endif %} <!-- Fechar o bloco 'if' -->
+            </td>
+            <td>
+                <a href="#">
+                    <img src="{% static 'img/editar.png' %}" alt="Editar" style="width: 20px; height: 20px;">
+                </a>
+                <a href="#">
+                    <img src="{% static 'img/excluir.png' %}" alt="Excluir" style="width: 20px; height: 20px;">
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
+
+</table>
+<style>
+.vencido {
+    color: white;
+    background-color: #ffb884;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.status-pendente {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-entregar {
+    background-color: green;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-resolvido {
+    background-color: blue;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-nao-determinado {
+    background-color: gray;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+</style>
+
+{% endblock %}

@@ -28,7 +28,7 @@
 
 {% block content %}
     <br><br><br><br>
-<h2 style="text-align: center;">Adicionar Solicitação de Imagem Outros</h2>
+<h2 style="text-align: center;">Adicionar Solicitação de Imagem Funcionário Condomínio</h2><br>
 
 <div class="container">
     <form method="POST">
@@ -49,7 +49,7 @@
 
                 <label for="solicitante"><strong>Perfil Do Solicitante:</strong></label>
                 <select id="solicitante" name="solicitante" class="form-control">
-                    <option value="outros">Outros</option>
+                    <option value="funcionario_condominio">Funcionário do Condomínio</option>
                 </select>
 
                 <label for="condominio"><strong>Condomínio:</strong></label>
@@ -60,55 +60,91 @@
                     {% endfor %}
                 </select>
 
-                <label for="outros" class="form-label">Solicitante:</label>
-                <input id="outros" name="outros" class="form-control" placeholder="Digite o nome do solicitante..." type="text">
+                <label for="condominios_funcionario" class="form-label">condominios_funcionario:</label>
+                <select id="condominios_funcionario" name="condominios_funcionario" class="form-control">
+                    <option value="">Selecione o funcionarios...</option>
+                </select>
 
-                <label for="cameras" class="form-label">Cameras:</label>
-                <input id="cameras" name="cameras" class="form-control">
-
-
+                <label for="cameras"><strong>Tip:</strong></label>
+                <input id="cameras" name="cameras" type="text" class="form-control">
             </div>
 
             <!-- Segunda coluna -->
             <div class="col-md-6">
 
-                <label for="periodo"><strong>Periodo para o Cliente:</strong></label>
-                <textarea id="periodo" name="periodo" class="form-control"></textarea>
+                <label for="descricaocliente"><strong>Periodo para o Cliente:</strong></label>
+                <textarea id="descricaocliente" name="descricaocliente" class="form-control"></textarea>
 
-                <label for="descricao"><strong>Descrição interna:</strong></label>
-                <textarea id="descricao" name="descricao" class="form-control"></textarea>
+                <label for="descricaointerna"><strong>Descrição interna:</strong></label>
+                <textarea id="descricaointerna" name="descricaointerna" class="form-control"></textarea>
 
                 <label for="tipo_gravacao"><strong>Tipo Gravação:</strong></label>
                 <select id="tipo_gravacao" name="tipo_gravacao" class="form-control">
                     <option value="1">Imagem</option>
                 </select>
-
-                            <div class="col-md-6">
                 <label for="execucao"><strong>Execução:</strong></label>
                 <select id="execucao" name="execucao" class="form-control">
                     <option value="1">Remoto</option>
                     <option value="2">Presencial</option>
                 </select>
-
-            <div class="col-md-6">
                 <label for="aprovacao"><strong>Aprovação:</strong></label>
                 <select id="aprovacao" name="aprovacao" class="form-control">
                     <option value="1">Pendente</option>
                     <option value="2">Aprovado</option>
-                    <option value="2">Reprovado</option>
-                </select>
-
-
+                    <option value="3">Reprovado</option>
+                </select>'
             </div>
         </div>
 
         <div class="form-group"><br>
-            <button type="submit" class="btn btn-primary">Salvar Solicitação de Imagem</button>
+            <button type="submit" class="btn btn-primary">Salvar Controle de Acesso</button>
         </div>
     </form>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Função para carregar funcionários do condomínio selecionado
+    $('#condominio').change(function() {
+        var condominioId = $(this).val();
+        var funcionariosDropdown = $('#condominios_funcionario');
+
+        // Limpa o dropdown de funcionários
+        funcionariosDropdown.html('<option value="">Selecione o funcionário...</option>');
+
+        if (condominioId) {
+            $.ajax({
+                url: '{% url "carregar_funcionarios_condominio" %}',
+                data: { 'condominio_id': condominioId },
+                dataType: 'json',
+                success: function(data) {
+                    $.each(data, function(index, funcionario) {
+                        funcionariosDropdown.append(
+                            $('<option>', {
+                                value: funcionario.id,
+                                text: funcionario.nome_funcionario
+                            })
+                        );
+                    });
+                },
+                error: function() {
+                    alert("Erro ao carregar os funcionários. Tente novamente.");
+                }
+            });
+        }
+    });
+});
+
+$('#condominio').change(function() {
+    console.log("Condomínio selecionado:", $(this).val());
+    // Restante do código...
+});
+
+
+</script>
+
 
 {% endblock %}

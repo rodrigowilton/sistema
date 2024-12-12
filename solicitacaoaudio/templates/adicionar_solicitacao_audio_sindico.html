@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav custom-nav-link">
                 <li class="nav-item">
-                    <a class="nav-link text-center" href="{% url 'adicionar_solicitacaoimagem' %}" style="display: flex; flex-direction: column; align-items: center;">
+                    <a class="nav-link text-center" href="{% url 'adicionar_solicitacaoaudio' %}" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="{% static 'img/voltar.png' %}" alt="voltar" style="width: 30px; height: 30px; margin-left: 100px; filter: invert(1);">
                         <span style="margin-top: 5px; margin-left: 100px;">Retornar</span>
                     </a>
@@ -29,10 +29,10 @@
 {% block content %}
     <br><br><br><br>
 
-<h2 style="text-align: center;">Adicionar Solicitação de Imagem Síndico</h2>
+<h2 style="text-align: center;">Adicionar Solicitação de Áudio Síndico</h2>
 
 <div class="container">
-    <form method="POST" id="SolicitacaoImagemSindicoForm">
+    <form method="POST" id="SolicitacaoAudioSindicoForm">
         {% csrf_token %}
         <input type="hidden" name="status" value="1">
         <input type="hidden" name="aprovacao" value="2">
@@ -77,7 +77,7 @@
                     {% endfor %}
                 </select>
 
-                <label for="cameras"><strong>Cameras:</strong></label>
+                <label for="cameras"><strong>Tip:</strong></label>
                 <input type="text" id="cameras" name="cameras" class="form-control"/>
             </div>
             <div class="col-md-6">
@@ -90,7 +90,7 @@
             <!-- Segunda coluna -->
                 <label for="tipo_gravacao"><strong>Tipo Gravação:</strong></label>
                 <select id="tipo_gravacao" name="tipo_gravacao" class="form-control">
-                    <option value="1">Imagem</option>
+                    <option value="1">Áudio</option>
                 </select>
             <!-- Segunda coluna -->
             <div class="col-md-6">
@@ -103,7 +103,7 @@
         </div>
 
         <div class="form-group"><br>
-            <button type="submit" class="btn btn-primary">Salvar Solicitação de Imagem</button>
+            <button type="submit" class="btn btn-primary">Salvar Solicitação de Áudio</button>
         </div>
     </form>
 </div>

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'servicoempresa',
     'controleacesso',
     'solicitacaoimagem',
+    'solicitacaoaudio',
 
 ]
 
