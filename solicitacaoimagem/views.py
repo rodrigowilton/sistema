@@ -285,7 +285,7 @@ def adicionar_solicitacaoimagem_funcionario_condominio(request):
 
                 # Salva o controle de acesso no banco
                 controle.save()
-                messages.success(request, 'Controle de acesso adicionado com sucesso!')
+                messages.success(request, 'Solicitação de imagem adicionado com sucesso!')
                 return redirect('lista_solicitacaoimagem_pendente')  # Redireciona para a lista de controles de acesso
             except Exception as e:
                 print(f"Erro ao salvar controle de acesso: {e}")
@@ -306,46 +306,63 @@ def adicionar_solicitacaoimagem_funcionario_condominio(request):
 
 @login_required
 def adicionar_solicitacaoimagem_outros(request):
+    # Filtra os dados necessários
     condominios = Condominios.objects.filter(status=1)  # Filtra condomínios ativos
     colaboradores = TatticaFuncionarios.objects.all()  # Todos os colaboradores
 
     if request.method == 'POST':
+        print("Dados recebidos via POST:", request.POST)  # Log de depuração
         form = SolicitacaoImagemOutroForms(request.POST)
-        if form.is_valid():
-            controle = form.save(commit=False)
-            controle.created = timezone.now()  # Define a data de criação
-            controle.data_prazo = adicionar_dias_uteis(controle.created, 3)
-            print(f"Data Prazo definida como: {controle.data_prazo}")
-            tipo_gravacao = Imagemcameras.tipo_gravacao
 
-            # Define o solicitante com o valor do campo manual
-            solicitante = request.POST.get('outros', '').strip()
-            if solicitante:
-                controle.solicitante = solicitante
-            else:
-                messages.error(request, "O campo 'Outros' é obrigatório quando não há funcionário associado.")
-                return render(request, 'controle_acesso_outros_form.html', {
+        if form.is_valid():
+            print("Formulário válido.")
+            area_sindico = form.cleaned_data.get('area_sindico', 0)
+
+
+            try:
+                controle = form.save(commit=False)
+                controle.created = timezone.now()  # Define a data de criação
+                controle.data_prazo = adicionar_dias_uteis(controle.created, 3)
+                print(f"Data Prazo definida como: {controle.data_prazo}")
+
+                # Valida o campo 'outros' como solicitante
+                solicitante = request.POST.get('outros', '').strip()
+                if solicitante:
+                    controle.solicitante = solicitante
+                else:
+                    messages.error(request, "O campo 'Outros' é obrigatório quando não há funcionário associado.")
+                    return render(request, 'adicionar_solicitacao_imagem_outros.html', {
+                        'form': form,
+                        'colaboradores': colaboradores,
+                        'condominios': condominios,
+                    })
+
+                # Salva o objeto no banco de dados
+                controle.save()
+                messages.success(request, 'Solicitação de imagem adicionada com sucesso!')
+                return redirect('lista_solicitacaoimagem_pendente')  # Ajuste conforme sua URL correta
+
+            except Exception as e:
+                print(f"Erro ao salvar no banco de dados: {e}")
+                messages.error(request, "Ocorreu um erro ao salvar a solicitação. Tente novamente.")
+                return render(request, 'adicionar_solicitacao_imagem_outros.html', {
                     'form': form,
                     'colaboradores': colaboradores,
                     'condominios': condominios,
-                    'tipo_gravacao': tipo_gravacao,
                 })
+        else:
+            print("Formulário inválido. Erros:", form.errors)
+            messages.error(request, "Existem erros no formulário. Por favor, corrija-os.")
 
-            controle.save()
-            messages.success(request, "Controle de acesso adicionado com sucesso!")
-            return redirect('lista_solicitacaoimagem_pendente')  # Ajuste para sua URL correta
     else:
         form = SolicitacaoImagemOutroForms()
-        tipo_gravacao = Imagemcameras.tipo_gravacao
+        print("Formulário inicializado para GET.")
 
     return render(request, 'adicionar_solicitacao_imagem_outros.html', {
         'form': form,
         'colaboradores': colaboradores,
         'condominios': condominios,
-        'tipo_gravacao': tipo_gravacao,
     })
-
-
 
 @login_required
 def lista_solicitacaoimagem(request):
