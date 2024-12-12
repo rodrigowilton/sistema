@@ -376,7 +376,7 @@ def lista_solicitacaoaudio(request):
     data_fim = request.GET.get('data_fim')
 
     # Filtra os dados com base nos filtros selecionados
-    controles = Imagemcameras.objects.filter(tipo_gravacao=2)
+    controles = Imagemcameras.objects.all()
 
     # Aplica os filtros baseados nos parâmetros recebidos
     if condominio:
@@ -427,7 +427,7 @@ def lista_solicitacaoaudio_pendente(request):
     aprovacao = request.GET.get('aprovacao')  # Filtro de aprovação
 
     # Filtra os dados com base nos filtros selecionados
-    controles = Imagemcameras.objects.filter(tipo_gravacao=2)
+    controles = Imagemcameras.objects.all()
 
     # Aplica os filtros baseados nos parâmetros recebidos
     if condominio:
