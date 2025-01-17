@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'controleacesso',
     'solicitacaoimagem',
     'solicitacaoaudio',
+    'appmorador',
 
 ]
 
